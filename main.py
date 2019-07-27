@@ -1,14 +1,12 @@
 import pygame
 from components.apple import Apple
 from components.snake import Snake
-
-width = 800
-height = 600
+import ui
 
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((ui.WIDTH, ui.HEIGHT))
     pygame.display.set_caption('HELLO')
     clock = pygame.time.Clock()
 
@@ -31,9 +29,10 @@ def main():
                 crashed = True
 
         if snake.eat(apple):
-            apple.eaten()
+            apple.new_random()
 
         allsprites.update()
+
         # Draw Everything
         screen.blit(background, (0, 0))
         allsprites.draw(screen)
