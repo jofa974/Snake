@@ -4,6 +4,7 @@ from ui.load_image import load_image
 
 class Apple(pygame.sprite.Sprite):
     """Apple to feed the snake"""
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         screen = pygame.display.get_surface()

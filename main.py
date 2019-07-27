@@ -1,5 +1,6 @@
 import pygame
 from components.apple import Apple
+from components.snake import Snake
 
 width = 800
 height = 600
@@ -16,10 +17,11 @@ def main():
     # Create The Backgound
     background = pygame.Surface(screen.get_size())
     background = background.convert()
-    background.fill((250, 250, 250))
+    background.fill((125, 125, 125))
 
     apple = Apple()
-    allsprites = pygame.sprite.RenderPlain((apple))
+    snake = Snake()
+    allsprites = pygame.sprite.RenderPlain((apple, snake))
 
     while not crashed:
         clock.tick(60)
@@ -27,9 +29,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                apple.move(pos)
 
         allsprites.update()
         # Draw Everything
