@@ -19,11 +19,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                apple = Apple(pos)
+                apple.show(game_display)
 
-        x = width * 0.45
-        y = height * 0.5
-        apple = Apple(x, y)
-        apple.show(game_display)
         pygame.display.update()
 
         clock.tick(60)
