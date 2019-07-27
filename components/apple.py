@@ -2,7 +2,7 @@ import pygame
 import random
 from ui.load_image import load_image
 from ui import WIDTH, HEIGHT
-from .walls import WALL_WIDTH
+from .walls import Wall
 
 
 class Apple(pygame.sprite.Sprite):
@@ -18,5 +18,7 @@ class Apple(pygame.sprite.Sprite):
         self.rect.midtop = position
 
     def new_random(self):
-        self.rect.midtop = (random.randint(WALL_WIDTH, WIDTH-WALL_WIDTH),
-                            random.randint(WALL_WIDTH, HEIGHT-WALL_WIDTH))
+        self.rect.midtop = (random.randint(Wall.WALL_WIDTH,
+                                           WIDTH-Wall.WALL_WIDTH),
+                            random.randint(Wall.WALL_WIDTH,
+                                           HEIGHT-Wall.WALL_WIDTH))

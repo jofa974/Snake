@@ -23,6 +23,7 @@ class Snake(pygame.sprite.Sprite):
         self.rect.midtop = tuple(
             sum(x) for x in zip(self.rect.midtop, self.speed))
 
+
     def eat(self, target):
         """returns true if the snake collides with the target"""
         hitbox = self.rect.inflate(-5, -5)

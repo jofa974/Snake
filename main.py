@@ -13,10 +13,18 @@ def main():
 
     crashed = False
 
-    wall = Wall(0, 0, ui.WIDTH, ui.HEIGHT)
+    wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
+    wall_right = Wall(ui.WIDTH-Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH, ui.HEIGHT)
+    wall_top = Wall(0, 0, ui.WIDTH, Wall.WALL_WIDTH)
+    wall_bottom = Wall(0, ui.HEIGHT-Wall.WALL_WIDTH, ui.WIDTH, Wall.WALL_WIDTH)
     apple = Apple()
     snake = Snake()
-    allsprites = pygame.sprite.RenderPlain((wall, apple, snake))
+    allsprites = pygame.sprite.RenderPlain((wall_left,
+                                            wall_right,
+                                            wall_top,
+                                            wall_bottom,
+                                            apple,
+                                            snake))
 
     while not crashed:
         clock.tick(60)
