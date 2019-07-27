@@ -1,6 +1,7 @@
 import pygame
 from components.apple import Apple
 from components.snake import Snake
+from components.walls import WALL_WIDTH
 import ui
 
 
@@ -37,6 +38,9 @@ def main():
 
         # Draw Everything
         screen.blit(background, (0, 0))
+        # walls
+        pygame.draw.rect(screen, ui.BLACK, (0, 0, ui.WIDTH, ui.HEIGHT),
+                         WALL_WIDTH)
         allsprites.draw(screen)
         pygame.display.flip()
 
