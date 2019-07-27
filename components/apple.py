@@ -13,6 +13,7 @@ class Apple(pygame.sprite.Sprite):
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.image, self.rect = load_image("apple_alpha.png", -1)
+        self.new_random()
 
     def move(self, position):
         self.rect.midtop = position
