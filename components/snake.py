@@ -1,18 +1,21 @@
 import pygame
 from ui.load_image import load_image
 
-BLUE = (0, 0, 255)
-
 
 class Snake(pygame.sprite.Sprite):
     """Snake player"""
+
+    controls = [pygame.K_UP, pygame.K_DOWN,
+                pygame.K_LEFT, pygame.K_RIGHT]
+
+    base_speed = 5
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.image, self.rect = load_image("snake_alpha.png", -1)
-        self.speed = (1, 0)
+        self.speed = (Snake.base_speed, 0)
 
     def update(self):
         self.rect.midtop = tuple(
@@ -22,3 +25,13 @@ class Snake(pygame.sprite.Sprite):
         """returns true if the snake collides with the target"""
         hitbox = self.rect.inflate(-5, -5)
         return hitbox.colliderect(target.rect)
+
+    def change_direction(self, key):
+        if key == pygame.K_UP and self.speed[1] == 0:
+            self.speed = (0, -Snake.base_speed)
+        elif key == pygame.K_DOWN and self.speed[1] == 0:
+            self.speed = (0, Snake.base_speed)
+        elif key == pygame.K_LEFT and self.speed[0] == 0:
+            self.speed = (-Snake.base_speed, 0)
+        elif key == pygame.K_RIGHT and self.speed[0] == 0:
+            self.speed = (Snake.base_speed, 0)

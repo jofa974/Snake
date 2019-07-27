@@ -27,6 +27,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 crashed = True
+            if event.type == pygame.KEYDOWN and event.key in Snake.controls:
+                snake.change_direction(event.key)
 
         if snake.eat(apple):
             apple.new_random()
