@@ -1,5 +1,7 @@
 import pygame
+import random
 from ui.load_image import load_image
+from ui import WIDTH, HEIGHT
 from .walls import Wall
 
 
@@ -16,13 +18,24 @@ class Snake(pygame.sprite.Sprite):
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.image, self.rect = load_image("snake_alpha.png", -1)
+        self.rect.midtop = (random.randint(Wall.WALL_WIDTH,
+                                           WIDTH-Wall.WALL_WIDTH),
+                            random.randint(Wall.WALL_WIDTH,
+                                           HEIGHT-Wall.WALL_WIDTH))
         self.speed = (Snake.base_speed, 0)
-        self.wall = None
+        self.walls = None
+        self.dead = False
+
+    def init_walls(self, wall_list):
+        self.walls = wall_list
 
     def update(self):
         self.rect.midtop = tuple(
             sum(x) for x in zip(self.rect.midtop, self.speed))
-
+        # Did this update cause us to hit a wall?
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        if block_hit_list:
+            self.dead = True
 
     def eat(self, target):
         """returns true if the snake collides with the target"""

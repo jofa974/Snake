@@ -11,8 +11,6 @@ def main():
     pygame.display.set_caption('HELLO')
     clock = pygame.time.Clock()
 
-    crashed = False
-
     wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
     wall_right = Wall(ui.WIDTH-Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH, ui.HEIGHT)
     wall_top = Wall(0, 0, ui.WIDTH, Wall.WALL_WIDTH)
@@ -26,12 +24,14 @@ def main():
                                             apple,
                                             snake))
 
-    while not crashed:
+    snake.init_walls((wall_left, wall_right, wall_top, wall_bottom))
+
+    while not snake.dead:
         clock.tick(60)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                crashed = True
+                snake.dead = True
             if event.type == pygame.KEYDOWN and event.key in Snake.controls:
                 snake.change_direction(event.key)
 
