@@ -1,6 +1,4 @@
-import sys
 import pygame
-sys.path.append("../ui")
 from ui.load_image import load_image
 
 
