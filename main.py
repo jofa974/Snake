@@ -1,7 +1,7 @@
 import pygame
 from components.apple import Apple
 from components.snake import Snake
-from components.walls import WALL_WIDTH
+from components.walls import Wall
 import ui
 
 
@@ -13,14 +13,10 @@ def main():
 
     crashed = False
 
-    # Create The Backgound
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((125, 125, 125))
-
+    wall = Wall(0, 0, ui.WIDTH, ui.HEIGHT)
     apple = Apple()
     snake = Snake()
-    allsprites = pygame.sprite.RenderPlain((apple, snake))
+    allsprites = pygame.sprite.RenderPlain((wall, apple, snake))
 
     while not crashed:
         clock.tick(60)
@@ -37,10 +33,7 @@ def main():
         allsprites.update()
 
         # Draw Everything
-        screen.blit(background, (0, 0))
-        # walls
-        pygame.draw.rect(screen, ui.BLACK, (0, 0, ui.WIDTH, ui.HEIGHT),
-                         WALL_WIDTH)
+        screen.fill(ui.BLACK)
         allsprites.draw(screen)
         pygame.display.flip()
 

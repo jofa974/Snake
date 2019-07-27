@@ -9,7 +9,7 @@ class Apple(pygame.sprite.Sprite):
     """Apple to feed the snake"""
 
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.image, self.rect = load_image("apple_alpha.png", -1)
