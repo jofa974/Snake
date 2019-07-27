@@ -30,6 +30,9 @@ def main():
             if event.type == pygame.QUIT:
                 crashed = True
 
+        if snake.eat(apple):
+            apple.eaten()
+
         allsprites.update()
         # Draw Everything
         screen.blit(background, (0, 0))
