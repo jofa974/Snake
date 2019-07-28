@@ -16,10 +16,10 @@ class Apple(pygame.sprite.Sprite):
         self.new_random()
 
     def move(self, position):
-        self.rect.midtop = position
+        self.rect.center = position
 
     def new_random(self):
-        self.rect.midtop = (random.randint(2*Wall.WALL_WIDTH,
+        self.rect.center = (random.randint(2*Wall.WALL_WIDTH,
                                            WIDTH-2*Wall.WALL_WIDTH),
                             random.randint(2*Wall.WALL_WIDTH,
                                            HEIGHT-2*Wall.WALL_WIDTH))

@@ -8,7 +8,7 @@ import ui
 def main():
     pygame.init()
     screen = pygame.display.set_mode((ui.WIDTH, ui.HEIGHT))
-    pygame.display.set_caption('HELLO')
+    pygame.display.set_caption('Snake')
     clock = pygame.time.Clock()
 
     all_sprites = pygame.sprite.Group()
@@ -41,6 +41,7 @@ def main():
 
         if snake.eat(apple):
             snake.grow()
+            all_sprites.add(snake.body_list[-1])
             apple.new_random()
 
         all_sprites.update()
