@@ -2,9 +2,18 @@ import pygame
 import random
 import copy
 import math
+from collections import deque
 from ui.load_image import load_image
 from ui import WIDTH, HEIGHT
 from .walls import Wall
+
+
+def norm_speed(speed):
+    return math.floor(speed/Snake.base_speed)
+
+
+def speed_sign(speed):
+    return int(math.copysign(1, norm_speed(speed)))
 
 
 class SnakePart(pygame.sprite.Sprite):
@@ -13,16 +22,16 @@ class SnakePart(pygame.sprite.Sprite):
         self.image, self.rect = load_image("snake_alpha.png", -1)
         self.speed = previous.speed
         self.rect = previous.rect.copy()
-        if previous.speed[0] != 0:
-            self.rect.center = (self.rect.centerx-previous.speed[0]/Snake.base_speed*self.rect.w, self.rect.centery)
-        elif previous.speed[1] != 0:
-            self.rect.center = (self.rect.centerx, self.rect.centery-previous.speed[1]/Snake.base_speed*self.rect.h)
+        self.rect.center = (
+            self.rect.centerx - speed_sign(self.speed[0]) * self.rect.w,
+            self.rect.centery - speed_sign(self.speed[1]) * self.rect.h)
+
         self.moves = previous.moves_list_for_next
-        self.moves_list_for_next = []
+        self.moves_list_for_next = deque(maxlen=Snake.base_speed)
 
     def update(self):
         self.moves_list_for_next.append(copy.deepcopy(self.rect.center))
-        new_position = self.moves.pop()
+        new_position = self.moves.popleft()
         self.rect.center = new_position
 
 
@@ -31,7 +40,7 @@ class Snake(pygame.sprite.Sprite):
 
     controls = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
 
-    base_speed = 2
+    base_speed = 5
 
     def __init__(self):
         super().__init__()
@@ -46,7 +55,7 @@ class Snake(pygame.sprite.Sprite):
         self.walls = None
         self.dead = False
         self.body_list = []
-        self.moves_list_for_next = []
+        self.moves_list_for_next = deque(maxlen=Snake.base_speed)
 
     def init_walls(self, wall_list):
         self.walls = wall_list
@@ -60,12 +69,12 @@ class Snake(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             self.dead = True
-        # # Did this update cause us to hit a body part?
-        # body_hit_list = pygame.sprite.spritecollide(self, self.body_list,
-        #                                             False)
-        # if body_hit_list:
-        #     print("I ATE MYSELF !")
-        #     self.dead = True
+        # Did this update cause us to hit a body part?
+        body_hit_list = pygame.sprite.spritecollide(self, self.body_list[1:],
+                                                    False)
+        if body_hit_list:
+            print("I ATE MYSELF !")
+            self.dead = True
 
     def eat(self, target):
         """returns true if the snake collides with the target"""
