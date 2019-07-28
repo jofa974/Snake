@@ -4,12 +4,12 @@ import copy
 import math
 from collections import deque
 from ui.load_image import load_image
-from ui import WIDTH, HEIGHT
+from ui import WIDTH, HEIGHT, BASE_SPEED
 from .walls import Wall
 
 
 def norm_speed(speed):
-    return math.floor(speed/Snake.base_speed)
+    return math.floor(speed/BASE_SPEED)
 
 
 def speed_sign(speed):
@@ -27,7 +27,7 @@ class SnakePart(pygame.sprite.Sprite):
             self.rect.centery - speed_sign(self.speed[1]) * self.rect.h)
 
         self.moves = previous.moves_list_for_next
-        self.moves_list_for_next = deque(maxlen=Snake.base_speed)
+        self.moves_list_for_next = deque(maxlen=BASE_SPEED)
 
     def update(self):
         self.moves_list_for_next.append(copy.deepcopy(self.rect.center))
@@ -38,10 +38,6 @@ class SnakePart(pygame.sprite.Sprite):
 class Snake(pygame.sprite.Sprite):
     """Snake player"""
 
-    controls = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
-
-    base_speed = 5
-
     def __init__(self):
         super().__init__()
         screen = pygame.display.get_surface()
@@ -51,11 +47,11 @@ class Snake(pygame.sprite.Sprite):
                                            WIDTH - Wall.WALL_WIDTH),
                             random.randint(Wall.WALL_WIDTH,
                                            HEIGHT - Wall.WALL_WIDTH))
-        self.speed = (Snake.base_speed, 0)
+        self.speed = (BASE_SPEED, 0)
         self.walls = None
         self.dead = False
         self.body_list = []
-        self.moves_list_for_next = deque(maxlen=Snake.base_speed)
+        self.moves_list_for_next = deque(maxlen=BASE_SPEED)
 
     def init_walls(self, wall_list):
         self.walls = wall_list
@@ -83,13 +79,13 @@ class Snake(pygame.sprite.Sprite):
 
     def change_direction(self, key):
         if key == pygame.K_UP and self.speed[1] == 0:
-            self.speed = (0, -Snake.base_speed)
+            self.speed = (0, -BASE_SPEED)
         elif key == pygame.K_DOWN and self.speed[1] == 0:
-            self.speed = (0, Snake.base_speed)
+            self.speed = (0, BASE_SPEED)
         elif key == pygame.K_LEFT and self.speed[0] == 0:
-            self.speed = (-Snake.base_speed, 0)
+            self.speed = (-BASE_SPEED, 0)
         elif key == pygame.K_RIGHT and self.speed[0] == 0:
-            self.speed = (Snake.base_speed, 0)
+            self.speed = (BASE_SPEED, 0)
 
     def grow(self):
         if self.body_list:

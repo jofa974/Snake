@@ -36,7 +36,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 snake.dead = True
-            if event.type == pygame.KEYDOWN and event.key in Snake.controls:
+            if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
                 snake.change_direction(event.key)
 
         if snake.eat(apple):
