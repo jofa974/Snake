@@ -11,18 +11,22 @@ def main():
     pygame.display.set_caption('HELLO')
     clock = pygame.time.Clock()
 
+    all_sprites = pygame.sprite.Group()
+
     wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
+    all_sprites.add(wall_left)
     wall_right = Wall(ui.WIDTH-Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH, ui.HEIGHT)
+    all_sprites.add(wall_right)
     wall_top = Wall(0, 0, ui.WIDTH, Wall.WALL_WIDTH)
+    all_sprites.add(wall_top)
     wall_bottom = Wall(0, ui.HEIGHT-Wall.WALL_WIDTH, ui.WIDTH, Wall.WALL_WIDTH)
+    all_sprites.add(wall_bottom)
+
     apple = Apple()
+    all_sprites.add(apple)
+
     snake = Snake()
-    allsprites = pygame.sprite.RenderPlain((wall_left,
-                                            wall_right,
-                                            wall_top,
-                                            wall_bottom,
-                                            apple,
-                                            snake))
+    all_sprites.add(snake)
 
     snake.init_walls((wall_left, wall_right, wall_top, wall_bottom))
 
@@ -36,13 +40,14 @@ def main():
                 snake.change_direction(event.key)
 
         if snake.eat(apple):
+            snake.grow()
             apple.new_random()
 
-        allsprites.update()
+        all_sprites.update()
 
         # Draw Everything
         screen.fill(ui.BLACK)
-        allsprites.draw(screen)
+        all_sprites.draw(screen)
         pygame.display.flip()
 
     pygame.quit()
