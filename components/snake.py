@@ -9,7 +9,7 @@ from .walls import Wall
 
 
 def norm_speed(speed):
-    return math.floor(speed/BASE_SPEED)
+    return math.floor(speed / BASE_SPEED)
 
 
 def speed_sign(speed):
@@ -22,9 +22,10 @@ class SnakePart(pygame.sprite.Sprite):
         self.image, self.rect = load_image("snake_alpha.png", -1)
         self.speed = previous.speed
         self.rect = previous.rect.copy()
-        self.rect.center = (
-            self.rect.centerx - speed_sign(self.speed[0]) * self.rect.w,
-            self.rect.centery - speed_sign(self.speed[1]) * self.rect.h)
+        self.rect.center = (self.rect.centerx -
+                            speed_sign(self.speed[0]) * self.rect.w,
+                            self.rect.centery -
+                            speed_sign(self.speed[1]) * self.rect.h)
 
         self.moves = previous.moves_list_for_next
         self.moves_list_for_next = deque(maxlen=BASE_SPEED)
@@ -43,10 +44,7 @@ class Snake(pygame.sprite.Sprite):
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.image, self.rect = load_image("snake_alpha.png", -1)
-        self.rect.center = (random.randint(Wall.WALL_WIDTH,
-                                           WIDTH - Wall.WALL_WIDTH),
-                            random.randint(Wall.WALL_WIDTH,
-                                           HEIGHT - Wall.WALL_WIDTH))
+        self.rect.center = (int(WIDTH/2), int(HEIGHT/2))
         self.speed = (BASE_SPEED, 0)
         self.walls = None
         self.dead = False
@@ -65,7 +63,7 @@ class Snake(pygame.sprite.Sprite):
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         if block_hit_list:
             self.dead = True
-        # Did this update cause us to hit a body part?
+        # Did this update cause us to hit a body part (other than the closest to head)?
         body_hit_list = pygame.sprite.spritecollide(self, self.body_list[1:],
                                                     False)
         if body_hit_list:
