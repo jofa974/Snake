@@ -11,7 +11,7 @@ def load_image(name, colorkey=None, rescale=True):
     try:
         image = pygame.image.load(fullname)
         if rescale:
-            image = pygame.transform.scale(image, (20, 20))
+            image = pygame.transform.scale(image, (44, 44))
     except pygame.error:
         print('Cannot load image:', fullname)
         raise SystemExit(str(geterror()))

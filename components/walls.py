@@ -3,7 +3,7 @@ from ui import BROWN
 
 
 class Wall(pygame.sprite.Sprite):
-    WALL_WIDTH = 5
+    WALL_WIDTH = 44
     """ Wall the player can run into. """
     def __init__(self, x, y, width, height):
         """ Constructor for the wall that the player can run into. """

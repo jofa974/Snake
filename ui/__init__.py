@@ -11,4 +11,5 @@ BROWN = (210, 105, 30)
 
 CONTROLS = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]
 
-BASE_SPEED = 5
+BASE_SPEED = 44
+
