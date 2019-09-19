@@ -3,9 +3,9 @@ import os
 
 data_dir = os.path.join('/home/jonathan/Projects/PyGames/Snake/graphics')
 
-BASE_SIZE = 44
+BASE_SIZE = 40
 
-WIDTH = BASE_SIZE * 40
+WIDTH = BASE_SIZE * 20
 HEIGHT = BASE_SIZE * 20
 
 BLACK = (0, 0, 0)

@@ -1,7 +1,7 @@
 import pygame
 import random
 from ui.load_image import load_image
-from ui import WIDTH, HEIGHT
+from ui import WIDTH, HEIGHT, BASE_SIZE
 from .walls import Wall
 
 
@@ -23,8 +23,8 @@ class Apple(pygame.sprite.Sprite):
         #                                    WIDTH - 2 * Wall.WALL_WIDTH),
         #                     random.randint(2 * Wall.WALL_WIDTH,
         #                                    HEIGHT - 2 * Wall.WALL_WIDTH))
-        self.rect.center = (random.randint(2, 39) * 44,
-                            random.randint(2, 19) * 44)
+        self.rect.center = (random.randint(3, 18) * BASE_SIZE,
+                            random.randint(3, 18) * BASE_SIZE)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.center)

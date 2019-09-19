@@ -30,6 +30,11 @@ def main():
 
     snake.init_walls((wall_left, wall_right, wall_top, wall_bottom))
 
+    score = 0
+
+    # TODO if human then play human option
+    # TODO else define computer mode
+
     while not snake.dead:
 
         for event in pygame.event.get():
@@ -41,6 +46,7 @@ def main():
         if snake.eat(apple):
             snake.grow()
             apple.new_random()
+            score += 1
 
         snake.update()
 
@@ -54,8 +60,8 @@ def main():
         time.sleep(100.0 / 1000.0)
 
     pygame.quit()
-    quit()
-
+    return score
 
 if __name__ == '__main__':
-    main()
+    score = main()
+    print("GAME OVER! Your score is {}".format(score))
