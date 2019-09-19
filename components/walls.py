@@ -1,9 +1,9 @@
 import pygame
-from ui import BROWN
+from ui import BROWN, BASE_SIZE
 
 
 class Wall(pygame.sprite.Sprite):
-    WALL_WIDTH = 44
+    WALL_WIDTH = BASE_SIZE
     """ Wall the player can run into. """
     def __init__(self, x, y, width, height):
         """ Constructor for the wall that the player can run into. """

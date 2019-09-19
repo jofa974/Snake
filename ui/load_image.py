@@ -2,7 +2,7 @@ import os
 import pygame
 from pygame.compat import geterror
 from pygame.locals import RLEACCEL
-from . import data_dir
+from . import data_dir, BASE_SIZE
 
 
 # functions to create our resources
@@ -11,7 +11,7 @@ def load_image(name, colorkey=None, rescale=True):
     try:
         image = pygame.image.load(fullname)
         if rescale:
-            image = pygame.transform.scale(image, (44, 44))
+            image = pygame.transform.scale(image, (BASE_SIZE, BASE_SIZE))
     except pygame.error:
         print('Cannot load image:', fullname)
         raise SystemExit(str(geterror()))

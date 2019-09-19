@@ -19,10 +19,12 @@ class Apple(pygame.sprite.Sprite):
         self.rect.center = position
 
     def new_random(self):
-        self.rect.center = (random.randint(2 * Wall.WALL_WIDTH,
-                                           WIDTH - 2 * Wall.WALL_WIDTH),
-                            random.randint(2 * Wall.WALL_WIDTH,
-                                           HEIGHT - 2 * Wall.WALL_WIDTH))
+        # self.rect.center = (random.randint(2 * Wall.WALL_WIDTH,
+        #                                    WIDTH - 2 * Wall.WALL_WIDTH),
+        #                     random.randint(2 * Wall.WALL_WIDTH,
+        #                                    HEIGHT - 2 * Wall.WALL_WIDTH))
+        self.rect.center = (random.randint(2, 39) * 44,
+                            random.randint(2, 19) * 44)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.center)
