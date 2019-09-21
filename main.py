@@ -4,12 +4,14 @@ from components.snake import Snake
 from components.walls import Wall
 import ui
 import time
+import argparse
 
 
-def main():
+
+def main(mode):
     pygame.init()
     screen = pygame.display.set_mode((ui.WIDTH, ui.HEIGHT))
-    pygame.display.set_caption('Snake')
+    pygame.display.set_caption('Snake: {} mode'.format(mode))
 
     all_walls = pygame.sprite.Group()
 
@@ -27,8 +29,6 @@ def main():
     apple = Apple()
 
     snake = Snake()
-
-    snake.init_walls((wall_left, wall_right, wall_top, wall_bottom))
 
     score = 0
 
@@ -48,7 +48,7 @@ def main():
             apple.new_random()
             score += 1
 
-        snake.update()
+        snake.update(all_walls)
 
         # Draw Everything
         screen.fill(ui.BLACK)
@@ -57,11 +57,17 @@ def main():
         all_walls.draw(screen)
         pygame.display.flip()
 
-        time.sleep(100.0 / 1000.0)
+        time.sleep(150.0 / 1000.0)
 
     pygame.quit()
     return score
 
+
 if __name__ == '__main__':
-    score = main()
+    parser = argparse.ArgumentParser(description='Snake game options')
+    parser.add_argument('--mode',
+                        default='human',
+                        help='Define play mode (default: human)')
+    args = parser.parse_args()
+    score = main(args.mode)
     print("GAME OVER! Your score is {}".format(score))

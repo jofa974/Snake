@@ -12,7 +12,7 @@ class Apple(pygame.sprite.Sprite):
         super().__init__()
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.image, self.rect = load_image("apple_alpha.png", -1)
+        self.image, self.rect = load_image("apple_alpha.png", -1, rescale=True)
         self.new_random()
 
     def move(self, position):
