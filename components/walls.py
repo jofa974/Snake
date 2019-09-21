@@ -1,5 +1,5 @@
 import pygame
-from ui import BROWN, BASE_SIZE
+from ui import WHITE, BASE_SIZE
 
 
 class Wall(pygame.sprite.Sprite):
@@ -12,7 +12,7 @@ class Wall(pygame.sprite.Sprite):
 
         # Make a blue wall, of the size specified in the parameters
         self.image = pygame.Surface([width, height])
-        self.image.fill(BROWN)
+        self.image.fill(WHITE)
 
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()

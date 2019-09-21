@@ -1,7 +1,7 @@
 import pygame
 import math
-from ui.load_image import load_image
 from ui import WIDTH, HEIGHT, BASE_SPEED
+from ui import BASE_SIZE
 
 
 def norm_speed(speed):
@@ -15,8 +15,11 @@ def speed_sign(speed):
 class SnakePart(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image, self.rect = load_image("snake_alpha.png", -1, rescale=True)
-
+        size = (BASE_SIZE, BASE_SIZE)
+        colour = 0, 155, 0
+        self.image = pygame.Surface(size)
+        self.image.fill(colour)
+        self.rect = self.image.get_rect()
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.center)
@@ -39,8 +42,8 @@ class Snake():
         self.body_list[0].rect.move_ip(self.speed)
 
         # Did this update cause us to hit a wall?
-        block_hit_list = pygame.sprite.spritecollide(self.body_list[0],
-                                                     walls, False)
+        block_hit_list = pygame.sprite.spritecollide(self.body_list[0], walls,
+                                                     False)
         if block_hit_list:
             self.dead = True
 
