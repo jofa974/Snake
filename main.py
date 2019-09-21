@@ -6,7 +6,7 @@ from components.snake import Snake
 from components.walls import Wall
 import ui
 import argparse
-from game import human
+from game import human, random
 
 
 def main(mode):
@@ -28,6 +28,8 @@ def main(mode):
 
     if mode == "human":
         score = human.play(screen, snake, apple, walls)
+    elif mode == "random":
+        score = random.play(screen, snake, apple, walls)
     else:
         raise NotImplementedError(
             "This game mode has not been implemented yet")
