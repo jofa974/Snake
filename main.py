@@ -11,7 +11,7 @@ from game import human
 
 def main(mode):
     pygame.init()
-    screen = pygame.display.set_mode((ui.WIDTH, ui.HEIGHT))
+    screen = pygame.display.set_mode((2*ui.WIDTH, ui.HEIGHT))
     pygame.display.set_caption('Snake: {} mode'.format(mode))
 
     apple = Apple()
