@@ -1,7 +1,7 @@
 import pygame
 import math
 from ui import WIDTH, HEIGHT, BASE_SPEED
-from ui import BASE_SIZE
+from ui import BASE_SIZE, X_GRID, Y_GRID
 
 
 def norm_speed(speed):
@@ -47,15 +47,11 @@ class Snake():
         self.body_list[0].rect.move_ip(self.speed)
 
         # Did this update cause us to hit a wall?
-        block_hit_list = pygame.sprite.spritecollide(self.body_list[0], walls,
-                                                     False)
-        if block_hit_list:
+        if self.is_collision_wall():
             self.dead = True
 
         # Did this update cause us to hit a body part
-        body_hit_list = pygame.sprite.spritecollide(self.body_list[0],
-                                                    self.body_list[1:], False)
-        if body_hit_list:
+        if self.is_collision_body():
             print("I ATE MYSELF !")
             self.dead = True
 
@@ -79,5 +75,22 @@ class Snake():
 
     def draw(self, surface):
         for part in self.body_list:
-            print(part.rect.center)
             part.draw(surface)
+
+    def get_position(self, idx):
+        return [
+            int(self.body_list[idx].rect.centerx / BASE_SIZE),
+            int(self.body_list[idx].rect.centery / BASE_SIZE)
+        ]
+
+    def is_collision_wall(self):
+        x_head, y_head = self.get_position(0)
+        return x_head == 0 or x_head == X_GRID \
+            or y_head == 0 or y_head == Y_GRID
+
+    def is_collision_body(self):
+        x_head, y_head = self.get_position(0)
+        for idx in range(1, len(self.body_list)):
+            x_b, y_b = self.get_position(idx)
+            if x_b == x_head and y_b == y_head:
+                return True
