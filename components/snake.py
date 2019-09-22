@@ -78,10 +78,8 @@ class Snake():
             part.draw(surface)
 
     def get_position(self, idx):
-        return [
-            int(self.body_list[idx].rect.centerx / BASE_SIZE),
-            int(self.body_list[idx].rect.centery / BASE_SIZE)
-        ]
+        return int(self.body_list[idx].rect.centerx / BASE_SIZE), int(
+            self.body_list[idx].rect.centery / BASE_SIZE)
 
     def is_collision_wall(self):
         x_head, y_head = self.get_position(0)
@@ -94,3 +92,4 @@ class Snake():
             x_b, y_b = self.get_position(idx)
             if x_b == x_head and y_b == y_head:
                 return True
+        return False

@@ -29,7 +29,5 @@ class Apple(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect.center)
 
     def get_position(self):
-        return [
-            int(self.rect.centerx / BASE_SIZE),
-            int(self.rect.centery / BASE_SIZE)
-        ]
+        return int(self.rect.centerx / BASE_SIZE), int(self.rect.centery /
+                                                       BASE_SIZE)
