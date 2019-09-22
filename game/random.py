@@ -2,42 +2,48 @@ import pygame
 import time
 import ui
 import random
+import game
 
 
-def play(screen, snake, apple, walls):
-    myfont = pygame.font.SysFont('Comic Sans MS', 30)
-    score = 0
+class Random(game.Game):
+    def __init__(self):
+        super().__init__()
+        pygame.display.set_caption('Snake: Random mode')
 
-    while not snake.dead:
+    def play(self):
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        score = 0
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                snake.dead = True
+        while not self.snake.dead:
 
-        if random.randint(0, 1):
-            if snake.speed[0] == 0:
-                key = random.choice([pygame.K_LEFT, pygame.K_RIGHT])
-            else:
-                key = random.choice([pygame.K_UP, pygame.K_DOWN])
-            snake.change_direction(key)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.snake.dead = True
 
-        if snake.eat(apple):
-            snake.grow()
-            apple.new_random()
-            score += 1
+            if random.randint(0, 1):
+                if self.snake.speed[0] == 0:
+                    key = random.choice([pygame.K_LEFT, pygame.K_RIGHT])
+                else:
+                    key = random.choice([pygame.K_UP, pygame.K_DOWN])
+                self.snake.change_direction(key)
 
-        snake.update(walls)
-        textsurface = myfont.render('Score: {}'.format(score), False, ui.WHITE)
+            if self.snake.eat(self.apple):
+                self.snake.grow()
+                self.apple.new_random()
+                score += 1
 
-        # Draw Everything
-        screen.fill(ui.BLACK)
-        screen.blit(textsurface, (ui.WIDTH + 50, 50))
-        snake.draw(screen)
-        apple.draw(screen)
-        walls.draw(screen)
-        pygame.display.flip()
+            self.snake.update(self.walls)
+            textsurface = myfont.render('Score: {}'.format(score), False, ui.WHITE)
 
-        time.sleep(150.0 / 1000.0)
+            # Draw Everything
+            self.screen.fill(ui.BLACK)
+            self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
+            self.snake.draw(self.screen)
+            self.apple.draw(self.screen)
+            self.walls.draw(self.screen)
+            pygame.display.flip()
 
-    pygame.quit()
-    return score
+            time.sleep(150.0 / 1000.0)
+
+        pygame.quit()
+        return score
