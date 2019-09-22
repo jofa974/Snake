@@ -85,8 +85,8 @@ class Snake():
 
     def is_collision_wall(self):
         x_head, y_head = self.get_position(0)
-        return x_head == 0 or x_head == X_GRID \
-            or y_head == 0 or y_head == Y_GRID
+        return x_head == 0 or x_head == X_GRID-1 \
+            or y_head == 0 or y_head == Y_GRID-1
 
     def is_collision_body(self):
         x_head, y_head = self.get_position(0)
