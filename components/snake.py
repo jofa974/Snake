@@ -33,7 +33,12 @@ class Snake():
         self.dead = False
         head = SnakePart()
         head.rect.center = (int(WIDTH / 2), int(HEIGHT / 2))
-        self.body_list = [head, SnakePart(), SnakePart()]  # list of sprites
+        self.body_list = [head]
+        for i in range(1, 3):
+            body = SnakePart()
+            body.rect.center = (int(WIDTH / 2) - i * BASE_SPEED,
+                                int(HEIGHT / 2))
+            self.body_list.append(body)
 
     def update(self, walls):
         for i in range(len(self.body_list) - 1, 0, -1):
@@ -74,4 +79,5 @@ class Snake():
 
     def draw(self, surface):
         for part in self.body_list:
+            print(part.rect.center)
             part.draw(surface)

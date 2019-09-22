@@ -1,5 +1,4 @@
 import pygame
-import time
 import ui
 import random
 import game
@@ -33,7 +32,8 @@ class Random(game.Game):
                 score += 1
 
             self.snake.update(self.walls)
-            textsurface = myfont.render('Score: {}'.format(score), False, ui.WHITE)
+            textsurface = myfont.render('Score: {}'.format(score), False,
+                                        ui.WHITE)
 
             # Draw Everything
             self.screen.fill(ui.BLACK)
@@ -43,7 +43,4 @@ class Random(game.Game):
             self.walls.draw(self.screen)
             pygame.display.flip()
 
-            time.sleep(150.0 / 1000.0)
-
         pygame.quit()
-        return score
