@@ -22,8 +22,11 @@ class Apple(pygame.sprite.Sprite):
         self.rect.center = position
 
     def new_random(self):
-        self.rect.center = (random.randint(3, X_GRID - 2) * BASE_SIZE,
-                            random.randint(3, Y_GRID - 2) * BASE_SIZE)
+        # self.rect.center = (random.randint(3, X_GRID - 2) * BASE_SIZE,
+        #                     random.randint(3, Y_GRID - 2) * BASE_SIZE)
+
+        self.rect.center = ((X_GRID-2) * BASE_SIZE,
+                            (Y_GRID-2) * BASE_SIZE)
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.center)

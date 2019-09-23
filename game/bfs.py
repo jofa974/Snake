@@ -36,6 +36,9 @@ class BFS(game.Game):
                 path = self.BFS()
                 self.get_moves_bfs(path)
                 new_apple = False
+                print(path)
+
+            print(self.moves)
 
             next_move = self.moves.pop(0)
 
@@ -61,6 +64,7 @@ class BFS(game.Game):
             self.apple.draw(self.screen)
             pygame.display.flip()
             time.sleep(150.0 / 1000.0)
+
         pygame.quit()
 
     def make_grid_map(self):
@@ -127,10 +131,10 @@ class BFS(game.Game):
                         self.moves.append('forward')
                 if place[1] - current[1] == 1:
                     if direction[0] > 0:
-                        self.moves.append(pygame.K_UP)
+                        self.moves.append(pygame.K_DOWN)
                         direction = (0, ui.BASE_SPEED)
                     if direction[0] < 0:
-                        self.moves.append(pygame.K_DOWN)
+                        self.moves.append(pygame.K_UP)
                         direction = (0, -ui.BASE_SPEED)
                     else:
                         self.moves.append('forward')
@@ -139,7 +143,7 @@ class BFS(game.Game):
                         self.moves.append(pygame.K_UP)
                         direction = (0, ui.BASE_SPEED)
                     if direction[0] < 0:
-                        self.moves.append(pygame.K_DOWN)
+                        self.moves.append(pygame.K_UP)
                         direction = (0, -ui.BASE_SPEED)
                     else:
                         self.moves.append('forward')
