@@ -81,6 +81,49 @@ class Snake():
         return int(self.body_list[idx].rect.centerx / BASE_SIZE), int(
             self.body_list[idx].rect.centery / BASE_SIZE)
 
+    def get_neighbors(self, position, direction):
+        """Get the coordinates of the nearest neighbors: in front, to the left and the right"""
+        neighbors = {}
+        if self.speed == (BASE_SPEED, 0):
+            neighbors['front'] = (position[0]+1, position[1])
+            neighbors['left'] = (position[0], position[1]-1)
+            neighbors['right'] = (position[0], position[1]+1)
+        if self.speed == (-BASE_SPEED, 0):
+            neighbors['front'] = (position[0]-1, position[1])
+            neighbors['left'] = (position[0], position[1]+1)
+            neighbors['right'] = (position[0], position[1]-1)
+        if self.speed == (0, BASE_SPEED):
+            neighbors['front'] = (position[0], position[1]+1)
+            neighbors['left'] = (position[0]+1, position[1])
+            neighbors['right'] = (position[0]-1, position[1])
+        if self.speed == (0, -BASE_SPEED):
+            neighbors['front'] = (position[0], position[1]-1)
+            neighbors['left'] = (position[0]-1, position[1])
+            neighbors['right'] = (position[0]+1, position[1])
+        return neighbors
+
+    def get_next_key(self, way):
+        if way == 'front':
+            return 'front', self.speed
+        if way == 'left':
+            if self.speed == (BASE_SPEED, 0):
+                return pygame.K_UP, (0, -BASE_SPEED)
+            if self.speed == (-BASE_SPEED, 0):
+                return pygame.K_DOWN, (0, BASE_SPEED)
+            if self.speed == (0, BASE_SPEED):
+                return pygame.K_LEFT, (-BASE_SPEED, 0)
+            if self.speed == (0, -BASE_SPEED):
+                return pygame.K_RIGHT, (BASE_SPEED, 0)
+        if way == 'right':
+            if self.speed == (BASE_SPEED, 0):
+                return pygame.K_DOWN, (0, BASE_SPEED)
+            if self.speed == (-BASE_SPEED, 0):
+                return pygame.K_UP, (0, -BASE_SPEED)
+            if self.speed == (0, BASE_SPEED):
+                return pygame.K_RIGHT, (BASE_SPEED, 0)
+            if self.speed == (0, -BASE_SPEED):
+                return pygame.K_LEFT, (-BASE_SPEED, 0)
+
     def is_collision_wall(self):
         x_head, y_head = self.get_position(0)
         return x_head == 0 or x_head == X_GRID-1 \
