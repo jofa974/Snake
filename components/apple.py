@@ -8,8 +8,6 @@ class Apple(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
         size = (BASE_SIZE, BASE_SIZE)
         colour = 155, 0, 0
         self.image = pygame.Surface(size)

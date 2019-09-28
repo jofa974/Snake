@@ -2,33 +2,49 @@
 
 import argparse
 from game import human, random, bfs
+from stats.stats import show_stats
+import numpy as np
+import pygame
 
 
-def main(mode):
-
-    if mode == "human":
+def main(args):
+    if args.human:
         game = human.Human()
         game.play()
-    elif mode == "random":
+    elif args.random:
         for _ in range(3):
             game = random.Random()
             game.play()
-    elif mode == "BFS":
-        for _ in range(1):
-            game = bfs.BFS()
+    elif args.bfs:
+        if args.interactive:
+            game = bfs.BFS(display=True)
+            nb_games = 1
             game.play()
-        game.show_stats()
+        else:
+            nb_games = 100
+            all_score = np.zeros(nb_games)
+            game = bfs.BFS(display=False)
+            for i in range(nb_games):
+                score = game.play()
+                all_score[i] = score
+            show_stats(all_score)
+        pygame.quit()
     else:
         raise NotImplementedError(
             "This game mode has not been implemented yet")
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Snake game options')
-    parser.add_argument('-m',
-                        '--mode',
-                        default='human',
-                        help='Define play mode (default: human)')
+    parser.add_argument('--human', action="store_true", help='Human play mode')
+    parser.add_argument('--bfs', action="store_true", help='BFS play mode')
+    parser.add_argument('--random',
+                        action="store_true",
+                        help='RANDOM play mode')
+    parser.add_argument(
+        '-i',
+        '--interactive',
+        action="store_true",
+        help="Interactive mode: shows a snake game. Only for AI modes.")
     args = parser.parse_args()
-    main(args.mode)
+    main(args)

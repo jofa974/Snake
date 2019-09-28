@@ -1,7 +1,5 @@
 import pygame
-from components.snake import Snake
 from components.walls import Wall
-from components.apple import Apple
 import ui
 
 
@@ -9,9 +7,6 @@ class Game():
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((2 * ui.WIDTH, ui.HEIGHT))
-
-        self.apple = Apple()
-        self.snake = Snake()
         self.walls = pygame.sprite.Group()
         wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
         wall_right = Wall(ui.WIDTH - Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH,

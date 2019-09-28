@@ -2,6 +2,8 @@ import pygame
 import time
 import ui
 from game import Game
+from components.apple import Apple
+from components.snake import Snake
 
 
 class Human(Game):
@@ -10,6 +12,8 @@ class Human(Game):
         pygame.display.set_caption('Snake: Human mode')
 
     def play(self):
+        self.apple = Apple()
+        self.snake = Snake()
         myfont = pygame.font.SysFont('Comic Sans MS', 30)
         score = 0
 

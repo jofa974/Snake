@@ -2,6 +2,8 @@ import pygame
 import ui
 import random
 import game
+from components.apple import Apple
+from components.snake import Snake
 
 
 class Random(game.Game):
@@ -10,6 +12,8 @@ class Random(game.Game):
         pygame.display.set_caption('Snake: Random mode')
 
     def play(self):
+        self.apple = Apple()
+        self.snake = Snake()
         myfont = pygame.font.SysFont('Comic Sans MS', 30)
         score = 0
 

@@ -52,7 +52,6 @@ class Snake():
 
         # Did this update cause us to hit a body part
         if self.is_collision_body():
-            print("I ATE MYSELF !")
             self.dead = True
 
     def eat(self, target):

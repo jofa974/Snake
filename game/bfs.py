@@ -4,14 +4,16 @@ import ui
 import game
 import itertools
 from collections import deque
+from components.apple import Apple
+from components.snake import Snake
 
 
 class BFS(game.Game):
-    def __init__(self):
+    def __init__(self, display):
         super().__init__()
-        pygame.display.set_caption('Snake: BFS mode')
         self.moves = []
         self.grid = []
+        self.display = display
         for y in range(ui.Y_GRID):
             grid = []
             for x in range(ui.X_GRID):
@@ -21,12 +23,13 @@ class BFS(game.Game):
             self.grid.append(grid)
 
     def play(self):
-        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        self.apple = Apple()
+        self.snake = Snake()
         score = 0
-        new_apple = True
-
+        if self.display:
+            pygame.display.set_caption('Snake: BFS mode')
+            myfont = pygame.font.SysFont('Comic Sans MS', 30)
         while not self.snake.dead:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.snake.dead = True
@@ -35,8 +38,6 @@ class BFS(game.Game):
                 self.make_grid_map()
                 path = self.BFS()
                 self.get_moves_from_path(path)
-                # moves = self.BFS()
-                new_apple = False
 
             if self.moves:
                 next_move = self.moves.pop(0)
@@ -52,19 +53,20 @@ class BFS(game.Game):
                 score += 1
 
             self.snake.update(self.walls)
-            textsurface = myfont.render('Score: {}'.format(score), False,
-                                        ui.WHITE)
 
-            # Draw Everything
-            self.screen.fill(ui.BLACK)
-            self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-            self.walls.draw(self.screen)
-            self.snake.draw(self.screen)
-            self.apple.draw(self.screen)
-            pygame.display.flip()
-            time.sleep(150.0 / 1000.0)
+            if self.display:
+                textsurface = myfont.render('Score: {}'.format(score),
+                                               False, ui.WHITE)
+                # Draw Everything
+                self.screen.fill(ui.BLACK)
+                self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
+                self.walls.draw(self.screen)
+                self.snake.draw(self.screen)
+                self.apple.draw(self.screen)
+                pygame.display.flip()
+                time.sleep(50.0 / 1000.0)
 
-        pygame.quit()
+        return score
 
     def make_grid_map(self):
         self.grid_map = [[True for _ in range(ui.X_GRID)]
