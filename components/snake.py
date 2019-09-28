@@ -29,16 +29,16 @@ class Snake():
     """Snake player"""
 
     def __init__(self):
-        self.speed = (-BASE_SPEED, 0)
+        self.speed = (BASE_SPEED, 0)
         self.dead = False
         head = SnakePart()
         head.rect.center = (int(WIDTH / 2), int(HEIGHT / 2))
         self.body_list = [head]
-        # for i in range(1, 3):
-        #     body = SnakePart()
-        #     body.rect.center = (int(WIDTH / 2) - i * BASE_SPEED,
-        #                         int(HEIGHT / 2))
-        #     self.body_list.append(body)
+        for i in range(1, 3):
+            body = SnakePart()
+            body.rect.center = (int(WIDTH / 2) - i * BASE_SPEED,
+                                int(HEIGHT / 2))
+            self.body_list.append(body)
 
     def update(self, walls):
         for i in range(len(self.body_list) - 1, 0, -1):

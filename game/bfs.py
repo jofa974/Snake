@@ -34,20 +34,24 @@ class BFS(game.Game):
             if not self.moves:
                 self.make_grid_map()
                 path = self.BFS()
-                self.get_moves_bfs(path)
+                self.get_moves_from_path(path)
                 # moves = self.BFS()
                 new_apple = False
 
-            next_move = self.moves.pop(0)
+            if self.moves:
+                next_move = self.moves.pop(0)
+            else:
+                next_move = "forward"
 
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            self.snake.update(self.walls)
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.apple.new_random()
                 score += 1
+
+            self.snake.update(self.walls)
             textsurface = myfont.render('Score: {}'.format(score), False,
                                         ui.WHITE)
 
@@ -55,7 +59,6 @@ class BFS(game.Game):
             self.screen.fill(ui.BLACK)
             self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
             self.walls.draw(self.screen)
-            self.draw_grid()
             self.snake.draw(self.screen)
             self.apple.draw(self.screen)
             pygame.display.flip()
@@ -71,9 +74,6 @@ class BFS(game.Game):
         for i in range(ui.Y_GRID):
             self.grid_map[i][0] = False
             self.grid_map[i][-1] = False
-        # for idx in range(len(self.snake.body_list)):
-        #     pos = self.snake.get_position(idx)
-        #     self.grid_map[pos[1]][pos[0]] = False
 
     def BFS(self):
         height = ui.Y_GRID
@@ -82,6 +82,8 @@ class BFS(game.Game):
         end = self.apple.get_position()
         queue = deque([[start]])
         visited = set((start))
+        for i in range(1, len(self.snake.body_list)):
+            visited.add((self.snake.get_position(i)))
         while queue:
             path = queue.popleft()
             nextp = path[-1]
@@ -99,12 +101,11 @@ class BFS(game.Game):
                 if ingrid and (not isvisited) and self.grid_map[yn][xn]:
                     queue.append(path + [(neighbor[0], neighbor[1])])
                     visited.add((neighbor[0], neighbor[1]))
-        print("PATH NOT FOUND !")
 
-    def get_moves_bfs(self, path):
+    def get_moves_from_path(self, path):
         direction = self.snake.speed
         self.moves = []
-        if len(path) > 1:
+        if path and len(path) > 1:
             current = path[0]
             for place in path[1:]:
                 if place[0] - current[0] == 1:
