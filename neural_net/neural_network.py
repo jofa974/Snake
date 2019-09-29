@@ -9,11 +9,10 @@ class NeuralNetwork():
         self.hidden_nb = 5
 
         self.nb_neurons = self.input_nb + self.hidden_nb + self.output_nb
-        self.weights_1 = np.random.randn(self.input_nb, self.hidden_nb)
-        self.weights_2 = np.random.randn(self.hidden_nb, self.output_nb)
+        self.weights_1 = np.random.randn(self.hidden_nb, self.input_nb)
+        self.weights_2 = np.random.randn(self.output_nb, self.hidden_nb)
         self.act = np.zeros(self.nb_neurons)
-        self.x = np.zeros(self.nb_neurons)
-        self.y = np.zeros(self.nb_neurons)
+        self.bias = np.random.randn(self.nb_neurons)
 
     # def draw(self):
     #     surface = pygame.display.set_mode((2 * ui.WIDTH, ui.HEIGHT))
@@ -33,6 +32,9 @@ class NeuralNetwork():
     def plot(self):
         max_r = max(self.input_nb, self.output_nb, self.hidden_nb)
 
+        self.x = np.zeros(self.nb_neurons)
+        self.y = np.zeros(self.nb_neurons)
+
         self.x_input = np.zeros(self.input_nb)
         self.x_hidden = np.ones(self.hidden_nb)
         self.x_output = np.ones(self.output_nb) * 2
@@ -44,11 +46,12 @@ class NeuralNetwork():
         plt.figure()
         ms = 60
         col = 'k'
-        plt.scatter(self.x, self.y, s=ms)
+
+        plt.scatter(self.x, self.y, c=self.act, s=ms)
 
         for i in range(self.input_nb):
             for j in range(self.hidden_nb):
-                if self.weights_1[i, j] > 0:
+                if self.weights_1[j, i] > 0:
                     plt.plot((self.x[i], self.x[self.input_nb + j]),
                              (self.y[i], self.y[self.input_nb + j]), 'r')
                 else:
@@ -57,7 +60,7 @@ class NeuralNetwork():
 
         for i in range(self.hidden_nb):
             for j in range(self.output_nb):
-                if self.weights_2[i, j] > 0:
+                if self.weights_2[j, i] > 0:
                     plt.plot((self.x[self.input_nb + i],
                               self.x[self.input_nb + self.hidden_nb + j]),
                              (self.y[self.input_nb + i],
@@ -169,4 +172,6 @@ class NeuralNetwork():
 
 if __name__ == '__main__':
     nn = NeuralNetwork()
+    input_data = np.random.randn(6)
+    nn.activate(input_data)
     nn.plot()
