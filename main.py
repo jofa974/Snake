@@ -32,18 +32,20 @@ def main(args):
             show_stats(all_score)
         pygame.quit()
     elif args.nnga:
-        if args.interactive:
-            game = nn_ga.NN_GA(display=True)
-            nb_games = 1
-            game.play(100)
-        else:
-            nb_games = 100
-            all_score = np.zeros(nb_games)
-            game = nn_ga.NN_GA(display=False)
-            for i in range(nb_games):
-                score = game.play()
-                all_score[i] = score
-            show_stats(all_score)
+        game = nn_ga.NN_GA(display=True)
+        nb_games = 1
+        game.play(10000)
+        pygame.quit()
+    elif args.nnga_learn:
+        nb_games = 3
+        nb_gen = 10
+        #all_score = np.zeros(nb_games)
+        for i in range(nb_gen):
+            for j in range(nb_games):
+                game = nn_ga.NN_GA(display=False, gen=i, nb=j)
+                score = game.play(100)
+        #all_score[i] = score
+        #show_stats(all_score)
         pygame.quit()
     else:
         raise NotImplementedError(
@@ -55,6 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--human', action="store_true", help='Human play mode')
     parser.add_argument('--bfs', action="store_true", help='BFS play mode')
     parser.add_argument('--nnga', action="store_true", help='Neural Network Genetic algo play mode')
+    parser.add_argument('--nnga_learn', action="store_true", help='Neural Network Genetic algo learning mode')
     parser.add_argument('--random',
                         action="store_true",
                         help='RANDOM play mode')
