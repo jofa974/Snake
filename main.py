@@ -11,10 +11,12 @@ def main(args):
     if args.human:
         game = human.Human()
         game.play()
+        pygame.quit()
     elif args.random:
         for _ in range(3):
             game = random.Random()
             game.play()
+            pygame.quit()
     elif args.bfs:
         if args.interactive:
             game = bfs.BFS(display=True)

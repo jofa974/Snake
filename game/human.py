@@ -58,4 +58,3 @@ class Human(Game):
         pygame.display.flip()
 
         time.sleep(2)
-        pygame.quit()

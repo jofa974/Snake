@@ -47,4 +47,3 @@ class Random(game.Game):
             self.walls.draw(self.screen)
             pygame.display.flip()
 
-        pygame.quit()
