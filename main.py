@@ -32,7 +32,7 @@ def main(args):
             show_stats(all_score)
         pygame.quit()
     elif args.nnga:
-        game = nn_ga.NN_GA(display=True)
+        game = nn_ga.NN_GA(display=True, gen_id=args.nnga)
         nb_games = 1
         game.play(10000, dump=False)
         pygame.quit()
