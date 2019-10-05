@@ -23,15 +23,19 @@ class NN_GA(game.Game):
             self.grid.append(grid)
         self.nn = NeuralNetwork()
 
-    def play(self):
+    def play(self, max_move):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
         fitness = 0
+        nb_moves = 0
+
         if self.display:
             pygame.display.set_caption('Snake: Neural Network mode')
             myfont = pygame.font.SysFont('Comic Sans MS', 30)
-        while not self.snake.dead:
+
+        while not self.snake.dead and nb_moves < max_move:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.snake.dead = True
@@ -72,10 +76,13 @@ class NN_GA(game.Game):
                                            ui.WHITE)
                 fitness_text = myfont.render('Fitness: {}'.format(fitness),
                                              False, ui.WHITE)
+                moves_text = myfont.render('Moves: {}'.format(nb_moves),
+                                           False, ui.WHITE)
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(score_text, (ui.WIDTH + 50, 50))
                 self.screen.blit(fitness_text, (ui.WIDTH + 150, 50))
+                self.screen.blit(moves_text, (ui.WIDTH + 350, 50))
                 self.walls.draw(self.screen)
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
@@ -84,6 +91,7 @@ class NN_GA(game.Game):
                 pygame.display.flip()
                 time.sleep(1.0 / 1000.0)
 
+            nb_moves += 1
         return score
 
     def make_grid_map(self):

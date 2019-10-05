@@ -33,7 +33,7 @@ def main(args):
         if args.interactive:
             game = nn_ga.NN_GA(display=True)
             nb_games = 1
-            game.play()
+            game.play(100)
         else:
             nb_games = 100
             all_score = np.zeros(nb_games)
