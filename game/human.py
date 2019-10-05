@@ -25,7 +25,9 @@ class Human(Game):
                 if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
                     self.snake.change_direction(event.key)
 
-            self.snake.update()
+            self.snake.move()
+
+            self.snake.detect_collisions()
 
             if self.snake.eat(self.apple):
                 self.snake.grow()

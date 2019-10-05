@@ -44,6 +44,8 @@ class Snake():
         for i in range(len(self.body_list) - 1, 0, -1):
             self.body_list[i].rect = self.body_list[i - 1].rect.copy()
 
+    def move(self):
+        self.update()
         self.body_list[0].rect.move_ip(self.speed)
 
     def detect_collisions(self):

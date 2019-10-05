@@ -47,15 +47,15 @@ class BFS(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            self.snake.update()
+            self.snake.move()
+
+            self.snake.detect_collisions()
 
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
                 self.apple.new_random()
                 score += 1
-
-            self.snake.detect_collisions()
 
             if self.display:
                 textsurface = myfont.render('Score: {}'.format(score),
