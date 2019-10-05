@@ -8,17 +8,16 @@ from pathlib import Path
 
 matplotlib.use("Agg")
 
+
 class NeuralNetwork():
-    def __init__(self):
+    def __init__(self, gen_id=(-1, -1)):
         self.input_nb = 6
         self.output_nb = 3
         self.hidden_nb = 5
 
         self.nb_neurons = self.input_nb + self.hidden_nb + self.output_nb
-        self.weights_1 = np.random.randn(self.hidden_nb, self.input_nb)
-        self.weights_2 = np.random.randn(self.output_nb, self.hidden_nb)
+        self.load_data(gen_id)
         self.act = np.zeros(self.nb_neurons)
-        self.bias = np.random.randn(self.nb_neurons)
 
     def sigmoid(self, s):
         # activation function
@@ -90,13 +89,24 @@ class NeuralNetwork():
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         return surf
 
-    def dump_data(self, gen, nb, fitness):
-        file_path = Path('ga_data/data_{}_{}.pickle'.format(gen, nb))
+    def dump_data(self, gen_id, fitness):
+        file_path = Path('genetic_data/data_{}_{}.pickle'.format(
+            gen_id[0], gen_id[1]))
         with open(file_path, 'wb') as f:
-            pickle.dump(fitness, f)
-            pickle.dump(self.weights_1, f)
-            pickle.dump(self.weights_2, f)
-            pickle.dump(self.bias, f)
+            pickle.dump([fitness, self.weights_1, self.weights_2, self.bias],
+                        f)
+
+    def load_data(self, gen_id):
+        file_path = Path('genetic_data/data_{}_{}.pickle'.format(
+            gen_id[0], gen_id[1]))
+        try:
+            f = open(file_path, 'rb')
+            fitness, self.weights_1, self.weights_2, self.bias = pickle.load(f)
+        except IOError:
+            print("Initialising random NN")
+            self.weights_1 = np.random.randn(self.hidden_nb, self.input_nb)
+            self.weights_2 = np.random.randn(self.output_nb, self.hidden_nb)
+            self.bias = np.random.randn(self.nb_neurons)
 
     @property
     def weights(self):

@@ -34,7 +34,7 @@ def main(args):
     elif args.nnga:
         game = nn_ga.NN_GA(display=True)
         nb_games = 1
-        game.play(10000)
+        game.play(10000, dump=False)
         pygame.quit()
     elif args.nnga_learn:
         nb_games = 3
@@ -42,8 +42,8 @@ def main(args):
         #all_score = np.zeros(nb_games)
         for i in range(nb_gen):
             for j in range(nb_games):
-                game = nn_ga.NN_GA(display=False, gen=i, nb=j)
-                score = game.play(100)
+                game = nn_ga.NN_GA(display=False, gen_id=(i, j))
+                score = game.play(100, dump=True)
         #all_score[i] = score
         #show_stats(all_score)
         pygame.quit()
@@ -56,8 +56,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Snake game options')
     parser.add_argument('--human', action="store_true", help='Human play mode')
     parser.add_argument('--bfs', action="store_true", help='BFS play mode')
-    parser.add_argument('--nnga', action="store_true", help='Neural Network Genetic algo play mode')
-    parser.add_argument('--nnga_learn', action="store_true", help='Neural Network Genetic algo learning mode')
+    parser.add_argument('--nnga',
+                        nargs='+',
+                        default=[-1, -1],
+                        type=int,
+                        help='Neural Network Genetic algo play mode')
+    parser.add_argument('--nnga_learn',
+                        action="store_true",
+                        help='Neural Network Genetic algo learning mode')
     parser.add_argument('--random',
                         action="store_true",
                         help='RANDOM play mode')

@@ -10,14 +10,13 @@ import matplotlib.pyplot as plt
 
 
 class NN_GA(game.Game):
-    def __init__(self, display, gen=0, nb=0):
+    def __init__(self, display, gen_id=(-1, -1)):
         super().__init__()
         self.display = display
-        self.nn = NeuralNetwork()
-        self.gen = gen
-        self.nb = nb
+        self.nn = NeuralNetwork(gen_id)
+        self.gen_id = gen_id
 
-    def play(self, max_move):
+    def play(self, max_move, dump=False):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
@@ -88,7 +87,9 @@ class NN_GA(game.Game):
 
             nb_moves += 1
 
-        self.nn.dump_data(self.gen, self.nb, fitness)
+        if dump:
+            self.nn.dump_data(self.gen_id, fitness)
+
         return score
 
     def get_move_from_direction(self, direction):
