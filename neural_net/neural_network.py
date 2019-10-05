@@ -1,10 +1,12 @@
 import matplotlib
-matplotlib.use("Agg")
 import matplotlib.backends.backend_agg as agg
 import numpy as np
 import matplotlib.pyplot as plt
 import pygame
+import pickle
+from pathlib import Path
 
+matplotlib.use("Agg")
 
 class NeuralNetwork():
     def __init__(self):
@@ -17,7 +19,6 @@ class NeuralNetwork():
         self.weights_2 = np.random.randn(self.output_nb, self.hidden_nb)
         self.act = np.zeros(self.nb_neurons)
         self.bias = np.random.randn(self.nb_neurons)
-        self.fig = plt.figure(figsize=[5, 5], dpi=100)
 
     def sigmoid(self, s):
         # activation function
@@ -35,7 +36,7 @@ class NeuralNetwork():
         self.act_output = self.sigmoid(
             np.dot(self.weights_2, self.act_hidden) + self.bias_output)
 
-    def plot(self):
+    def plot(self, fig):
         left, right, bottom, top = .1, .9, .1, .9,
         layer_sizes = [self.input_nb, self.hidden_nb, self.output_nb]
         v_spacing = (top - bottom) / float(max(layer_sizes))
@@ -81,13 +82,21 @@ class NeuralNetwork():
                     ax.add_artist(line)
                     i += 1
         ax.set_aspect('equal', adjustable='box')
-        canvas = agg.FigureCanvasAgg(self.fig)
+        canvas = agg.FigureCanvasAgg(fig)
         canvas.draw()
         renderer = canvas.get_renderer()
         raw_data = renderer.tostring_rgb()
         size = canvas.get_width_height()
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         return surf
+
+    def dump_data(self, gen, nb, fitness):
+        file_path = Path('ga_data/data_{}_{}.pickle'.format(gen, nb))
+        with open(file_path, 'wb') as f:
+            pickle.dump(fitness, f)
+            pickle.dump(self.weights_1, f)
+            pickle.dump(self.weights_2, f)
+            pickle.dump(self.bias, f)
 
     @property
     def weights(self):

@@ -2,26 +2,20 @@ import time
 import pygame
 import ui
 import game
-import itertools
 import numpy as np
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.neural_network import NeuralNetwork
+import matplotlib.pyplot as plt
 
 
 class NN_GA(game.Game):
-    def __init__(self, display):
+    def __init__(self, display, gen=0, nb=0):
         super().__init__()
-        self.grid = []
         self.display = display
-        for y in range(ui.Y_GRID):
-            grid = []
-            for x in range(ui.X_GRID):
-                grid.append(
-                    pygame.Rect(x * ui.BASE_SIZE, y * ui.BASE_SIZE,
-                                ui.BASE_SIZE, ui.BASE_SIZE))
-            self.grid.append(grid)
         self.nn = NeuralNetwork()
+        self.gen = gen
+        self.nb = nb
 
     def play(self, max_move):
         self.apple = Apple()
@@ -33,6 +27,7 @@ class NN_GA(game.Game):
         if self.display:
             pygame.display.set_caption('Snake: Neural Network mode')
             myfont = pygame.font.SysFont('Comic Sans MS', 30)
+            fig = plt.figure(figsize=[5, 5], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
 
@@ -86,26 +81,15 @@ class NN_GA(game.Game):
                 self.walls.draw(self.screen)
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
-                surf = self.nn.plot()
+                surf = self.nn.plot(fig)
                 self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
                 pygame.display.flip()
                 time.sleep(1.0 / 1000.0)
 
             nb_moves += 1
+
+        self.nn.dump_data(self.gen, self.nb, fitness)
         return score
-
-    def make_grid_map(self):
-        self.grid_map = [[True for _ in range(ui.X_GRID)]
-                         for _ in range(ui.Y_GRID)]
-        self.grid_map[0][:] = [False for _ in range(ui.X_GRID)]
-        self.grid_map[-1][:] = [False for _ in range(ui.X_GRID)]
-        for i in range(ui.Y_GRID):
-            self.grid_map[i][0] = False
-            self.grid_map[i][-1] = False
-
-    def draw_grid(self):
-        for rect in itertools.chain.from_iterable(self.grid):
-            pygame.draw.rect(self.screen, ui.BROWN, rect, 3)
 
     def get_move_from_direction(self, direction):
         if direction == 'forward':
