@@ -40,12 +40,13 @@ class Snake():
                                 int(HEIGHT / 2))
             self.body_list.append(body)
 
-    def update(self, walls):
+    def update(self):
         for i in range(len(self.body_list) - 1, 0, -1):
             self.body_list[i].rect = self.body_list[i - 1].rect.copy()
 
         self.body_list[0].rect.move_ip(self.speed)
 
+    def detect_collisions(self):
         # Did this update cause us to hit a wall?
         if self.is_collision_wall():
             self.dead = True

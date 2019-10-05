@@ -25,12 +25,14 @@ class Human(Game):
                 if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
                     self.snake.change_direction(event.key)
 
+            self.snake.update()
+
             if self.snake.eat(self.apple):
                 self.snake.grow()
+                self.snake.update()
                 self.apple.new_random()
                 score += 1
 
-            self.snake.update(self.walls)
             textsurface = myfont.render('Score: {}'.format(score), False,
                                         ui.WHITE)
 
