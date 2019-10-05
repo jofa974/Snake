@@ -50,11 +50,11 @@ class Snake():
 
     def detect_collisions(self):
         # Did this update cause us to hit a wall?
-        if self.is_collision_wall():
+        if self.is_collision_wall(self.get_position(0)):
             self.dead = True
 
         # Did this update cause us to hit a body part
-        if self.is_collision_body():
+        if self.is_collision_body(self.get_position(0)):
             self.dead = True
 
     def eat(self, target):
@@ -126,15 +126,91 @@ class Snake():
             if self.speed == (0, -BASE_SPEED):
                 return pygame.K_LEFT, (-BASE_SPEED, 0)
 
-    def is_collision_wall(self):
-        x_head, y_head = self.get_position(0)
+    def is_collision_wall(self, pos):
+        x_head, y_head = pos
         return x_head == 0 or x_head == X_GRID-1 \
             or y_head == 0 or y_head == Y_GRID-1
 
-    def is_collision_body(self):
-        x_head, y_head = self.get_position(0)
+    def is_collision_body(self, pos):
+        x_head, y_head = pos
         for idx in range(1, len(self.body_list)):
             x_b, y_b = self.get_position(idx)
             if x_b == x_head and y_b == y_head:
                 return True
         return False
+
+    def get_distance_to_apple(self, snake_pos, apple, norm=1):
+        apple_pos = apple.get_position()
+        dist = sum(
+            [pow(abs(snake_pos[i] - apple_pos[i]), norm) for i in range(2)])
+        dist = pow(dist, 1. / norm)
+        return dist
+
+    def is_clear_ahead(self):
+        snake_pos = self.get_position(0)
+        speed = self.speed
+        next_pos = [snake_pos[i] + speed[i] for i in range(2)]
+        return not self.is_collision_wall(next_pos) \
+            and not self.is_collision_body(next_pos)
+
+    def get_next_pos_left(self):
+        snake_pos = self.get_position(0)
+        speed = self.speed
+        if speed[0] > 0:
+            return (snake_pos[0], snake_pos[1] - BASE_SPEED)
+        elif speed[0] < 0:
+            return (snake_pos[0], snake_pos[1] + BASE_SPEED)
+        elif speed[1] > 0:
+            return (snake_pos[0] + BASE_SPEED, snake_pos[1])
+        elif speed[1] < 0:
+            return (snake_pos[0] - BASE_SPEED, snake_pos[1])
+
+    def get_next_pos_right(self):
+        snake_pos = self.get_position(0)
+        speed = self.speed
+        if speed[0] > 0:
+            return (snake_pos[0], snake_pos[1] + BASE_SPEED)
+        elif speed[0] < 0:
+            return (snake_pos[0], snake_pos[1] - BASE_SPEED)
+        elif speed[1] > 0:
+            return (snake_pos[0] - BASE_SPEED, snake_pos[1])
+        elif speed[1] < 0:
+            return (snake_pos[0] + BASE_SPEED, snake_pos[1])
+
+    def is_clear_left(self):
+        next_pos = self.get_next_pos_left()
+        return not self.is_collision_wall(next_pos) \
+            and not self.is_collision_body(next_pos)
+
+    def is_clear_right(self):
+        next_pos = self.get_next_pos_right()
+        return not self.is_collision_wall(next_pos) \
+            and not self.is_collision_body(next_pos)
+
+    def is_food_ahead(self, apple):
+        snake_pos = self.get_position(0)
+        current_dist = self.get_distance_to_apple(snake_pos, apple)
+
+        speed = self.speed
+        next_pos = [snake_pos[i] + speed[i] for i in range(2)]
+        next_dist = self.get_distance_to_apple(next_pos, apple)
+
+        return next_dist < current_dist
+
+    def is_food_left(self, apple):
+        snake_pos = self.get_position(0)
+        current_dist = self.get_distance_to_apple(snake_pos, apple)
+
+        next_pos = self.get_next_pos_left()
+        next_dist = self.get_distance_to_apple(next_pos, apple)
+
+        return next_dist < current_dist
+
+    def is_food_right(self, apple):
+        snake_pos = self.get_position(0)
+        current_dist = self.get_distance_to_apple(snake_pos, apple)
+
+        next_pos = self.get_next_pos_right()
+        next_dist = self.get_distance_to_apple(next_pos, apple)
+
+        return next_dist < current_dist

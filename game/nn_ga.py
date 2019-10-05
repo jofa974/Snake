@@ -35,7 +35,8 @@ class NN_GA(game.Game):
                     self.snake.dead = True
 
             # Feed the NN with input data
-            input_data = np.random.randn(6)
+            # input_data = np.random.randn(6)
+            input_data = self.get_input_data()
             self.nn.forward(input_data)
 
             # Take decision
@@ -47,9 +48,9 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            prev_dist = self.get_distance_to_apple(norm=1)
+            prev_dist = self.snake.get_distance_to_apple(self.snake.get_position(0), self.apple, norm=1)
             self.snake.move()
-            new_dist = self.get_distance_to_apple(norm=1)
+            new_dist = self.snake.get_distance_to_apple(self.snake.get_position(0), self.apple, norm=1)
 
             if new_dist < prev_dist:
                 fitness += 2
@@ -70,8 +71,8 @@ class NN_GA(game.Game):
                                            ui.WHITE)
                 fitness_text = myfont.render('Fitness: {}'.format(fitness),
                                              False, ui.WHITE)
-                moves_text = myfont.render('Moves: {}'.format(nb_moves),
-                                           False, ui.WHITE)
+                moves_text = myfont.render('Moves: {}'.format(nb_moves), False,
+                                           ui.WHITE)
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(score_text, (ui.WIDTH + 50, 50))
@@ -114,9 +115,13 @@ class NN_GA(game.Game):
             if self.snake.speed[1] < 0:
                 return pygame.K_RIGHT
 
-    def get_distance_to_apple(self, norm=1):
-        apple_pos = self.apple.get_position()
-        snake_pos = self.snake.get_position(0)
-        dist = sum([pow(abs(snake_pos[i]-apple_pos[i]), norm) for i in range(2)])
-        dist = pow(dist, 1./norm)
-        return dist
+    def get_input_data(self):
+        input_data = [
+            self.snake.is_clear_ahead(),
+            self.snake.is_clear_left(),
+            self.snake.is_clear_right(),
+            self.snake.is_food_ahead(self.apple),
+            self.snake.is_food_left(self.apple),
+            self.snake.is_food_right(self.apple)
+        ]
+        return input_data
