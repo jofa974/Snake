@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
 
 
 class NeuralNetwork():
@@ -18,6 +17,11 @@ class NeuralNetwork():
     def sigmoid(self, s):
         # activation function
         return 1 / (1 + np.exp(-s))
+
+    def decide(self):
+        decisions = ["left", "right", "forward"]
+        idx_max = np.argmax(self.act_output)
+        return decisions[idx_max]
 
     def activate(self, input_data):
         self.act_input = input_data
@@ -177,4 +181,5 @@ if __name__ == '__main__':
     nn = NeuralNetwork()
     input_data = np.random.randn(6)
     nn.activate(input_data)
+    print(nn.act)
     nn.plot()
