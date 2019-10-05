@@ -37,7 +37,7 @@ class NN_GA(game.Game):
 
             # Feed the NN with input data
             input_data = np.random.randn(6)
-            self.nn.activate(input_data)
+            self.nn.forward(input_data)
 
             # Take decision
             next_direction = self.nn.decide_direction()
@@ -48,12 +48,13 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
+            self.snake.update()
+
             if self.snake.eat(self.apple):
                 self.snake.grow()
+                self.snake.update()
                 self.apple.new_random()
                 score += 1
-
-            self.snake.update(self.walls)
 
             if self.display:
                 textsurface = myfont.render('Score: {}'.format(score), False,
@@ -65,7 +66,7 @@ class NN_GA(game.Game):
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
                 surf = self.nn.plot()
-                self.screen.blit(surf, (6*ui.WIDTH/5, ui.HEIGHT/5))
+                self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
                 pygame.display.flip()
                 time.sleep(50.0 / 1000.0)
 

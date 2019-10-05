@@ -28,7 +28,7 @@ class NeuralNetwork():
         idx_max = np.argmax(self.act_output)
         return decisions[idx_max]
 
-    def activate(self, input_data):
+    def forward(self, input_data):
         self.act_input = input_data
         self.act_hidden = self.sigmoid(
             np.dot(self.weights_1, self.act_input) + self.bias_hidden)
@@ -193,6 +193,6 @@ class NeuralNetwork():
 if __name__ == '__main__':
     nn = NeuralNetwork()
     input_data = np.random.randn(6)
-    nn.activate(input_data)
+    nn.forward(input_data)
     print(nn.act)
     nn.plot()
