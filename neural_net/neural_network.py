@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 
 class NeuralNetwork():
@@ -14,10 +15,6 @@ class NeuralNetwork():
         self.act = np.zeros(self.nb_neurons)
         self.bias = np.random.randn(self.nb_neurons)
 
-    # def draw(self):
-    #     surface = pygame.display.set_mode((2 * ui.WIDTH, ui.HEIGHT))
-    #     pygame.draw.circle(surface, color, center, radius)
-
     def sigmoid(self, s):
         # activation function
         return 1 / (1 + np.exp(-s))
@@ -30,48 +27,54 @@ class NeuralNetwork():
             np.dot(self.weights_2, self.act_hidden) + self.bias_output)
 
     def plot(self):
-        max_r = max(self.input_nb, self.output_nb, self.hidden_nb)
-
-        self.x = np.zeros(self.nb_neurons)
-        self.y = np.zeros(self.nb_neurons)
-
-        self.x_input = np.zeros(self.input_nb)
-        self.x_hidden = np.ones(self.hidden_nb)
-        self.x_output = np.ones(self.output_nb) * 2
-
-        self.y_input = np.linspace(1, max_r, self.input_nb)
-        self.y_hidden = np.linspace(1, max_r, self.hidden_nb)
-        self.y_output = np.linspace(1, max_r, self.output_nb)
+        left, right, bottom, top = .1, .9, .1, .9,
+        layer_sizes = [self.input_nb, self.hidden_nb, self.output_nb]
+        v_spacing = (top - bottom) / float(max(layer_sizes))
+        h_spacing = (right - left) / float(len(layer_sizes) - 1)
 
         plt.figure()
-        ms = 60
-        col = 'k'
+        ax = plt.gca()
 
-        plt.scatter(self.x, self.y, c=self.act, s=ms)
+        x = []
+        y = []
+        # Nodes
+        for n, layer_size in enumerate(layer_sizes):
+            layer_top = v_spacing * (layer_size - 1) / 2. + (top + bottom) / 2.
+            for m in range(layer_size):
+                x.append(n * h_spacing + left)
+                y.append(layer_top - m * v_spacing)
 
-        for i in range(self.input_nb):
-            for j in range(self.hidden_nb):
-                if self.weights_1[j, i] > 0:
-                    plt.plot((self.x[i], self.x[self.input_nb + j]),
-                             (self.y[i], self.y[self.input_nb + j]), 'r')
-                else:
-                    plt.plot((self.x[i], self.x[self.input_nb + j]),
-                             (self.y[i], self.y[self.input_nb + j]), 'b')
-
-        for i in range(self.hidden_nb):
-            for j in range(self.output_nb):
-                if self.weights_2[j, i] > 0:
-                    plt.plot((self.x[self.input_nb + i],
-                              self.x[self.input_nb + self.hidden_nb + j]),
-                             (self.y[self.input_nb + i],
-                              self.y[self.input_nb + self.hidden_nb + j]), 'r')
-                else:
-                    plt.plot((self.x[self.input_nb + i],
-                              self.x[self.input_nb + self.hidden_nb + j]),
-                             (self.y[self.input_nb + i],
-                              self.y[self.input_nb + self.hidden_nb + j]), 'b')
-
+        sc = ax.scatter(x, y, s=100, c=self.act)
+        plt.colorbar(sc)
+        weights = self.weights
+        # Edges
+        for n, (layer_size_a, layer_size_b) in enumerate(
+                zip(layer_sizes[:-1], layer_sizes[1:])):
+            layer_top_a = v_spacing * (layer_size_a - 1) / 2. + (top +
+                                                                 bottom) / 2.
+            layer_top_b = v_spacing * (layer_size_b - 1) / 2. + (top +
+                                                                 bottom) / 2.
+            i = 0
+            for m in range(layer_size_a):
+                for o in range(layer_size_b):
+                    if weights[i] < 0:
+                        color = 'r'
+                    else:
+                        color = 'b'
+                    line = plt.Line2D(
+                        [n * h_spacing + left, (n + 1) * h_spacing + left], [
+                            layer_top_a - m * v_spacing,
+                            layer_top_b - o * v_spacing
+                        ],
+                        c=color)
+                    ax.add_artist(line)
+                    i += 1
+        ax.set_aspect('equal', adjustable='box')
         plt.show()
+
+    @property
+    def weights(self):
+        return np.concatenate((self.weights_1, self.weights_2), axis=None)
 
     @property
     def act_input(self):
