@@ -49,7 +49,16 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            self.snake.update()
+            prev_dist = self.get_distance_to_apple(norm=1)
+            self.snake.move()
+            new_dist = self.get_distance_to_apple(norm=1)
+
+            if new_dist < prev_dist:
+                fitness += 2
+            else:
+                fitness -= 3
+
+            self.snake.detect_collisions()
 
             if self.snake.eat(self.apple):
                 self.snake.grow()
@@ -66,14 +75,14 @@ class NN_GA(game.Game):
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(score_text, (ui.WIDTH + 50, 50))
-                self.screen.blit(fitness_text, (ui.WIDTH + 100, 50))
+                self.screen.blit(fitness_text, (ui.WIDTH + 150, 50))
                 self.walls.draw(self.screen)
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
                 surf = self.nn.plot()
                 self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
                 pygame.display.flip()
-                time.sleep(50.0 / 1000.0)
+                time.sleep(1.0 / 1000.0)
 
         return score
 
@@ -111,3 +120,10 @@ class NN_GA(game.Game):
                 return pygame.K_LEFT
             if self.snake.speed[1] < 0:
                 return pygame.K_RIGHT
+
+    def get_distance_to_apple(self, norm=1):
+        apple_pos = self.apple.get_position()
+        snake_pos = self.snake.get_position(0)
+        dist = sum([pow(abs(snake_pos[i]-apple_pos[i]), norm) for i in range(2)])
+        dist = pow(dist, 1./norm)
+        return dist

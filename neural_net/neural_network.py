@@ -56,7 +56,7 @@ class NeuralNetwork():
                 y.append(layer_top - m * v_spacing)
 
         sc = ax.scatter(x, y, s=100, c=self.act)
-        plt.colorbar(sc)
+        # plt.colorbar(sc)
         weights = self.weights
         # Edges
         for n, (layer_size_a, layer_size_b) in enumerate(
