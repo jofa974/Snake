@@ -18,8 +18,8 @@ class NeuralNetwork():
         # activation function
         return 1 / (1 + np.exp(-s))
 
-    def decide(self):
-        decisions = ["left", "right", "forward"]
+    def decide_direction(self):
+        decisions = ['left', 'right', 'forward']
         idx_max = np.argmax(self.act_output)
         return decisions[idx_max]
 
