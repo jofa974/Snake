@@ -27,6 +27,7 @@ class NN_GA(game.Game):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
+        fitness = 0
         if self.display:
             pygame.display.set_caption('Snake: Neural Network mode')
             myfont = pygame.font.SysFont('Comic Sans MS', 30)
@@ -55,13 +56,17 @@ class NN_GA(game.Game):
                 self.snake.update()
                 self.apple.new_random()
                 score += 1
+                fitness += 10
 
             if self.display:
-                textsurface = myfont.render('Score: {}'.format(score), False,
-                                            ui.WHITE)
+                score_text = myfont.render('Score: {}'.format(score), False,
+                                           ui.WHITE)
+                fitness_text = myfont.render('Fitness: {}'.format(fitness),
+                                             False, ui.WHITE)
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
-                self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
+                self.screen.blit(score_text, (ui.WIDTH + 50, 50))
+                self.screen.blit(fitness_text, (ui.WIDTH + 100, 50))
                 self.walls.draw(self.screen)
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
