@@ -55,7 +55,7 @@ class NeuralNetwork():
                 x.append(n * h_spacing + left)
                 y.append(layer_top - m * v_spacing)
 
-        sc = ax.scatter(x, y, s=100, c=self.act)
+        ax.scatter(x, y, s=100, c=self.act)
         # plt.colorbar(sc)
         weights = self.weights
         # Edges
@@ -100,8 +100,8 @@ class NeuralNetwork():
         file_path = Path('genetic_data/data_{}_{}.pickle'.format(
             gen_id[0], gen_id[1]))
         try:
-            print("Loading generation {} id {}".format(gen_id[0], gen_id[1]))
             f = open(file_path, 'rb')
+            print("Loading generation {} id {}".format(gen_id[0], gen_id[1]))
             fitness, self.weights_1, self.weights_2, self.bias = pickle.load(f)
         except IOError:
             print("Initialising random NN")

@@ -31,14 +31,9 @@ def main(args):
                 all_score[i] = score
             show_stats(all_score)
         pygame.quit()
-    elif args.nnga:
-        game = nn_ga.NN_GA(display=True, gen_id=args.nnga)
-        nb_games = 1
-        game.play(10000, dump=False)
-        pygame.quit()
     elif args.nnga_learn:
-        nb_games = 3
-        nb_gen = 10
+        nb_games = 10
+        nb_gen = 15
         #all_score = np.zeros(nb_games)
         for i in range(nb_gen):
             for j in range(nb_games):
@@ -46,6 +41,11 @@ def main(args):
                 score = game.play(100, dump=True)
         #all_score[i] = score
         #show_stats(all_score)
+        pygame.quit()
+    elif args.nnga:
+        game = nn_ga.NN_GA(display=True, gen_id=args.nnga)
+        nb_games = 1
+        game.play(10000, dump=False)
         pygame.quit()
     else:
         raise NotImplementedError(
