@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 
 
 class NN_GA(game.Game):
-    def __init__(self, display, gen_id=(-1, -1)):
+    def __init__(self, display, gen_id=(-1, -1), dna=None):
         super().__init__()
         self.display = display
-        self.nn = NeuralNetwork(gen_id)
+        self.nn = NeuralNetwork(gen_id, dna)
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False):
