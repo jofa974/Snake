@@ -13,7 +13,6 @@ def select_best_parents(gen, nb_best):
         d = pickle.load(open(f, "rb"))
         data[d[0]] = d[1:]
     data = OrderedDict(sorted(data.items(), reverse=True))
-
     return list(data.values())[:nb_best]
 
 
@@ -31,13 +30,17 @@ def cross_over(best_parents):
         b = np.concatenate(
             (par1[2][0:len(par1[2]) // 2], par2[2][len(par2[2]) // 2:]),
             axis=None)
-
         children.append((w1, w2, b))
     return children
+
+
+def generate_new_population(gen, nb_best=4):
+    best_parents = select_best_parents(gen, nb_best)
+    children = cross_over(best_parents)
+    return best_parents.append(children)
 
 
 if __name__ == '__main__':
     nb_best = 4
     best_parents = list(select_best_parents(8, 4))
     children = cross_over(best_parents)
-    
