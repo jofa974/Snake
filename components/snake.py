@@ -27,12 +27,12 @@ class SnakePart(pygame.sprite.Sprite):
 
 class Snake():
     """Snake player"""
-
-    def __init__(self):
-        self.speed = (BASE_SPEED, 0)
+    def __init__(self, x=int(X_GRID / 2), y=int(Y_GRID / 2),
+                 s=(BASE_SPEED, 0)):
+        self.speed = s
         self.dead = False
         head = SnakePart()
-        head.rect.center = (int(WIDTH / 2), int(HEIGHT / 2))
+        head.rect.center = (x * BASE_SIZE, y * BASE_SIZE)
         self.body_list = [head]
         for i in range(1, 3):
             body = SnakePart()
@@ -46,7 +46,10 @@ class Snake():
 
     def move(self):
         self.update()
-        self.body_list[0].rect.move_ip(self.speed)
+        # self.body_list[0].rect.move_ip(self.speed)
+        self.body_list[0].rect.center = [
+            self.body_list[0].rect.center[i] + self.speed[i] for i in range(2)
+        ]
 
     def detect_collisions(self):
         # Did this update cause us to hit a wall?
@@ -87,21 +90,21 @@ class Snake():
         """Get the coordinates of the nearest neighbors: in front, to the left and the right"""
         neighbors = {}
         if self.speed == (BASE_SPEED, 0):
-            neighbors['front'] = (position[0]+1, position[1])
-            neighbors['left'] = (position[0], position[1]-1)
-            neighbors['right'] = (position[0], position[1]+1)
+            neighbors['front'] = (position[0] + 1, position[1])
+            neighbors['left'] = (position[0], position[1] - 1)
+            neighbors['right'] = (position[0], position[1] + 1)
         if self.speed == (-BASE_SPEED, 0):
-            neighbors['front'] = (position[0]-1, position[1])
-            neighbors['left'] = (position[0], position[1]+1)
-            neighbors['right'] = (position[0], position[1]-1)
+            neighbors['front'] = (position[0] - 1, position[1])
+            neighbors['left'] = (position[0], position[1] + 1)
+            neighbors['right'] = (position[0], position[1] - 1)
         if self.speed == (0, BASE_SPEED):
-            neighbors['front'] = (position[0], position[1]+1)
-            neighbors['left'] = (position[0]+1, position[1])
-            neighbors['right'] = (position[0]-1, position[1])
+            neighbors['front'] = (position[0], position[1] + 1)
+            neighbors['left'] = (position[0] + 1, position[1])
+            neighbors['right'] = (position[0] - 1, position[1])
         if self.speed == (0, -BASE_SPEED):
-            neighbors['front'] = (position[0], position[1]-1)
-            neighbors['left'] = (position[0]-1, position[1])
-            neighbors['right'] = (position[0]+1, position[1])
+            neighbors['front'] = (position[0], position[1] - 1)
+            neighbors['left'] = (position[0] - 1, position[1])
+            neighbors['right'] = (position[0] + 1, position[1])
         return neighbors
 
     def get_next_key(self, way):
@@ -139,7 +142,7 @@ class Snake():
                 return True
         return False
 
-    def get_distance_to_apple(self, snake_pos, apple, norm=1):
+    def get_distance_to_apple(self, snake_pos, apple, norm=2):
         apple_pos = apple.get_position()
         dist = sum(
             [pow(abs(snake_pos[i] - apple_pos[i]), norm) for i in range(2)])
@@ -157,25 +160,25 @@ class Snake():
         snake_pos = self.get_position(0)
         speed = self.speed
         if speed[0] > 0:
-            return (snake_pos[0], snake_pos[1] - BASE_SPEED)
+            return (snake_pos[0], snake_pos[1] - 1)
         elif speed[0] < 0:
-            return (snake_pos[0], snake_pos[1] + BASE_SPEED)
+            return (snake_pos[0], snake_pos[1] + 1)
         elif speed[1] > 0:
-            return (snake_pos[0] + BASE_SPEED, snake_pos[1])
+            return (snake_pos[0] + 1, snake_pos[1])
         elif speed[1] < 0:
-            return (snake_pos[0] - BASE_SPEED, snake_pos[1])
+            return (snake_pos[0] - 1, snake_pos[1])
 
     def get_next_pos_right(self):
         snake_pos = self.get_position(0)
         speed = self.speed
         if speed[0] > 0:
-            return (snake_pos[0], snake_pos[1] + BASE_SPEED)
+            return (snake_pos[0], snake_pos[1] + 1)
         elif speed[0] < 0:
-            return (snake_pos[0], snake_pos[1] - BASE_SPEED)
+            return (snake_pos[0], snake_pos[1] - 1)
         elif speed[1] > 0:
-            return (snake_pos[0] - BASE_SPEED, snake_pos[1])
+            return (snake_pos[0] - 1, snake_pos[1])
         elif speed[1] < 0:
-            return (snake_pos[0] + BASE_SPEED, snake_pos[1])
+            return (snake_pos[0] + 1, snake_pos[1])
 
     def is_clear_left(self):
         next_pos = self.get_next_pos_left()
@@ -192,25 +195,33 @@ class Snake():
         current_dist = self.get_distance_to_apple(snake_pos, apple)
 
         speed = self.speed
-        next_pos = [snake_pos[i] + speed[i] for i in range(2)]
+        next_pos = tuple([snake_pos[i] + int(speed[i]/BASE_SPEED) for i in range(2)])
         next_dist = self.get_distance_to_apple(next_pos, apple)
 
         return next_dist < current_dist
 
     def is_food_left(self, apple):
         snake_pos = self.get_position(0)
-        current_dist = self.get_distance_to_apple(snake_pos, apple)
-
-        next_pos = self.get_next_pos_left()
-        next_dist = self.get_distance_to_apple(next_pos, apple)
-
-        return next_dist < current_dist
+        speed = self.speed
+        apple_pos = apple.get_position()
+        if speed[0] > 0:
+            return apple_pos[1] <= snake_pos[1]
+        if speed[0] < 0:
+            return apple_pos[1] >= snake_pos[1]
+        if speed[1] > 0:
+            return apple_pos[0] >= snake_pos[0]
+        if speed[1] < 0:
+            return apple_pos[0] <= snake_pos[0]
 
     def is_food_right(self, apple):
         snake_pos = self.get_position(0)
-        current_dist = self.get_distance_to_apple(snake_pos, apple)
-
-        next_pos = self.get_next_pos_right()
-        next_dist = self.get_distance_to_apple(next_pos, apple)
-
-        return next_dist < current_dist
+        speed = self.speed
+        apple_pos = apple.get_position()
+        if speed[0] > 0:
+            return apple_pos[1] >= snake_pos[1]
+        if speed[0] < 0:
+            return apple_pos[1] <= snake_pos[1]
+        if speed[1] > 0:
+            return apple_pos[0] <= snake_pos[0]
+        if speed[1] < 0:
+            return apple_pos[0] >= snake_pos[0]
