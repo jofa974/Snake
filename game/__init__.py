@@ -6,7 +6,9 @@ import ui
 class Game():
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((2 * ui.WIDTH, ui.HEIGHT))
+        w = max(1600, 2*ui.WIDTH)
+        h = max(800, ui.HEIGHT)
+        self.screen = pygame.display.set_mode((w, h))
         self.walls = pygame.sprite.Group()
         wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
         wall_right = Wall(ui.WIDTH - Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH,

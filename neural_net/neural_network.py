@@ -109,7 +109,7 @@ class NeuralNetwork():
                 print("Loading generation {} id {}".format(gen_id[0], gen_id[1]))
                 fitness, self.weights_1, self.weights_2, self.bias = pickle.load(f)
             except IOError:
-                print("Initialising random NN")
+                # print("Initialising random NN")
                 self.weights_1 = np.random.randn(self.hidden_nb, self.input_nb)
                 self.weights_2 = np.random.randn(self.output_nb, self.hidden_nb)
                 self.bias = np.random.randn(self.nb_neurons)

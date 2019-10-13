@@ -58,10 +58,11 @@ def generate_child(best_parents):
 
 def generate_new_population(path, gen, nb_pop, nb_best=4):
     new_pop = select_best_parents(path, gen, nb_best)
-    while len(new_pop) < nb_pop:
+    while True:
         child = generate_child(new_pop)
-        new_pop.append(child)
-    return new_pop
+        new_pop.append(next(child))
+        if len(new_pop) == nb_pop:
+            return new_pop
 
 
 if __name__ == '__main__':
