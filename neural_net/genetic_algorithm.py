@@ -2,6 +2,7 @@ import pickle
 from collections import OrderedDict
 import itertools
 import numpy as np
+from copy import deepcopy
 
 
 def select_best_parents(path, gen, nb_best):
@@ -22,35 +23,50 @@ def select_best_parents(path, gen, nb_best):
 
 
 def cross_over(data1, data2):
-    return np.concatenate(
-        (data1[0:len(data1) // 2], data2[len(data2) // 2:]),
-        axis=None)
+    return np.concatenate((data1[0:len(data1) // 2], data2[len(data2) // 2:]),
+                          axis=None)
 
 
-def generate_children(best_parents):
-    children = []
+def mutate(data):
+    old = deepcopy(data).flatten()
+    d_shape = data.shape
+    rate = 0.10
+    for i in range(len(old)):
+        r = np.random.rand()
+        if r < rate:
+            d = np.random.randn()
+            old[i] = d
+    return old.reshape(d_shape)
+
+
+def generate_child(best_parents):
     for combi in itertools.combinations(best_parents, 2):
         par1 = combi[0]
         par2 = combi[1]
         w1_shape = par1[0].shape
         w2_shape = par1[1].shape
-        new_w1 = cross_over(par1[0].flatten(), par2[0].flatten()).reshape(w1_shape)
-        new_w2 = cross_over(par1[1].flatten(), par2[1].flatten()).reshape(w2_shape)
+        new_w1 = cross_over(par1[0].flatten(),
+                            par2[0].flatten()).reshape(w1_shape)
+        new_w2 = cross_over(par1[1].flatten(),
+                            par2[1].flatten()).reshape(w2_shape)
         new_b = cross_over(par1[2].flatten(), par2[2].flatten())
-        children.append((new_w1, new_w2, new_b))
-    return children
+        new_w1 = mutate(new_w1)
+        new_w2 = mutate(new_w2)
+        new_b = mutate(new_b)
+        yield (new_w1, new_w2, new_b)
 
 
-def generate_new_population(path, gen, nb_best=4):
-    best_parents = select_best_parents(path, gen, nb_best)
-    children = generate_children(best_parents)
-    best_parents.extend(children)
-    return best_parents
+def generate_new_population(path, gen, nb_pop, nb_best=4):
+    new_pop = select_best_parents(path, gen, nb_best)
+    while len(new_pop) < nb_pop:
+        child = generate_child(new_pop)
+        new_pop.append(child)
+    return new_pop
 
 
 if __name__ == '__main__':
-    nb_best = 4
+    nb_best = 10
     from pathlib import Path
     # best_parents = list(select_best_parents(Path("../genetic_data/."), 0, 4))
-    # children = generate_children(best_parents)
+    # children = generate_child(best_parents)
     print(generate_new_population(Path("../genetic_data/."), 0, nb_best=4))

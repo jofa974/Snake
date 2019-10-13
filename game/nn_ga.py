@@ -2,7 +2,6 @@ import time
 import pygame
 import ui
 import game
-import numpy as np
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.neural_network import NeuralNetwork
@@ -48,9 +47,11 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            prev_dist = self.snake.get_distance_to_apple(self.snake.get_position(0), self.apple, norm=1)
+            prev_dist = self.snake.get_distance_to_apple(
+                self.snake.get_position(0), self.apple, norm=1)
             self.snake.move()
-            new_dist = self.snake.get_distance_to_apple(self.snake.get_position(0), self.apple, norm=1)
+            new_dist = self.snake.get_distance_to_apple(
+                self.snake.get_position(0), self.apple, norm=1)
 
             if new_dist < prev_dist:
                 fitness += 2
@@ -58,6 +59,8 @@ class NN_GA(game.Game):
                 fitness -= 3
 
             self.snake.detect_collisions()
+            if self.snake.dead:
+                fitness -= 10
 
             if self.snake.eat(self.apple):
                 self.snake.grow()

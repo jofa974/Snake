@@ -13,7 +13,7 @@ class NeuralNetwork():
     def __init__(self, gen_id=(-1, -1), dna=None):
         self.input_nb = 6
         self.output_nb = 3
-        self.hidden_nb = 5
+        self.hidden_nb = 4
 
         self.nb_neurons = self.input_nb + self.hidden_nb + self.output_nb
         self.load_data(gen_id, dna)
