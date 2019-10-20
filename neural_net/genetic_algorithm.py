@@ -34,8 +34,12 @@ def mutate(data):
     for i in range(len(old)):
         r = np.random.rand()
         if r < rate:
-            d = np.random.randn()
-            old[i] = d
+            d = np.random.normal(size=1) / 5
+            old[i] = +d
+            if old[i] < -1:
+                old[i] = -1
+            if old[i] > 1:
+                old[i] = 1
     return old.reshape(d_shape)
 
 
