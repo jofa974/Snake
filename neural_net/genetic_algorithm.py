@@ -23,8 +23,14 @@ def select_best_parents(path, gen, nb_best):
 
 
 def cross_over(data1, data2):
-    return np.concatenate((data1[0:len(data1) // 2], data2[len(data2) // 2:]),
-                          axis=None)
+    result = data1[:]
+    randR = np.random.randint(len(data1))
+    for i in range(len(data1)):
+        if i > randR:
+            result[i] = data2[i]
+    return result
+    # return np.concatenate((data1[0:len(data1) // 2], data2[len(data2) // 2:]),
+    #                       axis=None)
 
 
 def mutate(data):
