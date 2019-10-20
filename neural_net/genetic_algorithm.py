@@ -52,7 +52,7 @@ def generate_child(best_parents):
         new_b = cross_over(par1[2].flatten(), par2[2].flatten())
         new_w1 = mutate(new_w1)
         new_w2 = mutate(new_w2)
-        new_b = mutate(new_b)
+        #  new_b = mutate(new_b)
         yield (new_w1, new_w2, new_b)
 
 
