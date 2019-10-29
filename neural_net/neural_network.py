@@ -6,14 +6,12 @@ import pygame
 import pickle
 from pathlib import Path
 
-matplotlib.use("Agg")
-
 
 class NeuralNetwork():
     def __init__(self, gen_id=(-1, -1), dna=None):
         self.input_nb = 6
         self.output_nb = 3
-        self.hidden_nb = 5
+        self.hidden_nb = 4
 
         self.nb_neurons = self.input_nb + self.hidden_nb + self.output_nb
         self.load_data(gen_id, dna)
@@ -23,6 +21,11 @@ class NeuralNetwork():
         # activation function
         return 1 / (1 + np.exp(-s))
 
+    def relu(self, s):
+        # activation function
+        return np.where(s < 0, 0, s)
+        # return max(0, s)
+
     def decide_direction(self):
         decisions = ['left', 'right', 'forward']
         idx_max = np.argmax(self.act_output)
@@ -30,12 +33,13 @@ class NeuralNetwork():
 
     def forward(self, input_data):
         self.act_input = input_data
-        self.act_hidden = self.sigmoid(
+        self.act_hidden = self.relu(
             np.dot(self.weights_1, self.act_input) + self.bias_hidden)
-        self.act_output = self.sigmoid(
+        self.act_output = self.relu(
             np.dot(self.weights_2, self.act_hidden) + self.bias_output)
 
     def plot(self, fig):
+        matplotlib.use("Agg")
         left, right, bottom, top = .1, .9, .1, .9,
         layer_sizes = [self.input_nb, self.hidden_nb, self.output_nb]
         v_spacing = (top - bottom) / float(max(layer_sizes))
@@ -116,8 +120,7 @@ class NeuralNetwork():
                                                         self.input_nb))
                 self.weights_2 = np.random.normal(size=(self.output_nb,
                                                         self.hidden_nb))
-                # self.bias = np.random.normal(size=self.nb_neurons)
-                self.bias = np.zeros(self.nb_neurons)
+                self.bias = np.random.normal(size=self.nb_neurons)
 
     @property
     def weights(self):
