@@ -1,5 +1,7 @@
-import time
+import matplotlib
+import matplotlib.backends.backend_agg as agg
 import pygame
+import time
 import ui
 import game
 from components.apple import Apple
@@ -23,6 +25,7 @@ class NN_GA(game.Game):
         nb_moves = 0
 
         if self.display:
+            matplotlib.use("Agg")
             pygame.display.set_caption('Snake: Neural Network mode')
             myfont = pygame.font.SysFont('Comic Sans MS', 30)
             fig = plt.figure(figsize=[5, 5], dpi=100)
@@ -48,10 +51,10 @@ class NN_GA(game.Game):
                 self.snake.change_direction(next_move)
 
             prev_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=1)
+                self.snake.get_position(0), self.apple, norm=2)
             self.snake.move()
             new_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=1)
+                self.snake.get_position(0), self.apple, norm=2)
 
             if new_dist < prev_dist:
                 fitness += 2
@@ -94,7 +97,7 @@ class NN_GA(game.Game):
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 
-        return score
+        return score, fitness
 
     def get_move_from_direction(self, direction):
         if direction == 'forward':

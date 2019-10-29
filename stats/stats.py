@@ -10,3 +10,13 @@ def show_stats(all_score):
     plt.xlabel("games")
     plt.ylabel("score")
     plt.show()
+
+
+def show_fitness(all_fitness):
+    fig = plt.figure()
+    ax = plt.gca()
+    im = plt.imshow(all_fitness, origin="lower")
+    fig.colorbar(im, ax=ax)
+    plt.xlabel("games")
+    plt.ylabel("generation")
+    plt.show()
