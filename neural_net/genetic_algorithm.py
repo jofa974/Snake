@@ -36,7 +36,7 @@ def cross_over(data1, data2):
 def mutate(data):
     old = deepcopy(data).flatten()
     d_shape = data.shape
-    rate = 0.10
+    rate = 0.05
     for i in range(len(old)):
         r = np.random.rand()
         if r < rate:
@@ -62,7 +62,7 @@ def generate_child(best_parents):
         new_b = cross_over(par1[2].flatten(), par2[2].flatten())
         new_w1 = mutate(new_w1)
         new_w2 = mutate(new_w2)
-        #  new_b = mutate(new_b)
+        new_b = mutate(new_b)
         yield (new_w1, new_w2, new_b)
 
 
