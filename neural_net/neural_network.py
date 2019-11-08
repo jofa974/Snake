@@ -33,9 +33,9 @@ class NeuralNetwork():
 
     def forward(self, input_data):
         self.act_input = input_data
-        self.act_hidden = self.relu(
+        self.act_hidden = self.sigmoid(
             np.dot(self.weights_1, self.act_input) + self.bias_hidden)
-        self.act_output = self.relu(
+        self.act_output = self.sigmoid(
             np.dot(self.weights_2, self.act_hidden) + self.bias_output)
 
     def plot(self, fig):
