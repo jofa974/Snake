@@ -1,5 +1,6 @@
 import matplotlib
 import matplotlib.backends.backend_agg as agg
+import itertools
 import pygame
 import time
 import ui
@@ -18,7 +19,11 @@ class NN_GA(game.Game):
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False):
-        self.apple = Apple()
+        apple_x = [ 2, 12, 24,  8, 10,  6,  9, 25, 28,  4, 12,  5,  7,  8,  6]
+        apple_y = [12,  5,  6, 22, 12, 16, 17,  2,  9, 23, 28,  4, 13, 27,  3]
+        apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
+
+        self.apple = Apple(xy=next(apple_pos))
         self.snake = Snake()
         score = 0
         fitness = 0
@@ -68,9 +73,11 @@ class NN_GA(game.Game):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
-                self.apple.new_random()
+                # self.apple.new_random()
+                x, y = next(apple_pos)
+                self.apple.new(x, y)
                 score += 1
-                fitness += 10
+                fitness += 20
 
             if self.display:
                 score_text = myfont.render('Score: {}'.format(score), False,

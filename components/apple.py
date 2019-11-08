@@ -6,15 +6,17 @@ from ui import BASE_SIZE, X_GRID, Y_GRID
 class Apple(pygame.sprite.Sprite):
     """Apple to feed the snake"""
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
         size = (BASE_SIZE, BASE_SIZE)
         colour = 155, 0, 0
         self.image = pygame.Surface(size)
         self.image.fill(colour)
         self.rect = self.image.get_rect()
-
-        self.new_random()
+        if "xy" in kwargs.keys():
+            self.new(kwargs["xy"][0], kwargs["xy"][1])
+        else:
+            self.new_random()
 
     def move(self, position):
         self.rect.center = position
