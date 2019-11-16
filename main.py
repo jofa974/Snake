@@ -4,7 +4,7 @@ import glob
 import os
 import argparse
 from game import human, random, bfs, nn_ga
-from stats.stats import show_stats, show_fitness
+from stats.stats import show_stats, show_fitness, plot_fitness
 import numpy as np
 import pygame
 from neural_net.genetic_algorithm import generate_new_population
@@ -66,6 +66,8 @@ def main(args):
         nb_games = 1
         game.play(max_move=10000, dump=False)
         pygame.quit()
+    elif args.plot_generations:
+        plot_fitness(args.plot_generations)
     else:
         raise NotImplementedError(
             "This game mode has not been implemented yet")

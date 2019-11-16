@@ -17,7 +17,7 @@ def show_stats(all_score):
 def show_fitness(all_fitness):
     fig = plt.figure()
     ax = plt.gca()
-    im = plt.imshow(all_fitness.T, origin="lower")
+    im = plt.imshow(all_fitness.T, origin="lower", aspect="auto")
     fig.colorbar(im, ax=ax)
     plt.ylabel("games")
     plt.xlabel("generation")
@@ -26,7 +26,7 @@ def show_fitness(all_fitness):
 
 def plot_fitness(nb_gen):
     path = Path('genetic_data')
-    p = path.glob('data_*_*.pickle')
+    p = list(path.glob('data_*_*.pickle'))
     nb_games = int(len(p)/nb_gen)
     all_fitness = np.zeros([nb_gen, nb_games])
     for gen in range(nb_gen):
