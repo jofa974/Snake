@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+import pickle
 
 
 def show_stats(all_score):
@@ -22,24 +24,16 @@ def show_fitness(all_fitness):
     plt.show()
 
 
-if __name__ == "__main__":
-    from pathlib import Path
-    import pickle
-    from collections import OrderedDict
-    gen = 9
-    path = Path("../genetic_data/.")
-    p = path.glob('data_' + str(gen) + '_*.pickle')
-    files = sorted([x for x in p if x.is_file()])
-    f_data = OrderedDict()
-    for nb, f in enumerate(files):
-        d = pickle.load(open(f, "rb"))
-        f_data[nb] = d[0]
-    sorted_x = sorted(f_data.items(), key=lambda kv: kv[1], reverse=True)
-    sorted_dict = OrderedDict(sorted_x)
-    data = []*nb_best
-    for nb in sorted_dict.keys():
-        f = path / 'data_{}_{}.pickle'.format(gen, nb)
-        d = pickle.load(open(f, "rb"))
-        data[nb] = d[1:]
-    import pdb; pdb.set_trace()
-    
+def plot_fitness(nb_gen):
+    path = Path('genetic_data')
+    p = path.glob('data_*_*.pickle')
+    nb_games = int(len(p)/nb_gen)
+    all_fitness = np.zeros([nb_gen, nb_games])
+    for gen in range(nb_gen):
+        p = path.glob('data_' + str(gen) + '_*.pickle')
+        files = sorted([x for x in p if x.is_file()])
+        for ii, f in enumerate(files):
+            d = pickle.load(open(f, "rb"))
+            all_fitness[gen, ii] = d[0]
+    show_fitness(all_fitness)
+
