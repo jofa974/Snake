@@ -30,9 +30,8 @@ def plot_fitness(nb_gen):
     nb_games = int(len(p)/nb_gen)
     all_fitness = np.zeros([nb_gen, nb_games])
     for gen in range(nb_gen):
-        p = path.glob('data_' + str(gen) + '_*.pickle')
-        files = sorted([x for x in p if x.is_file()])
-        for ii, f in enumerate(files):
+        for ii in range(nb_games):
+            f = path / Path('data_{}_{}.pickle'.format(gen, ii))
             d = pickle.load(open(f, "rb"))
             all_fitness[gen, ii] = d[0]
     show_fitness(all_fitness)
