@@ -19,11 +19,17 @@ class NN_GA(game.Game):
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False):
-        apple_x = [ 2, 12, 24,  8, 10,  6,  9, 25, 28,  4, 12,  5,  7,  8,  6]
-        apple_y = [12,  5,  6, 22, 12, 16, 17,  2,  9, 23, 28,  4, 13, 27,  3]
+        apple_x = []
+        apple_y = []
+        with open("/home/jonathan/Projects/PyGames/Snake/apple_position.in", "r") as f:
+            lines = f.readlines()
+            for l in lines:
+                apple_x.append(int(l.split()[0]))
+                apple_y.append(int(l.split()[1]))
         apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
 
         self.apple = Apple(xy=next(apple_pos))
+        # self.apple = Apple()
         self.snake = Snake()
         score = 0
         fitness = 0

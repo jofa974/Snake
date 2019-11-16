@@ -6,6 +6,7 @@ import pygame
 import pickle
 from pathlib import Path
 
+np.random.seed(0)
 
 class NeuralNetwork():
     def __init__(self, gen_id=(-1, -1), dna=None):

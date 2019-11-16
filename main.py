@@ -51,7 +51,7 @@ def main(args):
             print("Generation: {}".format(i))
             if i > 0:
                 path = Path('genetic_data')
-                new_pop = generate_new_population(path, gen=i-1, nb_pop=nb_games, nb_best=40)
+                new_pop = generate_new_population(path, gen=i-1, nb_pop=nb_games, nb_best=50)
             else:
                 new_pop = [None]*nb_games
             for j in range(nb_games):
