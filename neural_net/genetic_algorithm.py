@@ -40,9 +40,6 @@ def mutate(data, rate=0.05):
 def generate_child(parent1, parent2):
     w1_shape = parent1[0].shape
     w2_shape = parent1[1].shape
-    # new_w1 = parent1[0]
-    # new_w2 = parent1[1]
-    # new_b = parent1[2]
     new_w1 = cross_over(parent1[0].flatten(),
                         parent2[0].flatten()).reshape(w1_shape)
     new_w2 = cross_over(parent1[1].flatten(),
