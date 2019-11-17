@@ -7,7 +7,6 @@ from copy import deepcopy
 def select_best_parents(pickled_data, nb_best):
     sorted_data = deepcopy(pickled_data)
     sorted_data.sort(key=lambda x: x[0], reverse=True)
-    # TODO don't return fitness values
     return [x[1:] for x in sorted_data[:nb_best]]
 
 

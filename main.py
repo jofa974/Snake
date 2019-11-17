@@ -56,7 +56,7 @@ def main(args):
                 new_pop = [None]*nb_games
             for j in range(nb_games):
                 game = nn_ga.NN_GA(display=False, gen_id=(i, j), dna=new_pop[j])
-                score, fitness = game.play(max_move=1000, dump=True)
+                score, fitness = game.play(max_move=1000, dump=True, learn=True)
                 all_fitness[i][j] = fitness
         #all_score[i] = score
         show_fitness(all_fitness)
@@ -64,7 +64,7 @@ def main(args):
     elif args.genetic:
         game = nn_ga.NN_GA(display=True, gen_id=args.genetic)
         nb_games = 1
-        game.play(max_move=10000, dump=False)
+        game.play(max_move=10000, dump=False, learn=False)
         pygame.quit()
     elif args.plot_generations:
         plot_fitness(args.plot_generations)

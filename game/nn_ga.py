@@ -18,18 +18,20 @@ class NN_GA(game.Game):
         self.nn = NeuralNetwork(gen_id, dna)
         self.gen_id = gen_id
 
-    def play(self, max_move, dump=False):
-        apple_x = []
-        apple_y = []
-        with open("/home/jonathan/Projects/PyGames/Snake/apple_position.in", "r") as f:
-            lines = f.readlines()
-            for l in lines:
-                apple_x.append(int(l.split()[0]))
-                apple_y.append(int(l.split()[1]))
-        apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
+    def play(self, max_move, dump=False, learn=True):
+        if learn:
+            apple_x = []
+            apple_y = []
+            with open("../apple_position.in", "r") as f:
+                lines = f.readlines()
+                for l in lines:
+                    apple_x.append(int(l.split()[0]))
+                    apple_y.append(int(l.split()[1]))
+            apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
+            self.apple = Apple(xy=next(apple_pos))
+        else:
+            self.apple = Apple()
 
-        self.apple = Apple(xy=next(apple_pos))
-        # self.apple = Apple()
         self.snake = Snake()
         score = 0
         fitness = 0
@@ -48,7 +50,6 @@ class NN_GA(game.Game):
                     self.snake.dead = True
 
             # Feed the NN with input data
-            # input_data = np.random.randn(6)
             input_data = self.get_input_data()
             self.nn.forward(input_data)
 
@@ -57,7 +58,6 @@ class NN_GA(game.Game):
 
             # Deduce which key to press based on next direction
             next_move = self.get_move_from_direction(next_direction)
-
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
@@ -79,9 +79,11 @@ class NN_GA(game.Game):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
-                # self.apple.new_random()
-                x, y = next(apple_pos)
-                self.apple.new(x, y)
+                if learn:
+                    x, y = next(apple_pos)
+                    self.apple.new(x, y)
+                else:
+                    self.apple.new_random()
                 score += 1
                 fitness += 20
 
@@ -103,7 +105,7 @@ class NN_GA(game.Game):
                 surf = self.nn.plot(fig)
                 self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
                 pygame.display.flip()
-                time.sleep(1.0 / 1000.0)
+                time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
 
