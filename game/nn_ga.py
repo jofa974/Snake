@@ -22,7 +22,7 @@ class NN_GA(game.Game):
         if learn:
             apple_x = []
             apple_y = []
-            with open("../apple_position.in", "r") as f:
+            with open("apple_position.in", "r") as f:
                 lines = f.readlines()
                 for l in lines:
                     apple_x.append(int(l.split()[0]))
