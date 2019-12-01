@@ -50,12 +50,12 @@ def main(args):
         all_fitness = np.zeros([nb_gen, nb_games])
         for i in range(nb_gen):
             print("Generation: {}".format(i))
-            if (i % 100) == 0:
+            if (i % 15) == 0:
                 print("Generating new random training input")
                 gen_xy()
             if i > 0:
                 path = Path('genetic_data')
-                new_pop = generate_new_population(path, gen=i-1, nb_pop=nb_games, nb_best=int(nb_games*0.1))
+                new_pop = generate_new_population(path, gen=i-1, nb_pop=nb_games, nb_best=int(nb_games*0.20))
             else:
                 new_pop = [None]*nb_games
             for j in range(nb_games):
