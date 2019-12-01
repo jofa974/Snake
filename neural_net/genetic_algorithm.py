@@ -21,18 +21,18 @@ def cross_over(data1, data2):
     #                       axis=None)
 
 
-def mutate(data, rate=0.05):
+def mutate(data, rate=0.15):
     old = deepcopy(data).flatten()
     d_shape = data.shape
     for i in range(len(old)):
         r = np.random.rand()
         if r < rate:
-            d = np.random.normal(size=1) / 5
-            old[i] = +d
-            if old[i] < -1:
-                old[i] = -1
-            if old[i] > 1:
-                old[i] = 1
+            d = np.random.normal(size=1) / 3
+            old[i] += d
+            # if old[i] < -1:
+            #     old[i] = -1
+            # if old[i] > 1:
+            #     old[i] = 1
     return old.reshape(d_shape)
 
 

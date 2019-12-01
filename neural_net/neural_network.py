@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pygame
 import pickle
 from pathlib import Path
+from scipy.special import softmax
 
 
 class NeuralNetwork():
@@ -17,17 +18,23 @@ class NeuralNetwork():
         self.load_data(gen_id, dna)
         self.act = np.zeros(self.nb_neurons)
 
-    def sigmoid(self, s):
+    @staticmethod
+    def sigmoid(s):
         # activation function
         return 1 / (1 + np.exp(-s))
 
-    def relu(self, s):
+    @staticmethod
+    def relu(s):
         # activation function
         return np.where(s < 0, 0, s)
         # return max(0, s)
 
+    @staticmethod
+    def softmax(s):
+        return softmax(s)
+
     def decide_direction(self):
-        decisions = ['left', 'right', 'forward']
+        decisions = ['forward', 'left', 'right']
         idx_max = np.argmax(self.act_output)
         return decisions[idx_max]
 
