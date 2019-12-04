@@ -24,10 +24,8 @@ def show_fitness(all_fitness):
     plt.show()
 
 
-def plot_fitness(nb_gen):
-    path = Path('../genetic_data')
-    p = list(path.glob('data_*_*.pickle'))
-    nb_games = int(len(p)/nb_gen)
+def plot_fitness(nb_gen, nb_games):
+    path = Path('genetic_data')
     all_fitness = np.zeros([nb_gen, nb_games])
     for gen in range(nb_gen):
         for ii in range(nb_games):
