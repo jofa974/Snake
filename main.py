@@ -70,8 +70,6 @@ def main(args):
         nb_games = 1
         game.play(max_move=10000, dump=False, learn=False)
         pygame.quit()
-    elif args.plot_generations:
-        plot_fitness(args.plot_generations)
     else:
         raise NotImplementedError(
             "This game mode has not been implemented yet")
@@ -97,11 +95,5 @@ if __name__ == '__main__':
         '--interactive',
         action="store_true",
         help="Interactive mode: shows a snake game. Only for AI modes.")
-    parser.add_argument(
-        '-p',
-        '--plot_generations',
-        type=int,
-        help="Plot the fitness of the first N generations"
-    )
     args = parser.parse_args()
     main(args)
