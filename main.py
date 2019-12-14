@@ -71,7 +71,7 @@ def main(args):
                     range(nb_games),
                 )
                 all_fitness[i][:] = np.array(list(results))
-        show_fitness(all_fitness)
+        # show_fitness(all_fitness)
         pygame.quit()
     elif args.genetic:
         game = nn_ga.NN_GA(display=True, gen_id=args.genetic)
