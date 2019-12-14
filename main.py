@@ -5,6 +5,7 @@ import glob
 import itertools
 import logging
 import os
+import time
 from pathlib import Path
 
 import numpy as np
@@ -69,7 +70,7 @@ def main(args):
                     itertools.repeat(i, nb_games),
                     range(nb_games),
                 )
-                all_fitness[i].extend(results)
+                all_fitness[i][:] = np.array(list(results))
         show_fitness(all_fitness)
         pygame.quit()
     elif args.genetic:
@@ -108,7 +109,9 @@ if __name__ == "__main__":
 
     # Logger
     format = "%(process)s - %(asctime)s: %(message)s"
-    logging.basicConfig(format=format, level=logging.DEBUG, datefmt="%H:%M:%S")
+    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 
     # Main function
+    start_time = time.time()
     main(args)
+    print("--- %s seconds ---" % (time.time() - start_time))
