@@ -1,4 +1,3 @@
-import itertools
 import time
 
 import pygame
@@ -15,11 +14,7 @@ class Human(Game):
         pygame.display.set_caption("Snake: Human mode")
 
     def play(self):
-        apple_x = [2, 12, 24, 8, 10, 6, 9, 25, 29, 4, 12, 5, 7, 8, 6]
-        apple_y = [12, 5, 6, 22, 12, 16, 17, 2, 9, 23, 29, 4, 13, 27, 3]
-        apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
-
-        self.apple = Apple(xy=next(apple_pos))
+        self.apple = Apple()
         self.snake = Snake()
         myfont = pygame.font.SysFont("Comic Sans MS", 30)
         score = 0
@@ -38,9 +33,7 @@ class Human(Game):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
-                # self.apple.new_random()
-                x, y = next(apple_pos)
-                self.apple.new(x, y)
+                self.apple.new_random()
                 score += 1
 
             textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)

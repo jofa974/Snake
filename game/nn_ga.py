@@ -1,5 +1,4 @@
 import itertools
-import logging
 import time
 
 import matplotlib
@@ -74,12 +73,12 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            prev_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=2
+            prev_dist = self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.apple.get_position(), norm=2
             )
             self.snake.move()
-            new_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=2
+            new_dist = self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.apple.get_position(), norm=2
             )
 
             if new_dist < prev_dist:
@@ -153,12 +152,13 @@ class NN_GA(game.Game):
                 return pygame.K_RIGHT
 
     def get_input_data(self):
+        apple_pos = self.apple.get_position()
         input_data = [
             self.snake.is_clear_ahead(),
             self.snake.is_clear_left(),
             self.snake.is_clear_right(),
-            self.snake.is_food_ahead(self.apple),
-            self.snake.is_food_left(self.apple),
-            self.snake.is_food_right(self.apple),
+            self.snake.is_food_ahead(apple_pos),
+            self.snake.is_food_left(apple_pos),
+            self.snake.is_food_right(apple_pos),
         ]
         return input_data
