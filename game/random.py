@@ -1,7 +1,10 @@
-import pygame
-import ui
 import random
+import time
+
+import pygame
+
 import game
+import ui
 from components.apple import Apple
 from components.snake import Snake
 
@@ -9,12 +12,12 @@ from components.snake import Snake
 class Random(game.Game):
     def __init__(self):
         super().__init__()
-        pygame.display.set_caption('Snake: Random mode')
+        pygame.display.set_caption("Snake: Random mode")
 
     def play(self):
         self.apple = Apple()
         self.snake = Snake()
-        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        myfont = pygame.font.SysFont("Comic Sans MS", 30)
         score = 0
 
         while not self.snake.dead:
@@ -30,14 +33,17 @@ class Random(game.Game):
                     key = random.choice([pygame.K_UP, pygame.K_DOWN])
                 self.snake.change_direction(key)
 
+            self.snake.move()
+
+            self.snake.detect_collisions()
+
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.apple.new_random()
                 score += 1
 
-            self.snake.update(self.walls)
-            textsurface = myfont.render('Score: {}'.format(score), False,
-                                        ui.WHITE)
+            self.snake.update()
+            textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
 
             # Draw Everything
             self.screen.fill(ui.BLACK)
@@ -47,3 +53,4 @@ class Random(game.Game):
             self.walls.draw(self.screen)
             pygame.display.flip()
 
+            time.sleep(100.0 / 1000.0)
