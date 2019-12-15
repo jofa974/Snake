@@ -1,0 +1,12 @@
+* Snake
+
+** How-to
+** Ideas
+*** General interface
+**** Use a json configuration file as input
+*** Parallelism
+**** Initialize pygame and pygame screen only once
+*** Neural network
+**** TODO Flexible number of hidden layers
+**** TODO Flexible activation function
+**** TODO New architecture with more input neurons
