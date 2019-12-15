@@ -14,7 +14,7 @@ import pygame
 from game import bfs, human, nn_ga, random
 from gen_xy import gen_xy
 from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import show_fitness, show_stats
+from stats.stats import plot_fitness, show_stats
 
 
 def cleanup(path):
@@ -71,24 +71,23 @@ def main(args):
             training_data = nn_ga.read_training_data()
 
             # Training
-            for j in range(nb_games):
-                results = nn_ga.play_individual(new_pop[j], i, j, training_data)
-                all_fitness[i][j] = results
-            # with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-            #     results = executor.map(
-            #         nn_ga.play_individual,
-            #         new_pop,
-            #         itertools.repeat(i, nb_games),
-            #         range(nb_games),
-            #         itertools.repeat(training_data, nb_games),
-            #     )
-            #     all_fitness[i][:] = np.array(list(results))
-        # show_fitness(all_fitness)
+            # for j in range(nb_games):
+            #     results = nn_ga.play_individual(new_pop[j], i, j, training_data)
+            #     all_fitness[i][j] = results
+            with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+                results = executor.map(
+                    nn_ga.play_individual,
+                    new_pop,
+                    itertools.repeat(i, nb_games),
+                    range(nb_games),
+                    itertools.repeat(training_data, nb_games),
+                )
+                all_fitness[i][:] = np.array(list(results))
         pygame.quit()
     elif args.genetic:
         game = nn_ga.NN_GA(display=True, gen_id=args.genetic)
         nb_games = 1
-        game.play(max_move=10000, dump=False, learn=False)
+        game.play(max_move=10000, dump=False, training_data=None)
         pygame.quit()
     else:
         raise NotImplementedError("This game mode has not been implemented yet")
@@ -127,3 +126,6 @@ if __name__ == "__main__":
     start_time = time.time()
     main(args)
     print("--- %s seconds ---" % (time.time() - start_time))
+
+    if args.nnga_learn:
+        plot_fitness(args.nnga_learn[0], args.nnga_learn[1])
