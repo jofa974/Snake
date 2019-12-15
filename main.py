@@ -53,9 +53,12 @@ def main(args):
         all_fitness = np.zeros([nb_gen, nb_games])
         for i in range(nb_gen):
             print("Generation: {}".format(i))
+            # Generate new training data
             if (i % 15) == 0:
                 print("Generating new random training input")
                 gen_xy()
+
+            # Generate new population
             if i > 0:
                 path = Path("genetic_data")
                 new_pop = generate_new_population(
@@ -63,14 +66,23 @@ def main(args):
                 )
             else:
                 new_pop = [None] * nb_games
-            with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-                results = executor.map(
-                    nn_ga.play_individual,
-                    new_pop,
-                    itertools.repeat(i, nb_games),
-                    range(nb_games),
-                )
-                all_fitness[i][:] = np.array(list(results))
+
+            # Read training_data
+            training_data = nn_ga.read_training_data()
+
+            # Training
+            for j in range(nb_games):
+                results = nn_ga.play_individual(new_pop[j], i, j, training_data)
+                all_fitness[i][j] = results
+            # with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+            #     results = executor.map(
+            #         nn_ga.play_individual,
+            #         new_pop,
+            #         itertools.repeat(i, nb_games),
+            #         range(nb_games),
+            #         itertools.repeat(training_data, nb_games),
+            #     )
+            #     all_fitness[i][:] = np.array(list(results))
         # show_fitness(all_fitness)
         pygame.quit()
     elif args.genetic:

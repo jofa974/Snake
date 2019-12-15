@@ -13,9 +13,17 @@ from components.snake import Snake
 from neural_net.neural_network import NeuralNetwork
 
 
-def play_individual(individual, gen_nb, game_id):
+def read_training_data():
+    training_data = []
+    with open("apple_position.in", "r") as f:
+        for line in f.readlines():
+            training_data.append((int(line.split()[0]), int(line.split()[1])))
+    return training_data
+
+
+def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(display=False, gen_id=(gen_nb, game_id), dna=individual)
-    score, fitness = game.play(max_move=1000, dump=True, learn=True)
+    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
@@ -30,17 +38,10 @@ class NN_GA(game.Game):
         self.nn = NeuralNetwork(gen_id, dna)
         self.gen_id = gen_id
 
-    def play(self, max_move, dump=False, learn=True):
-        if learn:
-            apple_x = []
-            apple_y = []
-            with open("apple_position.in", "r") as f:
-                lines = f.readlines()
-                for l in lines:
-                    apple_x.append(int(l.split()[0]))
-                    apple_y.append(int(l.split()[1]))
-            apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
-            self.apple = Apple(xy=next(apple_pos))
+    def play(self, max_move, dump=False, training_data=None):
+        if training_data:
+            training_data = itertools.cycle(training_data)
+            self.apple = Apple(xy=next(training_data))
         else:
             self.apple = Apple()
 
@@ -93,8 +94,8 @@ class NN_GA(game.Game):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
-                if learn:
-                    x, y = next(apple_pos)
+                if training_data:
+                    x, y = next(training_data)
                     self.apple.new(x, y)
                 else:
                     self.apple.new_random()
