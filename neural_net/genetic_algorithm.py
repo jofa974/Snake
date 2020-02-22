@@ -1,7 +1,8 @@
-import pickle
 import itertools
-import numpy as np
+import pickle
 from copy import deepcopy
+
+import numpy as np
 
 
 def select_best_parents(pickled_data, nb_best):
@@ -37,21 +38,15 @@ def mutate(data, rate=0.15):
 
 
 def generate_child(parent1, parent2):
-    w1_shape = parent1[0].shape
-    w2_shape = parent1[1].shape
-    new_w1 = cross_over(parent1[0].flatten(),
-                        parent2[0].flatten()).reshape(w1_shape)
-    new_w2 = cross_over(parent1[1].flatten(),
-                        parent2[1].flatten()).reshape(w2_shape)
-    new_b = cross_over(parent1[2].flatten(), parent2[2].flatten())
-    new_w1 = mutate(new_w1)
-    new_w2 = mutate(new_w2)
-    new_b = mutate(new_b)
-    return (new_w1, new_w2, new_b)
+    new_weights = cross_over(parent1[0], parent2[0])
+    new_biases = cross_over(parent1[1], parent2[1])
+    new_weights = mutate(new_weights)
+    new_biases = mutate(new_biases)
+    return (new_weights, new_biases)
 
 
 def generate_new_population(path, gen, nb_pop, nb_best):
-    p = path.glob('data_' + str(gen) + '_*.pickle')
+    p = path.glob("data_" + str(gen) + "_*.pickle")
     files = sorted([x for x in p if x.is_file()])
     gen_data = []
     for f in files:
@@ -71,7 +66,8 @@ def generate_new_population(path, gen, nb_pop, nb_best):
                 return new_pop
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nb_best = 10
     from pathlib import Path
+
     print(generate_new_population(Path("../genetic_data/."), 0, nb_best=4))
