@@ -15,6 +15,18 @@ def forward_layer(weights, bias, act, func):
     return func(np.dot(reshaped_weights, act) + bias)
 
 
+# TODO put this in a better place
+def create_surf_from_figure_on_canvas(fig):
+    matplotlib.use("Agg")
+    canvas = agg.FigureCanvasAgg(fig)
+    canvas.draw()
+    renderer = canvas.get_renderer()
+    raw_data = renderer.tostring_rgb()
+    size = canvas.get_width_height()
+    surf = pygame.image.fromstring(raw_data, size, "RGB")
+    return surf
+
+
 class NeuralNetwork:
     def __init__(self, gen_id=(-1, -1), dna=None, hidden_nb=[4, 5]):
         self.input_nb = 6
@@ -53,16 +65,16 @@ class NeuralNetwork:
     #         b = self.bias_hidden(n_layer-1)
     #         self.act_hidden(n_layer) = forward_layer(w, b, a, func)
 
-    def plot(self, fig):
-        matplotlib.use("Agg")
+    def plot(self):
+        fig = plt.figure(figsize=[5, 5], dpi=100)
         left, right, bottom, top = (
             0.1,
             0.9,
             0.1,
             0.9,
         )
-        layer_sizes = itertools.chain(
-            [self.input_nb], self.hidden_nb[:], [self.output_nb]
+        layer_sizes = list(
+            itertools.chain([self.input_nb], self.hidden_nb[:], [self.output_nb])
         )
         v_spacing = (top - bottom) / float(max(layer_sizes))
         h_spacing = (right - left) / float(len(layer_sizes) - 1)
@@ -105,13 +117,7 @@ class NeuralNetwork:
                     ax.add_artist(line)
                     i += 1
         ax.set_aspect("equal", adjustable="box")
-        canvas = agg.FigureCanvasAgg(fig)
-        canvas.draw()
-        renderer = canvas.get_renderer()
-        raw_data = renderer.tostring_rgb()
-        size = canvas.get_width_height()
-        surf = pygame.image.fromstring(raw_data, size, "RGB")
-        return surf
+        return fig
 
     def dump_data(self, gen_id, fitness):
         file_path = Path("genetic_data/data_{}_{}.pickle".format(gen_id[0], gen_id[1]))

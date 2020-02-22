@@ -28,14 +28,13 @@ def test_act_hidden():
 
 
 def test_plot():
-    nn = NeuralNetwork(hidden_nb=[4, 5, 6])
+    nn = NeuralNetwork(hidden_nb=[6, 5, 4])
 
-    nn.act[6:10] = np.ones(4)
-    nn.act[10:15] = np.ones(5) * 2
-    nn.act[15:21] = np.ones(6) * 3
+    nn.act[6:12] = np.ones(6)
+    nn.act[12:17] = np.ones(5) * 2
+    nn.act[17:21] = np.ones(4) * 3
 
-    fig = plt.figure()
-    nn.plot(fig)
+    fig = nn.plot()
     plt.show()
 
 
