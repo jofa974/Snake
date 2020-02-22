@@ -10,6 +10,11 @@ import pygame
 from scipy.special import softmax
 
 
+def forward_layer(weights, bias, act, func):
+    reshaped_weights = np.reshape(weights, [len(bias), len(act)])
+    return func(np.dot(reshaped_weights, act) + bias)
+
+
 class NeuralNetwork:
     def __init__(self, gen_id=(-1, -1), dna=None, hidden_nb=[4, 5]):
         self.input_nb = 6
@@ -40,16 +45,13 @@ class NeuralNetwork:
         idx_max = np.argmax(self.act_output)
         return decisions[idx_max]
 
-    def forward(self, input_data):
-        self.act_input = input_data
-        # TODO
-        self.act_hidden = self.sigmoid(
-            np.dot(self.weights[:], self.act[: self.input_nb + sum(self.hidden_nb)])
-            + self.bias[: self.input_nb + sum(self.hidden_nb)]
-        )
-        self.act_output = self.sigmoid(
-            np.dot(self.weights[:], self.act[self.hidden_nb) + self.bias_output
-        )
+    # def forward(self, input_data):
+    #     self.act_input = input_data
+    #     for n_layer in len(self.hidden_nb):
+    #         w = self.weights(n_layer)
+    #         a = self.act_hidden(n_layer-1)
+    #         b = self.bias_hidden(n_layer-1)
+    #         self.act_hidden(n_layer) = forward_layer(w, b, a, func)
 
     def plot(self, fig):
         matplotlib.use("Agg")
@@ -149,13 +151,21 @@ class NeuralNetwork:
     def act_input(self, value):
         self.act[: self.input_nb] = value
 
-    @property
-    def act_hidden(self):
-        return self.act[self.input_nb : self.input_nb + sum(self.hidden_nb)]
+    def act_hidden(self, idx):
+        if idx == -1:
+            return self.act[0 : self.input_nb]
+        elif idx == 0:
+            return self.act[self.input_nb : self.input_nb + self.hidden_nb[idx]]
+        else:
+            return self.act[
+                self.input_nb
+                + sum(self.hidden_nb[:idx]) : self.input_nb
+                + sum(self.hidden_nb[: idx + 1])
+            ]
 
-    @act_hidden.setter
-    def act_hidden(self, value):
-        self.act[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
+    # @act_hidden.setter
+    # def act_hidden(self, idx, value):
+    #     self.act[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
 
     @property
     def act_output(self):
