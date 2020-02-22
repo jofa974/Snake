@@ -57,13 +57,89 @@ class NeuralNetwork:
         idx_max = np.argmax(self.act_output)
         return decisions[idx_max]
 
-    # def forward(self, input_data):
-    #     self.act_input = input_data
-    #     for n_layer in len(self.hidden_nb):
-    #         w = self.weights(n_layer)
-    #         a = self.act_hidden(n_layer-1)
-    #         b = self.bias_hidden(n_layer-1)
-    #         self.act_hidden(n_layer) = forward_layer(w, b, a, func)
+    def forward(self, input_data):
+        self.set_activation_layer(-1, input_data)
+        for n_layer in range(1, len(self.hidden_nb) + 2):
+            w = self.weights(n_layer)
+            a = self.activation_layer(n_layer - 1)
+            b = self.bias_layer_idx(n_layer)
+            self.set_activation_layer(n_layer, forward_layer(w, b, a, self.sigmoid))
+
+    @property
+    def nb_weights(self):
+        list_nb = list(
+            itertools.chain([self.input_nb], self.hidden_nb[:], [self.output_nb])
+        )
+        res = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+        return res
+
+    def activation_layer(self, layer_idx):
+        if layer_idx == -1:
+            return self.act[0 : self.input_nb]
+        elif layer_idx == 0:
+            return self.act[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
+        else:
+            return self.act[
+                self.input_nb
+                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
+                + sum(self.hidden_nb[: layer_idx + 1])
+            ]
+
+    def set_activation_layer(self, layer_idx, values):
+        if layer_idx == -1:
+            self.act[0 : self.input_nb] = values
+        elif layer_idx == 0:
+            self.act[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]] = values
+        else:
+            self.act[
+                self.input_nb
+                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
+                + sum(self.hidden_nb[: layer_idx + 1])
+            ] = values
+
+    def bias_layer_idx(self, layer_idx):
+        if layer_idx == -1:
+            return self.bias[0 : self.input_nb]
+        elif layer_idx == 0:
+            return self.bias[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
+        else:
+            return self.bias[
+                self.input_nb
+                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
+                + sum(self.hidden_nb[: layer_idx + 1])
+            ]
+
+    def set_bias_layer_idx(self, layer_idx, values):
+        if layer_idx == -1:
+            self.bias[0 : self.input_nb] = values
+        elif layer_idx == 0:
+            self.bias[
+                self.input_nb : self.input_nb + self.hidden_nb[layer_idx]
+            ] = values
+        else:
+            self.bias[
+                self.input_nb
+                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
+                + sum(self.hidden_nb[: layer_idx + 1])
+            ] = values
+
+    def weights_layer_idx(self, layer_idx):
+        if layer_idx == 0:
+            return self.weights[: self.input_nb * self.hidden_nb[0]]
+        elif layer_idx == len(self.hidden_nb) + 1:
+            list_nb = list(
+                itertools.chain([self.input_nb], self.hidden_nb[: layer_idx - 1])
+            )
+            inf = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+            return self.weights[inf:]
+        else:
+            list_nb = list(itertools.chain([self.input_nb], self.hidden_nb[:layer_idx]))
+            inf = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+            list_nb = list(
+                itertools.chain([self.input_nb], self.hidden_nb[: layer_idx + 1])
+            )
+            sup = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+            return self.weights[inf:sup]
 
     def plot(self):
         fig = plt.figure(figsize=[5, 5], dpi=100)
@@ -127,7 +203,7 @@ class NeuralNetwork:
     def load_data(self, gen_id, dna=None):
         if dna is not None:
             self.weights = dna[0]
-            self.bias = dna[2]
+            self.bias = dna[1]
         else:
             file_path = Path(
                 "genetic_data/data_{}_{}.pickle".format(gen_id[0], gen_id[1])
@@ -140,78 +216,6 @@ class NeuralNetwork:
                 print("Initialising random NN")
                 self.weights = np.random.normal(size=self.nb_weights)
                 self.bias = np.random.normal(size=self.nb_neurons)
-
-    @property
-    def nb_weights(self):
-        list_nb = list(
-            itertools.chain([self.input_nb], self.hidden_nb[:], [self.output_nb])
-        )
-        res = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
-        return res
-
-    @property
-    def act_input(self):
-        return self.act[: self.input_nb]
-
-    @act_input.setter
-    def act_input(self, value):
-        self.act[: self.input_nb] = value
-
-    def act_hidden(self, idx):
-        if idx == -1:
-            return self.act[0 : self.input_nb]
-        elif idx == 0:
-            return self.act[self.input_nb : self.input_nb + self.hidden_nb[idx]]
-        else:
-            return self.act[
-                self.input_nb
-                + sum(self.hidden_nb[:idx]) : self.input_nb
-                + sum(self.hidden_nb[: idx + 1])
-            ]
-
-    # @act_hidden.setter
-    # def act_hidden(self, idx, value):
-    #     self.act[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
-
-    @property
-    def act_output(self):
-        return self.act[self.input_nb + sum(self.hidden_nb) :]
-
-    @act_output.setter
-    def act_output(self, value):
-        self.act[self.input_nb + sum(self.hidden_nb) :] = value
-
-    @property
-    def bias_input(self):
-        return self.bias[: self.input_nb]
-
-    @bias_input.setter
-    def bias_input(self, value):
-        self.bias[: self.input_nb] = value
-
-    def bias_hidden(self, idx):
-        if idx == -1:
-            return self.bias[0 : self.input_nb]
-        elif idx == 0:
-            return self.bias[self.input_nb : self.input_nb + self.hidden_nb[idx]]
-        else:
-            return self.bias[
-                self.input_nb
-                + sum(self.hidden_nb[:idx]) : self.input_nb
-                + sum(self.hidden_nb[: idx + 1])
-            ]
-
-    @bias_hidden.setter
-    def bias_hidden(self, value):
-        self.bias[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
-
-    @property
-    def bias_output(self):
-        return self.bias[self.input_nb + sum(self.hidden_nb) :]
-
-    @bias_output.setter
-    def bias_output(self, value):
-        self.bias[self.input_nb + sum(self.hidden_nb) :] = value
 
 
 if __name__ == "__main__":

@@ -14,17 +14,17 @@ def test_nb_weights():
     assert result == expected
 
 
-def test_act_hidden():
+def test_activation_layer():
     nn = NeuralNetwork(hidden_nb=[4, 5, 6])
 
     nn.act[6:10] = np.ones(4)
     nn.act[10:15] = np.ones(5) * 2
     nn.act[15:21] = np.ones(6) * 3
 
-    assert np.all(nn.act_hidden(-1) == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    assert np.all(nn.act_hidden(0) == [1.0, 1.0, 1.0, 1.0])
-    assert np.all(nn.act_hidden(1) == [2.0, 2.0, 2.0, 2.0, 2.0])
-    assert np.all(nn.act_hidden(2) == [3.0, 3.0, 3.0, 3.0, 3.0, 3.0])
+    assert np.all(nn.activation_layer(-1) == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    assert np.all(nn.activation_layer(0) == [1.0, 1.0, 1.0, 1.0])
+    assert np.all(nn.activation_layer(1) == [2.0, 2.0, 2.0, 2.0, 2.0])
+    assert np.all(nn.activation_layer(2) == [3.0, 3.0, 3.0, 3.0, 3.0, 3.0])
 
 
 def test_plot():
