@@ -189,9 +189,17 @@ class NeuralNetwork:
     def bias_input(self, value):
         self.bias[: self.input_nb] = value
 
-    @property
-    def bias_hidden(self):
-        return self.bias[self.input_nb : self.input_nb + sum(self.hidden_nb)]
+    def bias_hidden(self, idx):
+        if idx == -1:
+            return self.bias[0 : self.input_nb]
+        elif idx == 0:
+            return self.bias[self.input_nb : self.input_nb + self.hidden_nb[idx]]
+        else:
+            return self.bias[
+                self.input_nb
+                + sum(self.hidden_nb[:idx]) : self.input_nb
+                + sum(self.hidden_nb[: idx + 1])
+            ]
 
     @bias_hidden.setter
     def bias_hidden(self, value):
@@ -204,54 +212,6 @@ class NeuralNetwork:
     @bias_output.setter
     def bias_output(self, value):
         self.bias[self.input_nb + sum(self.hidden_nb) :] = value
-
-    @property
-    def x_input(self):
-        return self.x[: self.input_nb]
-
-    @x_input.setter
-    def x_input(self, value):
-        self.x[: self.input_nb] = value
-
-    @property
-    def x_hidden(self):
-        return self.x[self.input_nb : self.input_nb + sum(self.hidden_nb)]
-
-    @x_hidden.setter
-    def x_hidden(self, value):
-        self.x[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
-
-    @property
-    def x_output(self):
-        return self.x[self.input_nb + sum(self.hidden_nb) :]
-
-    @x_output.setter
-    def x_output(self, value):
-        self.x[self.input_nb + sum(self.hidden_nb) :] = value
-
-    @property
-    def y_input(self):
-        return self.y[: self.input_nb]
-
-    @y_input.setter
-    def y_input(self, value):
-        self.y[: self.input_nb] = value
-
-    @property
-    def y_hidden(self):
-        return self.y[self.input_nb : self.input_nb + sum(self.hidden_nb)]
-
-    @y_hidden.setter
-    def y_hidden(self, value):
-        self.y[self.input_nb : self.input_nb + sum(self.hidden_nb)] = value
-
-    @property
-    def y_output(self):
-        return self.y[self.input_nb + sum(self.hidden_nb) :]
-
-    @y_output.setter
-    def y_output(self, value):
-        self.y[self.input_nb + sum(self.hidden_nb) :] = value
 
 
 if __name__ == "__main__":
