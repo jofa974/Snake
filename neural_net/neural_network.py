@@ -59,11 +59,14 @@ class NeuralNetwork:
 
     def forward(self, input_data):
         self.set_activation_layer(-1, input_data)
-        for n_layer in range(1, len(self.hidden_nb) + 2):
-            w = self.weights(n_layer)
-            a = self.activation_layer(n_layer - 1)
-            b = self.bias_layer_idx(n_layer)
-            self.set_activation_layer(n_layer, forward_layer(w, b, a, self.sigmoid))
+        for n_layer in range(len(self.hidden_nb) + 2):
+            ww = self.weights_layer_idx(n_layer)
+            aa = self.activation_layer(n_layer - 1)
+            bb = self.bias_layer_idx(n_layer)
+            import pdb
+
+            pdb.set_trace()
+            self.set_activation_layer(n_layer, forward_layer(ww, bb, aa, self.sigmoid))
 
     @property
     def nb_weights(self):
