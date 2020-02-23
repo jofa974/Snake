@@ -22,7 +22,7 @@ def cross_over(data1, data2):
     #                       axis=None)
 
 
-def mutate(data, rate=0.15):
+def mutate(data, rate=0.05):
     old = deepcopy(data).flatten()
     d_shape = data.shape
     for i in range(len(old)):
@@ -38,10 +38,12 @@ def mutate(data, rate=0.15):
 
 
 def generate_child(parent1, parent2):
-    new_weights = cross_over(parent1[0], parent2[0])
-    new_biases = cross_over(parent1[1], parent2[1])
-    new_weights = mutate(new_weights)
-    new_biases = mutate(new_biases)
+    # new_weights = cross_over(parent1[0], parent2[0])
+    # new_biases = cross_over(parent1[1], parent2[1])
+    # new_weights = mutate(new_weights)
+    # new_biases = mutate(new_biases)
+    new_weights = parent1[0]
+    new_biases = parent1[1]
     return (new_weights, new_biases)
 
 
