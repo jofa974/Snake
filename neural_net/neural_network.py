@@ -28,7 +28,7 @@ def create_surf_from_figure_on_canvas(fig):
 
 
 class NeuralNetwork:
-    def __init__(self, gen_id=(-1, -1), dna=None, hidden_nb=[4, 5]):
+    def __init__(self, gen_id=(-1, -1), dna=None, hidden_nb=[5, 4]):
         self.input_nb = 6
         self.output_nb = 3
         self.hidden_nb = hidden_nb
@@ -54,7 +54,7 @@ class NeuralNetwork:
 
     def decide_direction(self):
         decisions = ["forward", "left", "right"]
-        idx_max = np.argmax(self.act_output)
+        idx_max = np.argmax(self.get_layer_data(len(self.hidden_nb), self.act))
         return decisions[idx_max]
 
     def forward(self, input_data):
@@ -90,6 +90,8 @@ class NeuralNetwork:
             return data[0 : self.input_nb]
         elif layer_idx == 0:
             return data[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
+        elif layer_idx == len(self.hidden_nb):
+            return data[self.input_nb + sum(self.hidden_nb) :]
         else:
             return data[
                 self.input_nb
@@ -102,6 +104,8 @@ class NeuralNetwork:
             data[0 : self.input_nb] = values
         elif layer_idx == 0:
             data[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]] = values
+        elif layer_idx == len(self.hidden_nb):
+            data[self.input_nb + sum(self.hidden_nb) :] = values
         else:
             data[
                 self.input_nb
@@ -117,7 +121,7 @@ class NeuralNetwork:
             return self.weights[inf:]
         else:
             inf = self.count_weights_before_layer(layer_idx)
-            sup = self.hidden_nb[layer_idx] * self.hidden_nb[layer_idx + 1]
+            sup = inf + self.hidden_nb[layer_idx - 1] * self.hidden_nb[layer_idx]
             return self.weights[inf:sup]
 
     def plot(self):
@@ -192,7 +196,7 @@ class NeuralNetwork:
                 print("Loading generation {} id {}".format(gen_id[0], gen_id[1]))
                 fitness, self.weights, self.bias = pickle.load(f)
             except IOError:
-                print("Initialising random NN")
+                # print("Initialising random NN")
                 self.weights = np.random.normal(size=self.nb_weights)
                 self.bias = np.random.normal(size=self.nb_neurons)
 
