@@ -58,15 +58,14 @@ class NeuralNetwork:
         return decisions[idx_max]
 
     def forward(self, input_data):
-        self.set_activation_layer(-1, input_data)
-        for n_layer in range(len(self.hidden_nb) + 2):
+        self.set_layer_data(-1, self.act, input_data)
+        for n_layer in range(len(self.hidden_nb) + 1):
             ww = self.weights_layer_idx(n_layer)
-            aa = self.activation_layer(n_layer - 1)
-            bb = self.bias_layer_idx(n_layer)
-            import pdb
-
-            pdb.set_trace()
-            self.set_activation_layer(n_layer, forward_layer(ww, bb, aa, self.sigmoid))
+            aa = self.get_layer_data(n_layer - 1, self.act)
+            bb = self.get_layer_data(n_layer, self.bias)
+            self.set_layer_data(
+                n_layer, self.act, forward_layer(ww, bb, aa, self.sigmoid)
+            )
 
     @property
     def nb_weights(self):
@@ -76,51 +75,35 @@ class NeuralNetwork:
         res = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
         return res
 
-    def activation_layer(self, layer_idx):
-        if layer_idx == -1:
-            return self.act[0 : self.input_nb]
-        elif layer_idx == 0:
-            return self.act[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
+    def count_weights_before_layer(self, layer_idx):
+        if layer_idx == 0:
+            return 0
+        elif layer_idx < sum(self.hidden_nb) + 2:
+            list_nb = list(itertools.chain([self.input_nb], self.hidden_nb[:layer_idx]))
+            weights_nb = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+            return weights_nb
         else:
-            return self.act[
+            raise ValueError("Invalid layer index")
+
+    def get_layer_data(self, layer_idx, data):
+        if layer_idx == -1:
+            return data[0 : self.input_nb]
+        elif layer_idx == 0:
+            return data[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
+        else:
+            return data[
                 self.input_nb
                 + sum(self.hidden_nb[:layer_idx]) : self.input_nb
                 + sum(self.hidden_nb[: layer_idx + 1])
             ]
 
-    def set_activation_layer(self, layer_idx, values):
+    def set_layer_data(self, layer_idx, data, values):
         if layer_idx == -1:
-            self.act[0 : self.input_nb] = values
+            data[0 : self.input_nb] = values
         elif layer_idx == 0:
-            self.act[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]] = values
+            data[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]] = values
         else:
-            self.act[
-                self.input_nb
-                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
-                + sum(self.hidden_nb[: layer_idx + 1])
-            ] = values
-
-    def bias_layer_idx(self, layer_idx):
-        if layer_idx == -1:
-            return self.bias[0 : self.input_nb]
-        elif layer_idx == 0:
-            return self.bias[self.input_nb : self.input_nb + self.hidden_nb[layer_idx]]
-        else:
-            return self.bias[
-                self.input_nb
-                + sum(self.hidden_nb[:layer_idx]) : self.input_nb
-                + sum(self.hidden_nb[: layer_idx + 1])
-            ]
-
-    def set_bias_layer_idx(self, layer_idx, values):
-        if layer_idx == -1:
-            self.bias[0 : self.input_nb] = values
-        elif layer_idx == 0:
-            self.bias[
-                self.input_nb : self.input_nb + self.hidden_nb[layer_idx]
-            ] = values
-        else:
-            self.bias[
+            data[
                 self.input_nb
                 + sum(self.hidden_nb[:layer_idx]) : self.input_nb
                 + sum(self.hidden_nb[: layer_idx + 1])
@@ -129,19 +112,12 @@ class NeuralNetwork:
     def weights_layer_idx(self, layer_idx):
         if layer_idx == 0:
             return self.weights[: self.input_nb * self.hidden_nb[0]]
-        elif layer_idx == len(self.hidden_nb) + 1:
-            list_nb = list(
-                itertools.chain([self.input_nb], self.hidden_nb[: layer_idx - 1])
-            )
-            inf = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+        elif layer_idx == len(self.hidden_nb):
+            inf = self.count_weights_before_layer(layer_idx)
             return self.weights[inf:]
         else:
-            list_nb = list(itertools.chain([self.input_nb], self.hidden_nb[:layer_idx]))
-            inf = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
-            list_nb = list(
-                itertools.chain([self.input_nb], self.hidden_nb[: layer_idx + 1])
-            )
-            sup = sum([i * j for i, j in zip(list_nb, list_nb[1:])])
+            inf = self.count_weights_before_layer(layer_idx)
+            sup = self.hidden_nb[layer_idx] * self.hidden_nb[layer_idx + 1]
             return self.weights[inf:sup]
 
     def plot(self):
