@@ -1,7 +1,8 @@
-import pygame
 import os
 
-data_dir = os.path.join('/home/jonathan/Projects/PyGames/Snake/graphics')
+import pygame
+
+data_dir = os.path.join("/home/jonathan/Projects/PyGames/Snake/graphics")
 
 BASE_SIZE = 20
 X_GRID = 30

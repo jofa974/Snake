@@ -1,34 +1,47 @@
+import itertools
+import time
+
 import matplotlib
 import matplotlib.backends.backend_agg as agg
-import itertools
+import matplotlib.pyplot as plt
 import pygame
-import time
-import ui
+
 import game
+import ui
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.neural_network import NeuralNetwork
-import matplotlib.pyplot as plt
+
+
+def read_training_data():
+    training_data = []
+    with open("apple_position.in", "r") as f:
+        for line in f.readlines():
+            training_data.append((int(line.split()[0]), int(line.split()[1])))
+    return training_data
+
+
+def play_individual(individual, gen_nb, game_id, training_data):
+    game = NN_GA(display=False, gen_id=(gen_nb, game_id), dna=individual)
+    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
+    return fitness
 
 
 class NN_GA(game.Game):
+    """
+    Class that will play the game with a neural network optimized using a genetic algorithm.
+    """
+
     def __init__(self, display, gen_id=(-1, -1), dna=None):
         super().__init__()
         self.display = display
         self.nn = NeuralNetwork(gen_id, dna)
         self.gen_id = gen_id
 
-    def play(self, max_move, dump=False, learn=True):
-        if learn:
-            apple_x = []
-            apple_y = []
-            with open("apple_position.in", "r") as f:
-                lines = f.readlines()
-                for l in lines:
-                    apple_x.append(int(l.split()[0]))
-                    apple_y.append(int(l.split()[1]))
-            apple_pos = itertools.cycle([(x, y) for x, y in zip(apple_x, apple_y)])
-            self.apple = Apple(xy=next(apple_pos))
+    def play(self, max_move, dump=False, training_data=None):
+        if training_data:
+            training_data = itertools.cycle(training_data)
+            self.apple = Apple(xy=next(training_data))
         else:
             self.apple = Apple()
 
@@ -39,8 +52,8 @@ class NN_GA(game.Game):
 
         if self.display:
             matplotlib.use("Agg")
-            pygame.display.set_caption('Snake: Neural Network mode')
-            myfont = pygame.font.SysFont('Comic Sans MS', 30)
+            pygame.display.set_caption("Snake: Neural Network mode")
+            myfont = pygame.font.SysFont("Comic Sans MS", 30)
             fig = plt.figure(figsize=[5, 5], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
@@ -61,11 +74,13 @@ class NN_GA(game.Game):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            prev_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=2)
+            prev_dist = self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.apple.get_position(), norm=2
+            )
             self.snake.move()
-            new_dist = self.snake.get_distance_to_apple(
-                self.snake.get_position(0), self.apple, norm=2)
+            new_dist = self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.apple.get_position(), norm=2
+            )
 
             if new_dist < prev_dist:
                 fitness += 2
@@ -79,8 +94,8 @@ class NN_GA(game.Game):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
-                if learn:
-                    x, y = next(apple_pos)
+                if training_data:
+                    x, y = next(training_data)
                     self.apple.new(x, y)
                 else:
                     self.apple.new_random()
@@ -88,12 +103,13 @@ class NN_GA(game.Game):
                 fitness += 20
 
             if self.display:
-                score_text = myfont.render('Score: {}'.format(score), False,
-                                           ui.WHITE)
-                fitness_text = myfont.render('Fitness: {}'.format(fitness),
-                                             False, ui.WHITE)
-                moves_text = myfont.render('Moves: {}'.format(nb_moves), False,
-                                           ui.WHITE)
+                score_text = myfont.render("Score: {}".format(score), False, ui.WHITE)
+                fitness_text = myfont.render(
+                    "Fitness: {}".format(fitness), False, ui.WHITE
+                )
+                moves_text = myfont.render(
+                    "Moves: {}".format(nb_moves), False, ui.WHITE
+                )
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(score_text, (ui.WIDTH + 50, 50))
@@ -115,9 +131,9 @@ class NN_GA(game.Game):
         return score, fitness
 
     def get_move_from_direction(self, direction):
-        if direction == 'forward':
-            return 'forward'
-        if direction == 'left':
+        if direction == "forward":
+            return "forward"
+        if direction == "left":
             if self.snake.speed[0] > 0:
                 return pygame.K_UP
             if self.snake.speed[0] < 0:
@@ -126,7 +142,7 @@ class NN_GA(game.Game):
                 return pygame.K_RIGHT
             if self.snake.speed[1] < 0:
                 return pygame.K_LEFT
-        if direction == 'right':
+        if direction == "right":
             if self.snake.speed[0] > 0:
                 return pygame.K_DOWN
             if self.snake.speed[0] < 0:
@@ -137,12 +153,13 @@ class NN_GA(game.Game):
                 return pygame.K_RIGHT
 
     def get_input_data(self):
+        apple_pos = self.apple.get_position()
         input_data = [
             self.snake.is_clear_ahead(),
             self.snake.is_clear_left(),
             self.snake.is_clear_right(),
-            self.snake.is_food_ahead(self.apple),
-            self.snake.is_food_left(self.apple),
-            self.snake.is_food_right(self.apple)
+            self.snake.is_food_ahead(apple_pos),
+            self.snake.is_food_left(apple_pos),
+            self.snake.is_food_right(apple_pos),
         ]
         return input_data
