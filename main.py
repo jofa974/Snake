@@ -51,7 +51,7 @@ def main(args):
         all_fitness = np.zeros([nb_gen, nb_games])
         for i in range(nb_gen):
             print("Generation: {}".format(i))
-            # if (i % 15) == 0:
+            # if (i % 7) == 0:
             #     print("Generating new random training input")
             #     gen_xy()
             if i > 0:
