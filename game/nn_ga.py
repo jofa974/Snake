@@ -44,6 +44,7 @@ class NN_GA(game.Game):
             matplotlib.use("Agg")
             pygame.display.set_caption("Snake: Neural Network mode")
             myfont = pygame.font.SysFont("Comic Sans MS", 30)
+            fig = plt.figure(figsize=[5, 5], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
 
@@ -107,7 +108,7 @@ class NN_GA(game.Game):
                 self.walls.draw(self.screen)
                 self.snake.draw(self.screen)
                 self.apple.draw(self.screen)
-                fig = self.nn.plot()
+                self.nn.plot(fig)
                 surf = create_surf_from_figure_on_canvas(fig)
                 self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
                 pygame.display.flip()

@@ -12,18 +12,19 @@ def select_best_parents(pickled_data, nb_best):
 
 
 def cross_over(data1, data2):
-    result = data1[:]
-    randR = np.random.randint(len(data1))
-    for i in range(len(data1)):
-        if i > randR:
-            result[i] = data2[i]
-    return result
-    # return np.concatenate((data1[0:len(data1) // 2], data2[len(data2) // 2:]),
-    #                       axis=None)
+    # result = data1[:]
+    # randR = np.random.randint(len(data1))
+    # for i in range(len(data1)):
+    #     if i > randR:
+    #         result[i] = data2[i]
+    # return result
+    return np.concatenate(
+        (data1[0 : len(data1) // 2], data2[len(data2) // 2 :]), axis=None
+    )
 
 
-def mutate(data, rate=0.05):
-    old = deepcopy(data).flatten()
+def mutate(data, rate=0.20):
+    old = deepcopy(data)
     d_shape = data.shape
     for i in range(len(old)):
         r = np.random.rand()
@@ -38,12 +39,12 @@ def mutate(data, rate=0.05):
 
 
 def generate_child(parent1, parent2):
-    # new_weights = cross_over(parent1[0], parent2[0])
-    # new_biases = cross_over(parent1[1], parent2[1])
-    # new_weights = mutate(new_weights)
-    # new_biases = mutate(new_biases)
-    new_weights = parent1[0]
-    new_biases = parent1[1]
+    new_weights = cross_over(parent1[0], parent2[0])
+    new_biases = cross_over(parent1[1], parent2[1])
+    new_weights = mutate(parent1[0])
+    new_biases = mutate(parent1[1])
+    # new_weights = parent1[0]
+    # new_biases = parent1[1]
     return (new_weights, new_biases)
 
 
@@ -57,15 +58,15 @@ def generate_new_population(path, gen, nb_pop, nb_best):
     new_pop = select_best_parents(gen_data, nb_best)
     couples = itertools.combinations(new_pop, 2)
     while True:
-        try:
-            parent1, parent2 = next(couples)
-            child = generate_child(parent1, parent2)
-            new_pop.append(child)
-        except StopIteration:
-            new_pop.append(new_pop[0])
-        finally:
-            if len(new_pop) == nb_pop:
-                return new_pop
+        if len(new_pop) == nb_pop:
+            return new_pop
+        else:
+            try:
+                parent1, parent2 = next(couples)
+                child = generate_child(parent1, parent2)
+                new_pop.append(child)
+            except StopIteration:
+                new_pop.append(new_pop[0])
 
 
 if __name__ == "__main__":

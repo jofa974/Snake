@@ -124,8 +124,7 @@ class NeuralNetwork:
             sup = inf + self.hidden_nb[layer_idx - 1] * self.hidden_nb[layer_idx]
             return self.weights[inf:sup]
 
-    def plot(self):
-        fig = plt.figure(figsize=[5, 5], dpi=100)
+    def plot(self, fig):
         left, right, bottom, top = (
             0.1,
             0.9,
@@ -176,7 +175,6 @@ class NeuralNetwork:
                     ax.add_artist(line)
                     i += 1
         ax.set_aspect("equal", adjustable="box")
-        return fig
 
     def dump_data(self, gen_id, fitness):
         file_path = Path("genetic_data/data_{}_{}.pickle".format(gen_id[0], gen_id[1]))
