@@ -63,9 +63,7 @@ class NeuralNetwork:
             ww = self.weights_layer_idx(n_layer)
             aa = self.get_layer_data(n_layer - 1, self.act)
             bb = self.get_layer_data(n_layer, self.bias)
-            self.set_layer_data(
-                n_layer, self.act, forward_layer(ww, bb, aa, self.sigmoid)
-            )
+            self.set_layer_data(n_layer, self.act, forward_layer(ww, bb, aa, self.relu))
 
     @property
     def nb_weights(self):
