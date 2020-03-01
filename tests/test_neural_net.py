@@ -112,7 +112,10 @@ def test_plot():
     nn.act[12:17] = np.ones(5) * 2
     nn.act[17:21] = np.ones(4) * 3
 
-    fig = nn.plot()
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
+    nn.plot(fig)
     plt.show()
 
 
