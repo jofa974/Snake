@@ -198,7 +198,14 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
-    nn = NeuralNetwork()
-    input_data = np.random.randn(6)
-    nn.forward(input_data)
-    nn.plot()
+    nn = NeuralNetwork(hidden_nb=[6, 5, 4])
+
+    nn.act[6:12] = np.ones(6)
+    nn.act[12:17] = np.ones(5) * 2
+    nn.act[17:21] = np.ones(4) * 3
+
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
+    nn.plot(fig)
+    plt.show()

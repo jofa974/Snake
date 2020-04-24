@@ -105,20 +105,6 @@ def test_weights_layer_idx():
     assert np.all(expected_layer_2 == nn.weights_layer_idx(2))
 
 
-def test_plot():
-    nn = NeuralNetwork(hidden_nb=[6, 5, 4])
-
-    nn.act[6:12] = np.ones(6)
-    nn.act[12:17] = np.ones(5) * 2
-    nn.act[17:21] = np.ones(4) * 3
-
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure()
-    nn.plot(fig)
-    plt.show()
-
-
 def test_forward_layer():
     input_nb = 3
     output_nb = 2
