@@ -1,3 +1,12 @@
 __pycache__
 */__pycache__
 *.pyc
+*.html
+.projectile
+.coverage
+.cache
+
+save_data*
+*.in
+genetic_data
+
