@@ -1,6 +1,9 @@
-name: Python application
+name: Playable Snake game by human or AI.
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
