@@ -10,7 +10,7 @@ from game import Game
 
 class Human(Game):
     def __init__(self):
-        super().__init__()
+        super().__init__(do_display=True)
         pygame.display.set_caption("Snake: Human mode")
 
     def play(self):

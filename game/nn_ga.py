@@ -1,17 +1,15 @@
 import itertools
 import time
 
+import game
 import matplotlib
 import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import pygame
-
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.neural_network import (NeuralNetwork,
-                                       create_surf_from_figure_on_canvas)
+from neural_net.neural_network import NeuralNetwork, create_surf_from_figure_on_canvas
 
 
 def read_training_data():
@@ -23,19 +21,19 @@ def read_training_data():
 
 
 def play_individual(individual, gen_nb, game_id, training_data):
-    game = NN_GA(display=False, gen_id=(gen_nb, game_id), dna=individual)
+    game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
     score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
 class NN_GA(game.Game):
     """
-    Class that will play the game with a neural network optimized using a genetic algorithm.
+    Class that will play the game with a neural network optimized
+    using a genetic algorithm.
     """
 
-    def __init__(self, display, gen_id=(-1, -1), dna=None):
-        super().__init__()
-        self.display = display
+    def __init__(self, do_display, gen_id=(-1, -1), dna=None):
+        super().__init__(do_display=do_display)
         self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[5, 4])
         self.gen_id = gen_id
 
@@ -51,7 +49,7 @@ class NN_GA(game.Game):
         fitness = 0
         nb_moves = 0
 
-        if self.display:
+        if self.do_display:
             matplotlib.use("Agg")
             pygame.display.set_caption("Snake: Neural Network mode")
             myfont = pygame.font.SysFont("Comic Sans MS", 30)
@@ -103,7 +101,7 @@ class NN_GA(game.Game):
                 score += 1
                 fitness += 20
 
-            if self.display:
+            if self.do_display:
                 score_text = myfont.render("Score: {}".format(score), False, ui.WHITE)
                 fitness_text = myfont.render(
                     "Fitness: {}".format(fitness), False, ui.WHITE

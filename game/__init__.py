@@ -1,22 +1,27 @@
 import pygame
 
-import ui
+from ui import HEIGHT, WIDTH
 from components.walls import Wall
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, do_display=False):
         pygame.init()
-        w = max(1600, 2 * ui.WIDTH)
-        h = max(800, ui.HEIGHT)
-        self.screen = pygame.display.set_mode((w, h))
+        w = max(1600, 2 * WIDTH)
+        h = max(800, HEIGHT)
+
         self.walls = pygame.sprite.Group()
-        wall_left = Wall(0, 0, Wall.WALL_WIDTH, ui.HEIGHT)
-        wall_right = Wall(ui.WIDTH - Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH, ui.HEIGHT)
-        wall_top = Wall(0, 0, ui.WIDTH, Wall.WALL_WIDTH)
-        wall_bottom = Wall(0, ui.HEIGHT - Wall.WALL_WIDTH, ui.WIDTH, Wall.WALL_WIDTH)
+        wall_left = Wall(0, 0, Wall.WALL_WIDTH, HEIGHT)
+        wall_right = Wall(WIDTH - Wall.WALL_WIDTH, 0, Wall.WALL_WIDTH, HEIGHT)
+        wall_top = Wall(0, 0, WIDTH, Wall.WALL_WIDTH)
+        wall_bottom = Wall(0, HEIGHT - Wall.WALL_WIDTH, WIDTH, Wall.WALL_WIDTH)
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
+
+        self.do_display = do_display
+        self.screen = None
+        if do_display:
+            self.screen = pygame.display.set_mode((w, h))
 
     def play(self):
         pass

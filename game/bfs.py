@@ -9,26 +9,27 @@ from components.snake import Snake
 
 
 class BFS(game.Game):
-    def __init__(self, display):
-        super().__init__()
+    def __init__(self, do_display):
+        super().__init__(do_display=do_display)
         self.moves = []
         self.grid = []
-        self.display = display
         for y in range(ui.Y_GRID):
             grid = []
             for x in range(ui.X_GRID):
                 grid.append(
-                    pygame.Rect(x * ui.BASE_SIZE, y * ui.BASE_SIZE,
-                                ui.BASE_SIZE, ui.BASE_SIZE))
+                    pygame.Rect(
+                        x * ui.BASE_SIZE, y * ui.BASE_SIZE, ui.BASE_SIZE, ui.BASE_SIZE
+                    )
+                )
             self.grid.append(grid)
 
     def play(self):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
-        if self.display:
-            pygame.display.set_caption('Snake: BFS mode')
-            myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        if self.do_display:
+            pygame.display.set_caption("Snake: BFS mode")
+            myfont = pygame.font.SysFont("Comic Sans MS", 30)
         while not self.snake.dead:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -57,9 +58,8 @@ class BFS(game.Game):
                 self.apple.new_random()
                 score += 1
 
-            if self.display:
-                textsurface = myfont.render('Score: {}'.format(score),
-                                               False, ui.WHITE)
+            if self.do_display:
+                textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
@@ -72,8 +72,7 @@ class BFS(game.Game):
         return score
 
     def make_grid_map(self):
-        self.grid_map = [[True for _ in range(ui.X_GRID)]
-                         for _ in range(ui.Y_GRID)]
+        self.grid_map = [[True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)]
         self.grid_map[0][:] = [False for _ in range(ui.X_GRID)]
         self.grid_map[-1][:] = [False for _ in range(ui.X_GRID)]
         for i in range(ui.Y_GRID):
@@ -94,10 +93,12 @@ class BFS(game.Game):
             nextp = path[-1]
             if nextp == end:
                 return path
-            neighbors = (nextp[0]+1, nextp[1]), \
-                        (nextp[0]-1, nextp[1]), \
-                        (nextp[0], nextp[1]+1), \
-                        (nextp[0], nextp[1]-1)
+            neighbors = (
+                (nextp[0] + 1, nextp[1]),
+                (nextp[0] - 1, nextp[1]),
+                (nextp[0], nextp[1] + 1),
+                (nextp[0], nextp[1] - 1),
+            )
             for neighbor in neighbors:
                 xn = neighbor[0]
                 yn = neighbor[1]
@@ -115,25 +116,25 @@ class BFS(game.Game):
             for place in path[1:]:
                 if place[0] - current[0] == 1:
                     if direction[1] == 0:
-                        self.moves.append('forward')
+                        self.moves.append("forward")
                     else:
                         self.moves.append(pygame.K_RIGHT)
                         direction = (ui.BASE_SPEED, 0)
                 if place[0] - current[0] == -1:
                     if direction[1] == 0:
-                        self.moves.append('forward')
+                        self.moves.append("forward")
                     else:
                         self.moves.append(pygame.K_LEFT)
                         direction = (-ui.BASE_SPEED, 0)
                 if place[1] - current[1] == 1:
                     if direction[0] == 0:
-                        self.moves.append('forward')
+                        self.moves.append("forward")
                     else:
                         self.moves.append(pygame.K_DOWN)
                         direction = (0, ui.BASE_SPEED)
                 if place[1] - current[1] == -1:
                     if direction[0] == 0:
-                        self.moves.append('forward')
+                        self.moves.append("forward")
                     else:
                         self.moves.append(pygame.K_UP)
                         direction = (0, -ui.BASE_SPEED)

@@ -36,11 +36,11 @@ def main(args):
     elif args.bfs > 0:
         nb_games = args.bfs
         if nb_games == 1:
-            game = bfs.BFS(display=True)
+            game = bfs.BFS(do_display=True)
             game.play()
         else:
             all_score = np.zeros(nb_games)
-            game = bfs.BFS(display=False)
+            game = bfs.BFS(do_display=False)
             for i in range(nb_games):
                 score = game.play()
                 all_score[i] = score
@@ -82,7 +82,7 @@ def main(args):
                 all_fitness[i][:] = np.array(list(results))
         pygame.quit()
     elif args.genetic:
-        game = nn_ga.NN_GA(display=True, gen_id=args.genetic)
+        game = nn_ga.NN_GA(do_display=True, gen_id=args.genetic)
         nb_games = 1
         game.play(max_move=10000, dump=False, training_data=None)
         pygame.quit()
