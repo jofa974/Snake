@@ -11,11 +11,12 @@ from game import Game
 class Human(Game):
     def __init__(self):
         super().__init__(do_display=True)
+
         pygame.display.set_caption("Snake: Human mode")
 
     def play(self):
-        self.apple = Apple()
         self.snake = Snake()
+        self.apple = Apple()
         myfont = pygame.font.SysFont("Comic Sans MS", 30)
         score = 0
 

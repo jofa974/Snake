@@ -12,18 +12,17 @@ def select_best_parents(pickled_data, nb_best):
 
 
 def cross_over(data1, data2):
-    # result = data1[:]
-    # randR = np.random.randint(len(data1))
-    # for i in range(len(data1)):
-    #     if i > randR:
-    #         result[i] = data2[i]
-    # return result
-    return np.concatenate(
-        (data1[0 : len(data1) // 2], data2[len(data2) // 2 :]), axis=None
-    )
+    result = np.zeros_like(data1)
+    for i in range(len(data1)):
+        randR = np.random.uniform()
+        if randR < 0.5:
+            result[i] = data1[i]
+        else:
+            result[i] = data2[i]
+    return result
 
 
-def mutate(data, rate=0.20):
+def mutate(data, rate=0.30):
     old = deepcopy(data)
     d_shape = data.shape
     for i in range(len(old)):

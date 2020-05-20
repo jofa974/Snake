@@ -1,15 +1,17 @@
 import itertools
 import time
 
-import game
 import matplotlib
 import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import pygame
+
+import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.neural_network import NeuralNetwork, create_surf_from_figure_on_canvas
+from neural_net.neural_network import (NeuralNetwork,
+                                       create_surf_from_figure_on_canvas)
 
 
 def read_training_data():
@@ -34,7 +36,7 @@ class NN_GA(game.Game):
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None):
         super().__init__(do_display=do_display)
-        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[5, 4])
+        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[4])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
@@ -124,7 +126,6 @@ class NN_GA(game.Game):
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
-
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 

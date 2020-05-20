@@ -169,6 +169,7 @@ class NeuralNetwork:
                         [n * h_spacing + left, (n + 1) * h_spacing + left],
                         [layer_top_a - m * v_spacing, layer_top_b - o * v_spacing],
                         c=color,
+                        lw=abs(weights[i]) * 1,
                     )
                     ax.add_artist(line)
                     i += 1

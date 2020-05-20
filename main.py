@@ -84,7 +84,9 @@ def main(args):
     elif args.genetic:
         game = nn_ga.NN_GA(do_display=True, gen_id=args.genetic)
         nb_games = 1
-        game.play(max_move=10000, dump=False, training_data=None)
+        # Read training_data
+        training_data = nn_ga.read_training_data()
+        game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     else:
         raise NotImplementedError("This game mode has not been implemented yet")
