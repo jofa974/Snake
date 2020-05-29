@@ -14,7 +14,7 @@ import pygame
 from game import bfs, human, nn_ga, random
 from gen_xy import gen_xy
 from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import plot_fitness, show_stats
+from stats.stats import read_fitness, show_fitness, show_stats
 
 
 def cleanup(path):
@@ -127,4 +127,5 @@ if __name__ == "__main__":
     print("--- %s seconds ---" % (time.time() - start_time))
 
     if args.nnga_learn:
-        plot_fitness(args.nnga_learn[0], args.nnga_learn[1])
+        all_fitness = read_fitness(args.nnga_learn[0], args.nnga_learn[1])
+        show_fitness(all_fitness)

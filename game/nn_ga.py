@@ -1,12 +1,12 @@
 import itertools
+import math
 import time
 
+import game
 import matplotlib
 import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import pygame
-
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
@@ -36,7 +36,7 @@ class NN_GA(game.Game):
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None):
         super().__init__(do_display=do_display)
-        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[4])
+        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[5, 5, 4])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
@@ -83,10 +83,10 @@ class NN_GA(game.Game):
                 self.snake.get_position(0), self.apple.get_position(), norm=2
             )
 
-            if new_dist < prev_dist:
-                fitness += 2
-            else:
-                fitness -= 3
+            # if new_dist < prev_dist:
+            #     fitness += 2
+            # else:
+            #     fitness -= 3
 
             self.snake.detect_collisions()
             if self.snake.dead:
@@ -101,7 +101,7 @@ class NN_GA(game.Game):
                 else:
                     self.apple.new_random()
                 score += 1
-                fitness += 20
+                # fitness += 5
 
             if self.do_display:
                 score_text = myfont.render("Score: {}".format(score), False, ui.WHITE)
@@ -126,6 +126,11 @@ class NN_GA(game.Game):
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
+            fitness = (
+                nb_moves
+                + (math.pow(2, score) + math.pow(score, 2.1) * 500)
+                - (math.pow(score, 1.2) * math.pow(0.25 * score, 1.3))
+            )
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 
