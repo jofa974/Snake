@@ -6,6 +6,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objects as go
+from dash.dependencies import Input, Output, State
 
 from neural_net.neural_network import NeuralNetwork
 from stats.stats import read_fitness
@@ -31,16 +32,31 @@ def build_fitness_figure():
     return fig
 
 
-def build_nn_figure():
-    nn = NeuralNetwork(gen_id=(19, 0), dna=None, hidden_nb=[4])
-    nn.act[5] = 1
+@app.callback(
+    Output("nn-figure", "figure"),
+    [Input("generation", "value"), Input("individual", "value")],
+)
+def build_nn_figure(generation, individual):
+    if generation == "":
+        generation = 0
+    if individual == "":
+        individual = 0
+    neural_network = NeuralNetwork(
+        gen_id=(int(generation), int(individual)), dna=None, hidden_nb=[4]
+    )
     left, right, bottom, top = (
         0.1,
         0.9,
         0.1,
         0.9,
     )
-    layer_sizes = list(itertools.chain([nn.input_nb], nn.hidden_nb[:], [nn.output_nb]))
+    layer_sizes = list(
+        itertools.chain(
+            [neural_network.input_nb],
+            neural_network.hidden_nb[:],
+            [neural_network.output_nb],
+        )
+    )
     v_spacing = (top - bottom) / float(max(layer_sizes))
     h_spacing = (right - left) / float(len(layer_sizes) - 1)
 
@@ -57,22 +73,26 @@ def build_nn_figure():
             x=x,
             y=y,
             mode="markers",
-            marker=dict(size=20, color=nn.act, colorscale="Viridis"),
+            marker=dict(size=20, color=neural_network.act, colorscale="Viridis"),
         ),
         layout={
-            "margin": {"r": 0, "l": 0, "b": 0, "t": 0,},
+            "title": {"text": "Neural Network", "x": 0.5},
+            "plot_bgcolor": colors["background"],
+            "paper_bgcolor": colors["background"],
+            "font": {"color": colors["text"]},
+            "margin": {"r": 0, "l": 0, "b": 0,},
             "showlegend": False,
             "yaxis": {
                 "range": [0, 1],
-                "showgrid": False,  # thin lines in the background
-                "zeroline": False,  # thick line at x=0
-                "visible": False,  # numbers below
+                "showgrid": False,
+                "zeroline": False,
+                "visible": False,
             },
             "xaxis": {
                 "range": [0, 1],
-                "showgrid": False,  # thin lines in the background
-                "zeroline": False,  # thick line at x=0
-                "visible": False,  # numbers below
+                "showgrid": False,
+                "zeroline": False,
+                "visible": False,
             },
         },
     )
@@ -85,7 +105,7 @@ def build_nn_figure():
         i = 0
         for m in range(layer_size_a):
             for o in range(layer_size_b):
-                if nn.weights[i] < 0:
+                if neural_network.weights[i] < 0:
                     color = "red"
                 else:
                     color = "blue"
@@ -96,7 +116,7 @@ def build_nn_figure():
                     x1=(n + 1) * h_spacing + left,
                     y0=layer_top_a - m * v_spacing,
                     y1=layer_top_b - o * v_spacing,
-                    line=dict(color=color, width=abs(nn.weights[i]) * 1,),
+                    line=dict(color=color, width=abs(neural_network.weights[i]) * 1,),
                 )
                 i += 1
 
@@ -113,12 +133,27 @@ app.layout = html.Div(
             children="An AI agent learning to play Snake.",
             style={"textAlign": "center", "color": colors["text"]},
         ),
+        html.Hr(),
         html.Div(
-            [dcc.Graph(id="", figure=build_fitness_figure())],
+            [
+                html.Label("Generation"),
+                dcc.Input(id="generation", value="0", type="text"),
+            ],
             style={"width": "49%", "display": "inline-block"},
         ),
         html.Div(
-            [dcc.Graph(id="", figure=build_nn_figure())],
+            [
+                html.Label("Individual"),
+                dcc.Input(id="individual", value="0", type="text"),
+            ],
+            style={"width": "49%", "display": "inline-block"},
+        ),
+        html.Div(
+            [dcc.Graph(id="nn-figure"),],
+            style={"width": "49%", "display": "inline-block"},
+        ),
+        html.Div(
+            [dcc.Graph(id="fitness-figure", figure=build_fitness_figure()),],
             style={"width": "49%", "display": "inline-block"},
         ),
     ],
