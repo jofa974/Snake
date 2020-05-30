@@ -64,6 +64,30 @@ def build_nn_figure():
         ),
         layout={"showlegend": False,},
     )
+    # Edges
+    for n, (layer_size_a, layer_size_b) in enumerate(
+        zip(layer_sizes[:-1], layer_sizes[1:])
+    ):
+        layer_top_a = v_spacing * (layer_size_a - 1) / 2.0 + (top + bottom) / 2.0
+        layer_top_b = v_spacing * (layer_size_b - 1) / 2.0 + (top + bottom) / 2.0
+        i = 0
+        for m in range(layer_size_a):
+            for o in range(layer_size_b):
+                if nn.weights[i] < 0:
+                    color = "red"
+                else:
+                    color = "blue"
+
+                fig.add_shape(
+                    type="line",
+                    x0=n * h_spacing + left,
+                    x1=(n + 1) * h_spacing + left,
+                    y0=layer_top_a - m * v_spacing,
+                    y1=layer_top_b - o * v_spacing,
+                    line=dict(color=color, width=abs(nn.weights[i]) * 1,),
+                )
+                i += 1
+
     return fig
 
 
