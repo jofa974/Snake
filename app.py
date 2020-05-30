@@ -5,8 +5,6 @@ import itertools
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import numpy as np
-import plotly.express as px
 import plotly.graph_objects as go
 
 from neural_net.neural_network import NeuralNetwork
@@ -54,7 +52,6 @@ def build_nn_figure():
         for m in range(layer_size):
             x.append(n * h_spacing + left)
             y.append(layer_top - m * v_spacing)
-
     fig = go.Figure(
         data=go.Scatter(
             x=x,
@@ -62,7 +59,22 @@ def build_nn_figure():
             mode="markers",
             marker=dict(size=20, color=nn.act, colorscale="Viridis"),
         ),
-        layout={"showlegend": False,},
+        layout={
+            "margin": {"r": 0, "l": 0, "b": 0, "t": 0,},
+            "showlegend": False,
+            "yaxis": {
+                "range": [0, 1],
+                "showgrid": False,  # thin lines in the background
+                "zeroline": False,  # thick line at x=0
+                "visible": False,  # numbers below
+            },
+            "xaxis": {
+                "range": [0, 1],
+                "showgrid": False,  # thin lines in the background
+                "zeroline": False,  # thick line at x=0
+                "visible": False,  # numbers below
+            },
+        },
     )
     # Edges
     for n, (layer_size_a, layer_size_b) in enumerate(
