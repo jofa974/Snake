@@ -17,9 +17,26 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 colors = {"background": "#111111", "text": "#7FD BFF"}
 
+nb_gen = 20
+nb_ind = 2000
+all_fitness = read_fitness(nb_gen, nb_ind)
+neural_nets = {}
+for gen in range(1, nb_gen + 1):
+    for id in range(1, nb_ind + 1):
+        neural_nets[(gen, id)] = NeuralNetwork(
+            gen_id=(gen, id), dna=None, hidden_nb=[5, 5, 4]
+        )
 
-def build_fitness_figure():
-    all_fitness = read_fitness(11, 500)
+
+@app.callback(
+    Output("fitness-figure", "figure"),
+    [Input("generation", "value"), Input("individual", "value")],
+)
+def build_fitness_figure(generation, individual):
+    if generation == "":
+        generation = 0
+    if individual == "":
+        individual = 0
     fig = go.Figure(
         data=[go.Heatmap(z=all_fitness.T)],
         layout={
@@ -28,6 +45,15 @@ def build_fitness_figure():
             "paper_bgcolor": colors["background"],
             "font": {"color": colors["text"]},
         },
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=[generation],
+            y=[individual],
+            marker=dict(color="crimson", size=12),
+            mode="markers",
+            name="Current",
+        )
     )
     return fig
 
@@ -41,9 +67,7 @@ def build_nn_figure(generation, individual):
         generation = 0
     if individual == "":
         individual = 0
-    neural_network = NeuralNetwork(
-        gen_id=(int(generation), int(individual)), dna=None, hidden_nb=[4]
-    )
+    neural_network = neural_nets[(int(generation), int(individual))]
     left, right, bottom, top = (
         0.1,
         0.9,
@@ -137,14 +161,29 @@ app.layout = html.Div(
         html.Div(
             [
                 html.Label("Generation"),
-                dcc.Input(id="generation", value="0", type="text"),
+                #       dcc.Input(id="generation", value="0", type="text"),
+                dcc.Slider(
+                    id="generation",
+                    min=1,
+                    max=nb_gen,
+                    value=1,
+                    marks={str(i): str(i) for i in range(0, nb_gen + 1, 5)},
+                    step=1,
+                ),
             ],
-            style={"width": "49%", "display": "inline-block"},
+            style={"width": "49%", "display": "inline-block",},
         ),
         html.Div(
             [
                 html.Label("Individual"),
-                dcc.Input(id="individual", value="0", type="text"),
+                dcc.Slider(
+                    id="individual",
+                    min=1,
+                    max=nb_ind,
+                    value=1,
+                    marks={str(i): str(i) for i in range(0, nb_ind + 1, 200)},
+                    step=1,
+                ),
             ],
             style={"width": "49%", "display": "inline-block"},
         ),
@@ -153,7 +192,7 @@ app.layout = html.Div(
             style={"width": "49%", "display": "inline-block"},
         ),
         html.Div(
-            [dcc.Graph(id="fitness-figure", figure=build_fitness_figure()),],
+            [dcc.Graph(id="fitness-figure"),],
             style={"width": "49%", "display": "inline-block"},
         ),
     ],
