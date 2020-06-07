@@ -18,7 +18,7 @@ def show_stats(all_score):
 def show_fitness(all_fitness):
     fig = plt.figure()
     ax = plt.gca()
-    im = plt.imshow(all_fitness.T, origin="lower", aspect="auto")
+    im = plt.imshow(np.log(all_fitness.T), origin="lower", aspect="auto")
     fig.colorbar(im, ax=ax)
     plt.ylabel("games")
     plt.xlabel("generation")
