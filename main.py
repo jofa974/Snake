@@ -12,7 +12,6 @@ import numpy as np
 import pygame
 
 from game import bfs, human, nn_ga, random
-from gen_xy import gen_xy
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
 
@@ -59,7 +58,10 @@ def main(args):
             if i > 0:
                 path = Path("genetic_data")
                 new_pop = generate_new_population(
-                    path, gen=i - 1, nb_pop=nb_games, nb_best=int(nb_games * 0.2)
+                    path,
+                    gen=i - 1,
+                    nb_pop=nb_games,
+                    nb_best=int(nb_games * 0.2),
                 )
             else:
                 new_pop = [None] * nb_games
@@ -68,10 +70,9 @@ def main(args):
             training_data = nn_ga.read_training_data()
 
             # Training
-            # for j in range(nb_games):
-            #     results = nn_ga.play_individual(new_pop[j], i, j, training_data)
-            #     all_fitness[i][j] = results
-            with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+            with concurrent.futures.ProcessPoolExecutor(
+                max_workers=8
+            ) as executor:
                 results = executor.map(
                     nn_ga.play_individual,
                     new_pop,
@@ -89,22 +90,27 @@ def main(args):
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     else:
-        raise NotImplementedError("This game mode has not been implemented yet")
+        raise NotImplementedError("Game mode not implemented.")
 
 
 if __name__ == "__main__":
     # Input arguments
     parser = argparse.ArgumentParser(description="Snake game options")
     play_mode_group = parser.add_mutually_exclusive_group(required=True)
-    play_mode_group.add_argument("--human", action="store_true", help="Human play mode")
+    play_mode_group.add_argument(
+        "--human", action="store_true", help="Human play mode"
+    )
     play_mode_group.add_argument(
         "--bfs",
         type=int,
         default=0,
-        help="N games of BFS play mode. N=1 will play interactively. N>1 w.ill show statistics only",
+        help="N games of BFS play mode. N=1 will play interactively.",
     )
     play_mode_group.add_argument(
-        "--genetic", nargs="+", type=int, help="Neural Network Genetic algo play mode"
+        "--genetic",
+        nargs="+",
+        type=int,
+        help="Neural Network Genetic algo play mode",
     )
     play_mode_group.add_argument(
         "--nnga_learn",
