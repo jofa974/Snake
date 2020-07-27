@@ -37,7 +37,9 @@ class Human(Game):
                 self.apple.new_random()
                 score += 1
 
-            textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
+            textsurface = myfont.render(
+                "Score: {}".format(score), False, ui.WHITE
+            )
 
             # Draw Everything
             self.screen.fill(ui.BLACK)

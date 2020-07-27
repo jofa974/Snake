@@ -43,7 +43,9 @@ class Random(game.Game):
                 score += 1
 
             self.snake.update()
-            textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
+            textsurface = myfont.render(
+                "Score: {}".format(score), False, ui.WHITE
+            )
 
             # Draw Everything
             self.screen.fill(ui.BLACK)

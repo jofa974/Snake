@@ -10,8 +10,10 @@ import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.neural_network import (NeuralNetwork,
-                                       create_surf_from_figure_on_canvas)
+from neural_net.neural_network import (
+    NeuralNetwork,
+    create_surf_from_figure_on_canvas,
+)
 
 
 def read_training_data():
@@ -24,7 +26,9 @@ def read_training_data():
 
 def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
-    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
+    score, fitness = game.play(
+        max_move=1000, dump=True, training_data=training_data
+    )
     return fitness
 
 
@@ -104,7 +108,9 @@ class NN_GA(game.Game):
                 fitness += 20
 
             if self.do_display:
-                score_text = myfont.render("Score: {}".format(score), False, ui.WHITE)
+                score_text = myfont.render(
+                    "Score: {}".format(score), False, ui.WHITE
+                )
                 fitness_text = myfont.render(
                     "Fitness: {}".format(fitness), False, ui.WHITE
                 )

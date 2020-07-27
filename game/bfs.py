@@ -18,7 +18,10 @@ class BFS(game.Game):
             for x in range(ui.X_GRID):
                 grid.append(
                     pygame.Rect(
-                        x * ui.BASE_SIZE, y * ui.BASE_SIZE, ui.BASE_SIZE, ui.BASE_SIZE
+                        x * ui.BASE_SIZE,
+                        y * ui.BASE_SIZE,
+                        ui.BASE_SIZE,
+                        ui.BASE_SIZE,
                     )
                 )
             self.grid.append(grid)
@@ -59,7 +62,9 @@ class BFS(game.Game):
                 score += 1
 
             if self.do_display:
-                textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
+                textsurface = myfont.render(
+                    "Score: {}".format(score), False, ui.WHITE
+                )
                 # Draw Everything
                 self.screen.fill(ui.BLACK)
                 self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
@@ -72,7 +77,9 @@ class BFS(game.Game):
         return score
 
     def make_grid_map(self):
-        self.grid_map = [[True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)]
+        self.grid_map = [
+            [True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)
+        ]
         self.grid_map[0][:] = [False for _ in range(ui.X_GRID)]
         self.grid_map[-1][:] = [False for _ in range(ui.X_GRID)]
         for i in range(ui.Y_GRID):
