@@ -3,11 +3,11 @@ import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 
-from neural_net.neural_network import NeuralNetwork, forward_layer
+from neural_net.artificial_neural_network import ANN, forward_layer
 
 
 def test_nb_weights():
-    nn = NeuralNetwork(hidden_nb=[4, 5])
+    nn = ANN(hidden_nb=[4, 5])
 
     expected = 6 * 4 + 4 * 5 + 5 * 3
 
@@ -17,21 +17,25 @@ def test_nb_weights():
 
 
 def test_get_layer_data():
-    nn = NeuralNetwork(hidden_nb=[4, 5, 6])
+    nn = ANN(hidden_nb=[4, 5, 6])
 
     nn.act[6:10] = np.ones(4)
     nn.act[10:15] = np.ones(5) * 2
     nn.act[15:21] = np.ones(6) * 3
     nn.act[21:24] = np.ones(3) * 4
-    assert np.all(nn.get_layer_data(-1, nn.act) == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    assert np.all(
+        nn.get_layer_data(-1, nn.act) == [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    )
     assert np.all(nn.get_layer_data(0, nn.act) == [1.0, 1.0, 1.0, 1.0])
     assert np.all(nn.get_layer_data(1, nn.act) == [2.0, 2.0, 2.0, 2.0, 2.0])
-    assert np.all(nn.get_layer_data(2, nn.act) == [3.0, 3.0, 3.0, 3.0, 3.0, 3.0])
+    assert np.all(
+        nn.get_layer_data(2, nn.act) == [3.0, 3.0, 3.0, 3.0, 3.0, 3.0]
+    )
     assert np.all(nn.get_layer_data(3, nn.act) == [4.0, 4.0, 4.0])
 
 
 def test_count_weights_before_layer():
-    nn = NeuralNetwork(hidden_nb=[4, 5])
+    nn = ANN(hidden_nb=[4, 5])
 
     assert nn.count_weights_before_layer(0) == 0
     assert nn.count_weights_before_layer(1) == 24
@@ -39,7 +43,7 @@ def test_count_weights_before_layer():
 
 
 def test_weights_layer_idx():
-    nn = NeuralNetwork(hidden_nb=[4, 5])
+    nn = ANN(hidden_nb=[4, 5])
 
     w1 = [[i] * 4 for i in range(6)]
     w1 = [item for sublist in w1 for item in sublist]
@@ -98,7 +102,23 @@ def test_weights_layer_idx():
         13,
         13,
     ]
-    expected_layer_2 = [14, 14, 14, 15, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18]
+    expected_layer_2 = [
+        14,
+        14,
+        14,
+        15,
+        15,
+        15,
+        16,
+        16,
+        16,
+        17,
+        17,
+        17,
+        18,
+        18,
+        18,
+    ]
 
     assert np.all(expected_layer_0 == nn.weights_layer_idx(0))
     assert np.all(expected_layer_1 == nn.weights_layer_idx(1))

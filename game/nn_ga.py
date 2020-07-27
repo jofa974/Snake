@@ -10,8 +10,8 @@ import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.neural_network import (
-    NeuralNetwork,
+from neural_net.artificial_neural_network import (
+    ANN,
     create_surf_from_figure_on_canvas,
 )
 
@@ -40,7 +40,7 @@ class NN_GA(game.Game):
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None):
         super().__init__(do_display=do_display)
-        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[4])
+        self.nn = ANN(gen_id, dna, hidden_nb=[4])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
