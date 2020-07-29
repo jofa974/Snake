@@ -12,9 +12,9 @@ class DQN:
         self.memory = ReplayMemory(1000)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
-        # TODO check this
         self.last_action = 0
         self.last_reward = 0
+        self.brain_file = "last_brain.pth"
 
     def select_action(self, state):
         temperature = 75
@@ -35,7 +35,6 @@ class DQN:
         td_loss.backward()
         self.optimizer.step()
 
-    # TODO
     def update(self, reward, new_signal):
         new_state = torch.Tensor(new_signal).float().unsqueeze(0)
         self.memory.push(
@@ -65,21 +64,24 @@ class DQN:
             del self.reward_window[0]
         return action
 
-    # TODO
     def score(self):
         return sum(self.reward_window) / (len(self.reward_window) + 1.0)
 
-    # TODO
     def save(self):
         torch.save(
             {
                 "state_dict": self.model.state_dict(),
                 "optimizer": self.optimizer.state_dict(),
             },
-            "last_brain.pth",
+            self.brain_file,
         )
 
-    # TODO
     def load(self):
-        raise NotImplementedError
-
+        if os.path.isfile(self.brain_file):
+            print("=> loading checkpoint ...")
+            checkpoint = torch.load(self.brain_file)
+            self.model.load_state_dict(checkpoint["state_dict"])
+            self.optimizer.load_state_dict(checkpoint["optimizer"])
+            print("done !")
+        else:
+            print("no checkpoint found ...")
