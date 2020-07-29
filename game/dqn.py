@@ -67,7 +67,7 @@ class DQN:
 
     # TODO
     def score(self):
-        raise NotImplementedError
+        return sum(self.reward_window) / (len(self.reward_window) + 1.0)
 
     # TODO
     def save(self):
