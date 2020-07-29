@@ -11,7 +11,8 @@ from pathlib import Path
 import numpy as np
 import pygame
 
-from game import bfs, human, nn_ga, random
+from game import bfs, human, nn_ga, random, dqn, read_training_data
+
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
 
@@ -67,7 +68,7 @@ def main(args):
                 new_pop = [None] * nb_games
 
             # Read training_data
-            training_data = nn_ga.read_training_data()
+            training_data = read_training_data()
 
             # Training
             with concurrent.futures.ProcessPoolExecutor(
@@ -86,11 +87,14 @@ def main(args):
         game = nn_ga.NN_GA(do_display=True, gen_id=args.nnga_play)
         nb_games = 1
         # Read training_data
-        training_data = nn_ga.read_training_data()
+        training_data = read_training_data()
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     elif args.dqn:
-        raise NotImplementedError("DQN mode not implemented yet")
+        game = dqn.DQN()
+        training_data = read_training_data()
+        game.play(max_move=10000, training_data=training_data)
+        pygame.quit()
     else:
         raise NotImplementedError("Game mode not implemented.")
 

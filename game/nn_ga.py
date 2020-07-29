@@ -16,14 +16,6 @@ from neural_net.artificial_neural_network import (
 )
 
 
-def read_training_data():
-    training_data = []
-    with open("apple_position.in", "r") as f:
-        for line in f.readlines():
-            training_data.append((int(line.split()[0]), int(line.split()[1])))
-    return training_data
-
-
 def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
     score, fitness = game.play(

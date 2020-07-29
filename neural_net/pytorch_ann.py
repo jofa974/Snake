@@ -1,12 +1,13 @@
 import random
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.autograd import Variable
+from torch.autograd import Variable
 
 
-class NeuralNetwork:
+class NeuralNetwork(nn.Module):
     def __init__(self, input_size=6, nb_actions=3):
-        super(Network, self).__init__()
+        super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.nb_actions = nb_actions
         self.fc1 = nn.Linear(input_size, 5)
