@@ -82,8 +82,8 @@ def main(args):
                 )
                 all_fitness[i][:] = np.array(list(results))
         pygame.quit()
-    elif args.genetic:
-        game = nn_ga.NN_GA(do_display=True, gen_id=args.genetic)
+    elif args.nnga_play:
+        game = nn_ga.NN_GA(do_display=True, gen_id=args.nnga_play)
         nb_games = 1
         # Read training_data
         training_data = nn_ga.read_training_data()
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         help="N games of BFS play mode. N=1 will play interactively.",
     )
     play_mode_group.add_argument(
-        "--genetic",
+        "--nnga_play",
         nargs="+",
         type=int,
         help="Neural Network Genetic algo play mode",
