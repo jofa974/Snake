@@ -71,7 +71,13 @@ class DQN:
 
     # TODO
     def save(self):
-        raise NotImplementedError
+        torch.save(
+            {
+                "state_dict": self.model.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+            },
+            "last_brain.pth",
+        )
 
     # TODO
     def load(self):
