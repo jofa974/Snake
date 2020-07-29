@@ -4,8 +4,9 @@ import torch.nn.functional as F
 from neural_net.pytorch_ann import NeuralNetwork
 
 
-class DQN:
+class DQN(game.Game):
     def __init__(self, input_size, nb_actions, gamma):
+        super().__init__(do_display=True)
         self.model = NeuralNetwork(input_size, nb_actions)
         self.gamma = gamma
         self.reward_window = []
@@ -19,8 +20,30 @@ class DQN:
     def select_action(self, state):
         temperature = 75
         probs = F.softmax(self.model(state) * temperature)
-        action = probs.multinomial(num_samples=1)
-        return action.data[0, 0]
+        # action = probs.multinomial(num_samples=1)
+        directions = ["forward", "left", "right"]
+        idx_max = torch.argmax(probs)
+        if directions[idx_max] == "forward":
+            action = py.K_SPACE
+        if directions[idx_max] == "left":
+            if self.snake.speed[0] > 0:
+                action = pygame.K_UP
+            if self.snake.speed[0] < 0:
+                action = pygame.K_DOWN
+            if self.snake.speed[1] > 0:
+                action = pygame.K_RIGHT
+            if self.snake.speed[1] < 0:
+                action = pygame.K_LEFT
+        if directions[idx_max] == "right":
+            if self.snake.speed[0] > 0:
+                action = pygame.K_DOWN
+            if self.snake.speed[0] < 0:
+                action = pygame.K_UP
+            if self.snake.speed[1] > 0:
+                action = pygame.K_LEFT
+            if self.snake.speed[1] < 0:
+                action = pygame.K_RIGHT
+        return action
 
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
         outputs = (

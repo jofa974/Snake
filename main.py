@@ -89,6 +89,8 @@ def main(args):
         training_data = nn_ga.read_training_data()
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
+    elif args.dqn:
+        raise NotImplementedError("DQN mode not implemented yet")
     else:
         raise NotImplementedError("Game mode not implemented.")
 
@@ -120,6 +122,9 @@ if __name__ == "__main__":
     )
     play_mode_group.add_argument(
         "--random", action="store_true", help="RANDOM play mode."
+    )
+    play_mode_group.add_argument(
+        "--dqn", action="store_true", help="Deep Q-learning mode."
     )
     args = parser.parse_args()
 
