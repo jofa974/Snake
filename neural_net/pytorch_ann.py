@@ -17,7 +17,7 @@ class NeuralNetwork(nn.Module):
     def forward(self, state):
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
-        q_values = F.relu(self.fc3(x))
+        q_values = self.fc3(x)
         return q_values
 
 
