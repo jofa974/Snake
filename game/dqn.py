@@ -1,4 +1,5 @@
 import itertools
+import os
 import time
 
 import matplotlib
@@ -21,7 +22,7 @@ class DQN(game.Game):
         self.model = NeuralNetwork(input_size, nb_actions)
         self.gamma = gamma
         self.reward_window = []
-        self.memory = ReplayMemory(1000)
+        self.memory = ReplayMemory(100)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
         self.last_action = 0
@@ -66,7 +67,7 @@ class DQN(game.Game):
             )
 
             if new_dist < prev_dist:
-                self.last_reward = 2
+                self.last_reward = 5
             else:
                 self.last_reward = -3
 
@@ -153,13 +154,13 @@ class DQN(game.Game):
         )
         action = self.select_action(new_state)
 
-        if (len(self.memory.memory)) > 100:
+        if (len(self.memory.memory)) > 10:
             (
                 batch_state,
                 batch_next_state,
                 batch_action,
                 batch_reward,
-            ) = self.memory.sample(100)
+            ) = self.memory.sample(10)
             self.learn(
                 batch_state, batch_next_state, batch_reward, batch_action
             )

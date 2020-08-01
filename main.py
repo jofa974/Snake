@@ -92,8 +92,13 @@ def main(args):
         pygame.quit()
     elif args.dqn:
         game = dqn.DQN()
-        training_data = read_training_data()
-        game.play(max_move=10000, training_data=training_data)
+        for nb in range(10):
+            print("Game {}".format(nb))
+            if nb > 0:
+                game.load()
+            training_data = read_training_data()
+            game.play(max_move=10000, training_data=training_data)
+            game.save()
         pygame.quit()
     else:
         raise NotImplementedError("Game mode not implemented.")
