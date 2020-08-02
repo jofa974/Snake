@@ -17,3 +17,5 @@ save_data*
 *.in
 genetic_data
 
+*.pth
+
