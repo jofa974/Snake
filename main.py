@@ -92,7 +92,7 @@ def main(args):
         pygame.quit()
     elif args.dqn:
         game = dqn.DQN()
-        for nb in range(10):
+        for nb in range(100):
             print("Game {}".format(nb))
             if nb > 0:
                 game.load()

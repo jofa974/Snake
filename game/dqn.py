@@ -69,11 +69,11 @@ class DQN(game.Game):
             if new_dist < prev_dist:
                 self.last_reward = 5
             else:
-                self.last_reward = -3
+                self.last_reward = -10
 
             self.snake.detect_collisions()
             if self.snake.dead:
-                self.last_reward = -10
+                self.last_reward = -20
 
             if self.snake.eat(self.apple):
                 self.snake.grow()
@@ -93,6 +93,8 @@ class DQN(game.Game):
             pygame.display.flip()
             time.sleep(0.01 / 1000.0)
 
+        print("Final score: {}".format(self.last_reward))
+
     def get_input_data(self):
         apple_pos = self.apple.get_position()
         input_data = [
@@ -106,7 +108,7 @@ class DQN(game.Game):
         return input_data
 
     def select_action(self, state):
-        temperature = 75
+        temperature = 5
         probs = F.softmax(self.model(state) * temperature)
         # action = probs.multinomial(num_samples=1)
         directions = ["forward", "left", "right"]
@@ -154,13 +156,13 @@ class DQN(game.Game):
         )
         action = self.select_action(new_state)
 
-        if (len(self.memory.memory)) > 10:
+        if (len(self.memory.memory)) > 20:
             (
                 batch_state,
                 batch_next_state,
                 batch_action,
                 batch_reward,
-            ) = self.memory.sample(10)
+            ) = self.memory.sample(20)
             self.learn(
                 batch_state, batch_next_state, batch_reward, batch_action
             )
@@ -169,7 +171,7 @@ class DQN(game.Game):
         self.last_state = new_state
         self.last_reward = reward
         self.reward_window.append(reward)
-        if len(self.reward_window) > 1000:
+        if len(self.reward_window) > 20:
             del self.reward_window[0]
         return action
 
