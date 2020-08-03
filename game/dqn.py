@@ -17,13 +17,13 @@ from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
 
 
 class DQN(game.Game):
-    def __init__(self, input_size=6, nb_actions=3, gamma=0.9):
+    def __init__(self, input_size=10, nb_actions=3, gamma=0.9):
         super().__init__(do_display=True)
         self.model = NeuralNetwork(input_size, nb_actions)
         self.gamma = gamma
         self.reward_window = []
         self.memory = ReplayMemory(100)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.00005)
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
         self.last_action = 0
         self.last_reward = 0
@@ -37,7 +37,8 @@ class DQN(game.Game):
             self.apple = Apple()
 
         self.snake = Snake()
-        nb_moves = 0
+        nb_moves_wo_apple = 0
+        nb_apples = 0
         scores = []
 
         matplotlib.use("Agg")
@@ -66,16 +67,20 @@ class DQN(game.Game):
                 self.snake.get_position(0), self.apple.get_position(), norm=2
             )
 
+            nb_moves_wo_apple += 1
+
             if new_dist < prev_dist:
-                self.last_reward = 5
+                self.last_reward = 8
             else:
                 self.last_reward = -10
 
             self.snake.detect_collisions()
             if self.snake.dead:
-                self.last_reward = -20
+                self.last_reward = -50
 
             if self.snake.eat(self.apple):
+                nb_moves_wo_apple = 0
+                nb_apples += 1
                 self.snake.grow()
                 self.snake.update()
                 if training_data:
@@ -83,7 +88,9 @@ class DQN(game.Game):
                     self.apple.new(x, y)
                 else:
                     self.apple.new_random()
-                self.last_reward = 20
+                self.last_reward = 1000
+            else:
+                self.last_reward -= nb_moves_wo_apple
 
             # Draw Everything
             self.screen.fill(ui.BLACK)
@@ -91,24 +98,39 @@ class DQN(game.Game):
             self.snake.draw(self.screen)
             self.apple.draw(self.screen)
             pygame.display.flip()
-            time.sleep(0.01 / 1000.0)
+            time.sleep(0.01)
 
-        print("Final score: {}".format(self.last_reward))
+        plt.close()
+        print("Final score: {}".format(nb_apples))
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()
         input_data = [
+            # self.snake.get_distance_to_north_wall(norm=2),
+            # self.snake.get_distance_to_south_wall(norm=2),
+            # self.snake.get_distance_to_east_wall(norm=2),
+            # self.snake.get_distance_to_west_wall(norm=2),
+            # self.snake.get_distance_to_target(
+            #     self.snake.get_position(0), self.apple.get_position(), norm=2
+            # ),
+            # self.snake.get_distance_to_target(
+            #     self.snake.get_position(0), self.snake.get_position(-1), norm=2
+            # ),
             self.snake.is_clear_ahead(),
             self.snake.is_clear_left(),
             self.snake.is_clear_right(),
             self.snake.is_food_ahead(apple_pos),
             self.snake.is_food_left(apple_pos),
             self.snake.is_food_right(apple_pos),
+            self.snake.is_going_up(),
+            self.snake.is_going_down(),
+            self.snake.is_going_right(),
+            self.snake.is_going_left(),
         ]
         return input_data
 
     def select_action(self, state):
-        temperature = 5
+        temperature = 50
         probs = F.softmax(self.model(state) * temperature)
         # action = probs.multinomial(num_samples=1)
         directions = ["forward", "left", "right"]
@@ -156,13 +178,13 @@ class DQN(game.Game):
         )
         action = self.select_action(new_state)
 
-        if (len(self.memory.memory)) > 20:
+        if (len(self.memory.memory)) > 50:
             (
                 batch_state,
                 batch_next_state,
                 batch_action,
                 batch_reward,
-            ) = self.memory.sample(20)
+            ) = self.memory.sample(50)
             self.learn(
                 batch_state, batch_next_state, batch_reward, batch_action
             )
@@ -171,7 +193,7 @@ class DQN(game.Game):
         self.last_state = new_state
         self.last_reward = reward
         self.reward_window.append(reward)
-        if len(self.reward_window) > 20:
+        if len(self.reward_window) > 1000:
             del self.reward_window[0]
         return action
 

@@ -6,18 +6,20 @@ from torch.autograd import Variable
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size=6, nb_actions=3):
+    def __init__(self, input_size=10, nb_actions=3):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.nb_actions = nb_actions
-        self.fc1 = nn.Linear(input_size, 5)
-        self.fc2 = nn.Linear(5, 4)
-        self.fc3 = nn.Linear(4, nb_actions)
+        self.fc1 = nn.Linear(input_size, 120)
+        self.fc2 = nn.Linear(120, 120)
+        self.fc3 = nn.Linear(120, 120)
+        self.fc4 = nn.Linear(120, nb_actions)
 
     def forward(self, state):
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
-        q_values = self.fc3(x)
+        x = F.relu(self.fc3(x))
+        q_values = self.fc4(x)
         return q_values
 
 
