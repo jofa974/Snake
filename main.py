@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import pygame
 
-from brains import bfs, dqn, human, nn_ga, random
+from brains import bfs, dqn_ann, human, nn_ga, random
 from game import read_training_data
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
@@ -90,8 +90,8 @@ def main(args):
         training_data = read_training_data()
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
-    elif args.dqn:
-        game = dqn.DQN()
+    elif args.dqn_ann:
+        game = dqn_ann.DQN_ANN()
         for nb in range(1000):
             print("Game {}".format(nb))
             if nb > 0:
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         "--random", action="store_true", help="RANDOM play mode."
     )
     play_mode_group.add_argument(
-        "--dqn", action="store_true", help="Deep Q-learning mode."
+        "--dqn_ann", action="store_true", help="Deep Q-learning mode."
     )
     args = parser.parse_args()
 

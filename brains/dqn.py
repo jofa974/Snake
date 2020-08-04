@@ -1,6 +1,7 @@
 import itertools
 import os
 import time
+from abc import abstractmethod
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -19,26 +20,25 @@ from . import brain
 
 
 class DQN(brain):
-    def __init__(self, input_size=10, nb_actions=3, gamma=0.9):
+    def __init__(self, input_size=10, nb_actions=3, gamma=0.9, do_display=True):
         super().__init__(do_display=True)
         self.model = None
         self.gamma = gamma
         self.reward_window = []
         self.memory = ReplayMemory(100)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.00005)
+        self.optimizer = None
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
         self.last_action = 0
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
 
-    def play(self, max_move, training_data=None):
-        pass
-
+    @abstractmethod
     def get_input_data(self):
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def update(self, reward, new_signal):
-        pass
+        raise NotImplementedError
 
     def select_action(self, state):
         temperature = 50

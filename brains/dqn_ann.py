@@ -15,10 +15,14 @@ from components.apple import Apple
 from components.snake import Snake
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
 
+from .dqn import DQN
+
 
 class DQN_ANN(DQN):
     def __init__(self, input_size=10, nb_actions=3, gamma=0.9):
         super().__init__(do_display=True)
+        self.env.set_caption("Snake: Pytorch Artificial Neural Network")
+
         self.model = NeuralNetwork(input_size, nb_actions)
         self.gamma = gamma
         self.reward_window = []
@@ -40,11 +44,6 @@ class DQN_ANN(DQN):
         nb_moves_wo_apple = 0
         nb_apples = 0
         scores = []
-
-        matplotlib.use("Agg")
-        pygame.display.set_caption("Snake: Neural Network mode")
-        myfont = pygame.font.SysFont("Comic Sans MS", 30)
-        fig = plt.figure(figsize=[5, 5], dpi=100)
 
         while not self.snake.dead:
 
@@ -91,16 +90,10 @@ class DQN_ANN(DQN):
                 self.last_reward = 1000
             else:
                 self.last_reward -= nb_moves_wo_apple
-
-            # Draw Everything
-            self.screen.fill(ui.BLACK)
-            self.walls.draw(self.screen)
-            self.snake.draw(self.screen)
-            self.apple.draw(self.screen)
-            pygame.display.flip()
+            score_text = "Score: {}".format(nb_apples)
+            self.env.draw_everything(score_text, [self.snake, self.apple])
             time.sleep(0.01)
 
-        plt.close()
         print("Final score: {}".format(nb_apples))
 
     def get_input_data(self):
@@ -129,7 +122,7 @@ class DQN_ANN(DQN):
         ]
         return input_data
 
-     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
+    def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
         outputs = self.model(batch_state).max(1)[0]
         next_outputs = self.model(batch_next_state).detach().max(1)[0]
         targets = batch_reward + self.gamma * next_outputs
