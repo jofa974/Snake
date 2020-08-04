@@ -1,3 +1,5 @@
+import matplotlib
+import matplotlib.backends.backend_agg as agg
 import pygame
 
 from components.walls import Wall
@@ -25,7 +27,7 @@ class Environment:
         if do_display:
             self.screen = pygame.display.set_mode((w, h))
 
-    def draw_everything(self, text=None, sprites=None):
+    def draw_everything(self, text=None, sprites=None, flip=True):
         if text:
             textsurface = self.font.render(text, False, WHITE)
         self.screen.fill(BLACK)
@@ -33,10 +35,22 @@ class Environment:
         for s in sprites:
             s.draw(self.screen)
         self.walls.draw(self.screen)
-        pygame.display.flip()
+        if flip:
+            pygame.display.flip()
 
     def set_caption(self, caption="Snake"):
         pygame.display.set_caption(caption)
+
+    def make_surf_from_figure_on_canvas(self, fig):
+        matplotlib.use("Agg")
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        size = canvas.get_width_height()
+        surf = pygame.image.fromstring(raw_data, size, "RGB")
+        self.screen.blit(surf, (6 * WIDTH / 5, HEIGHT / 5))
+        pygame.display.flip()
 
 
 def read_training_data():

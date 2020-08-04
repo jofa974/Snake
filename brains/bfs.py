@@ -36,7 +36,7 @@ class BFS(brain):
         score = 0
         if self.do_display:
             self.env.set_caption("Snake: BFS mode")
-            pygame.display.set_caption("Snake: BFS mode")
+
         while not self.snake.dead:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

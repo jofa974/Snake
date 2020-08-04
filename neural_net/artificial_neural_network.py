@@ -15,18 +15,6 @@ def forward_layer(weights, bias, act, func):
     return func(np.dot(reshaped_weights, act) + bias)
 
 
-# TODO put this in a better place
-def create_surf_from_figure_on_canvas(fig):
-    matplotlib.use("Agg")
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    renderer = canvas.get_renderer()
-    raw_data = renderer.tostring_rgb()
-    size = canvas.get_width_height()
-    surf = pygame.image.fromstring(raw_data, size, "RGB")
-    return surf
-
-
 class ANN:
     def __init__(self, gen_id=(-1, -1), dna=None, hidden_nb=[5, 4]):
         self.input_nb = 6

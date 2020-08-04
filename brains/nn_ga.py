@@ -10,10 +10,7 @@ import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.artificial_neural_network import (
-    ANN,
-    create_surf_from_figure_on_canvas,
-)
+from neural_net.artificial_neural_network import ANN
 
 from . import brain
 
@@ -51,8 +48,9 @@ class NN_GA(brain):
 
         if self.do_display:
             matplotlib.use("Agg")
-            pygame.display.set_caption("Snake: Neural Network mode")
-            myfont = pygame.font.SysFont("Comic Sans MS", 30)
+            self.env.set_caption(
+                "Snake: Custom Neural Network optimized with a Genetic Algorithm"
+            )
             fig = plt.figure(figsize=[5, 5], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
@@ -102,27 +100,12 @@ class NN_GA(brain):
                 fitness += 20
 
             if self.do_display:
-                score_text = myfont.render(
-                    "Score: {}".format(score), False, ui.WHITE
+                score_text = "Score: {}".format(score)
+                self.env.draw_everything(
+                    score_text, [self.snake, self.apple], flip=False
                 )
-                fitness_text = myfont.render(
-                    "Fitness: {}".format(fitness), False, ui.WHITE
-                )
-                moves_text = myfont.render(
-                    "Moves: {}".format(nb_moves), False, ui.WHITE
-                )
-                # Draw Everything
-                self.screen.fill(ui.BLACK)
-                self.screen.blit(score_text, (ui.WIDTH + 50, 50))
-                self.screen.blit(fitness_text, (ui.WIDTH + 150, 50))
-                self.screen.blit(moves_text, (ui.WIDTH + 350, 50))
-                self.walls.draw(self.screen)
-                self.snake.draw(self.screen)
-                self.apple.draw(self.screen)
                 self.nn.plot(fig)
-                surf = create_surf_from_figure_on_canvas(fig)
-                self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
-                pygame.display.flip()
+                self.env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
