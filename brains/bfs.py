@@ -1,14 +1,18 @@
-import time
-import pygame
-import ui
-import game
 import itertools
+import time
 from collections import deque
+
+import pygame
+
+import game
+import ui
 from components.apple import Apple
 from components.snake import Snake
 
+from . import brain
 
-class BFS(game.Game):
+
+class BFS(brain):
     def __init__(self, do_display):
         super().__init__(do_display=do_display)
         self.moves = []

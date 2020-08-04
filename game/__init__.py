@@ -1,14 +1,16 @@
 import pygame
 
-from ui import HEIGHT, WIDTH
 from components.walls import Wall
+from ui import BLACK, HEIGHT, WHITE, WIDTH
 
 
-class Game:
+class Environment:
     def __init__(self, do_display=False):
         pygame.init()
         w = max(1600, 2 * WIDTH)
         h = max(800, HEIGHT)
+
+        self.font = pygame.font.SysFont("Comic Sans MS", 30)
 
         self.walls = pygame.sprite.Group()
         wall_left = Wall(0, 0, Wall.WALL_WIDTH, HEIGHT)
@@ -23,8 +25,18 @@ class Game:
         if do_display:
             self.screen = pygame.display.set_mode((w, h))
 
-    def play(self):
-        pass
+    def draw_everything(self, text=None, sprites=None):
+        if text:
+            textsurface = self.font.render(text, False, WHITE)
+        self.screen.fill(BLACK)
+        self.screen.blit(textsurface, (WIDTH + 50, 50))
+        for s in sprites:
+            s.draw(self.screen)
+        self.walls.draw(self.screen)
+        pygame.display.flip()
+
+    def set_caption(self, caption="Snake"):
+        pygame.display.set_caption(caption)
 
 
 def read_training_data():

@@ -11,8 +11,8 @@ from pathlib import Path
 import numpy as np
 import pygame
 
-from game import bfs, human, nn_ga, random, dqn, read_training_data
-
+from brains import bfs, dqn, human, nn_ga, random
+from game import read_training_data
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
 

@@ -15,6 +15,8 @@ from neural_net.artificial_neural_network import (
     create_surf_from_figure_on_canvas,
 )
 
+from . import brain
+
 
 def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
@@ -24,7 +26,7 @@ def play_individual(individual, gen_nb, game_id, training_data):
     return fitness
 
 
-class NN_GA(game.Game):
+class NN_GA(brain):
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.

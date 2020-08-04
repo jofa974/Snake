@@ -16,7 +16,7 @@ from components.snake import Snake
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
 
 
-class DQN(game.Game):
+class DQN_ANN(DQN):
     def __init__(self, input_size=10, nb_actions=3, gamma=0.9):
         super().__init__(do_display=True)
         self.model = NeuralNetwork(input_size, nb_actions)
@@ -129,35 +129,7 @@ class DQN(game.Game):
         ]
         return input_data
 
-    def select_action(self, state):
-        temperature = 50
-        probs = F.softmax(self.model(state) * temperature)
-        # action = probs.multinomial(num_samples=1)
-        directions = ["forward", "left", "right"]
-        idx_max = torch.argmax(probs)
-        if directions[idx_max] == "forward":
-            action = pygame.K_SPACE
-        if directions[idx_max] == "left":
-            if self.snake.speed[0] > 0:
-                action = pygame.K_UP
-            if self.snake.speed[0] < 0:
-                action = pygame.K_DOWN
-            if self.snake.speed[1] > 0:
-                action = pygame.K_RIGHT
-            if self.snake.speed[1] < 0:
-                action = pygame.K_LEFT
-        if directions[idx_max] == "right":
-            if self.snake.speed[0] > 0:
-                action = pygame.K_DOWN
-            if self.snake.speed[0] < 0:
-                action = pygame.K_UP
-            if self.snake.speed[1] > 0:
-                action = pygame.K_LEFT
-            if self.snake.speed[1] < 0:
-                action = pygame.K_RIGHT
-        return action
-
-    def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
+     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
         outputs = self.model(batch_state).max(1)[0]
         next_outputs = self.model(batch_next_state).detach().max(1)[0]
         targets = batch_reward + self.gamma * next_outputs
@@ -196,25 +168,3 @@ class DQN(game.Game):
         if len(self.reward_window) > 1000:
             del self.reward_window[0]
         return action
-
-    def score(self):
-        return sum(self.reward_window) / (len(self.reward_window) + 1.0)
-
-    def save(self):
-        torch.save(
-            {
-                "state_dict": self.model.state_dict(),
-                "optimizer": self.optimizer.state_dict(),
-            },
-            self.brain_file,
-        )
-
-    def load(self):
-        if os.path.isfile(self.brain_file):
-            print("=> loading checkpoint ...")
-            checkpoint = torch.load(self.brain_file)
-            self.model.load_state_dict(checkpoint["state_dict"])
-            self.optimizer.load_state_dict(checkpoint["optimizer"])
-            print("done !")
-        else:
-            print("no checkpoint found ...")
