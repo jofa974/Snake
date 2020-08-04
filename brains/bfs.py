@@ -35,8 +35,8 @@ class BFS(brain):
         self.snake = Snake()
         score = 0
         if self.do_display:
+            self.env.set_caption("Snake: BFS mode")
             pygame.display.set_caption("Snake: BFS mode")
-            myfont = pygame.font.SysFont("Comic Sans MS", 30)
         while not self.snake.dead:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -66,16 +66,8 @@ class BFS(brain):
                 score += 1
 
             if self.do_display:
-                textsurface = myfont.render(
-                    "Score: {}".format(score), False, ui.WHITE
-                )
-                # Draw Everything
-                self.screen.fill(ui.BLACK)
-                self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-                self.walls.draw(self.screen)
-                self.snake.draw(self.screen)
-                self.apple.draw(self.screen)
-                pygame.display.flip()
+                score_text = "Score: {}".format(score)
+                self.env.draw_everything(score_text, [self.snake, self.apple])
                 time.sleep(50.0 / 1000.0)
 
         return score
