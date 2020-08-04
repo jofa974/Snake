@@ -2,11 +2,9 @@ import itertools
 import time
 
 import matplotlib
-import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import pygame
 
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake

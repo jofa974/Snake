@@ -4,7 +4,6 @@ from collections import deque
 
 import pygame
 
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake

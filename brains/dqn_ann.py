@@ -1,15 +1,11 @@
 import itertools
-import os
 import time
 
-import matplotlib
-import matplotlib.pyplot as plt
 import pygame
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
