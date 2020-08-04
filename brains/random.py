@@ -13,13 +13,12 @@ from . import brain
 
 class Random(brain):
     def __init__(self):
-        super().__init__()
-        pygame.display.set_caption("Snake: Random mode")
+        super().__init__(do_display=True)
+        self.env.set_caption("Snake: Random mode")
 
     def play(self):
         self.apple = Apple()
         self.snake = Snake()
-        myfont = pygame.font.SysFont("Comic Sans MS", 30)
         score = 0
 
         while not self.snake.dead:
@@ -44,17 +43,13 @@ class Random(brain):
                 self.apple.new_random()
                 score += 1
 
-            self.snake.update()
-            textsurface = myfont.render(
-                "Score: {}".format(score), False, ui.WHITE
-            )
-
-            # Draw Everything
-            self.screen.fill(ui.BLACK)
-            self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-            self.snake.draw(self.screen)
-            self.apple.draw(self.screen)
-            self.walls.draw(self.screen)
-            pygame.display.flip()
+            score_text = "Score: {}".format(score)
+            self.env.draw_everything(score_text, [self.snake, self.apple])
 
             time.sleep(100.0 / 1000.0)
+
+        final_text = "GAME OVER! The random score is {}".format(score)
+
+        self.env.draw_everything(final_text, [self.snake, self.apple])
+
+        time.sleep(2)
