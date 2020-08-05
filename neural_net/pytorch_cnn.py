@@ -7,8 +7,8 @@ from torch.autograd import Variable
 
 
 class ConvolutionalNeuralNetwork(nn.Module):
-    def __init__(self, image_dim=(1, 80, 80), nb_actions):
-        super(NeuralNetwork, self).__init__()
+    def __init__(self, image_dim=(1, 80, 80), nb_actions=3):
+        super(ConvolutionalNeuralNetwork, self).__init__()
         self.convolution1 = nn.Conv2d(
             in_channels=1, out_channels=32, kernel_size=5
         )
@@ -16,7 +16,7 @@ class ConvolutionalNeuralNetwork(nn.Module):
             in_channels=32, out_channels=32, kernel_size=3
         )
         self.convolution3 = nn.Conv2d(
-            in_channels=32, out_channels=, kernel_size=2
+            in_channels=32, out_channels=64, kernel_size=2
         )
         self.fc1 = nn.Linear(self.count_neurons(image_dim), 40)
         self.fc2 = nn.Linear(40, nb_actions)
@@ -50,5 +50,6 @@ class ReplayMemory:
             del self.memory[0]
 
     def sample(self, batch_size):
-        samples = zip(*random.sample(self.memory, batch_size))
-        return map(lambda x: Variable(torch.cat(x, dim=0)), samples)
+        # TODO fix this so that it returns 4 lists of length 'batch_size' each.
+        vals = list(self.memory)
+        return random.choices(vals, k=batch_size)

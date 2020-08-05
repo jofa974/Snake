@@ -4,7 +4,7 @@ import pygame
 
 data_dir = os.path.join("/home/jonathan/Projects/PyGames/Snake/graphics")
 
-BASE_SIZE = 20
+BASE_SIZE = 10
 X_GRID = 20
 Y_GRID = 20
 

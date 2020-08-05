@@ -1,6 +1,7 @@
 import matplotlib
 import matplotlib.backends.backend_agg as agg
 import pygame
+from PIL import Image
 
 from components.walls import Wall
 from ui import BLACK, HEIGHT, WHITE, WIDTH
@@ -9,8 +10,8 @@ from ui import BLACK, HEIGHT, WHITE, WIDTH
 class Environment:
     def __init__(self, do_display=False):
         pygame.init()
-        w = max(1600, 2 * WIDTH)
-        h = max(800, HEIGHT)
+        w = 2 * WIDTH
+        h = HEIGHT
 
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
 
@@ -41,6 +42,7 @@ class Environment:
     def set_caption(self, caption="Snake"):
         pygame.display.set_caption(caption)
 
+    # TODO: refactor this
     def make_surf_from_figure_on_canvas(self, fig):
         matplotlib.use("Agg")
         canvas = agg.FigureCanvasAgg(fig)
@@ -51,6 +53,15 @@ class Environment:
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         self.screen.blit(surf, (6 * WIDTH / 5, HEIGHT / 5))
         pygame.display.flip()
+
+    def take_screenshot(self):
+        rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
+        sub = self.screen.subsurface(rect)
+        pygame.image.save(sub, "screenshot.png")
+
+    def load_screenshot(self):
+        with Image.open("screenshot.png") as img:
+            return img
 
 
 def read_training_data():

@@ -25,6 +25,8 @@ class Human(brain):
                     self.snake.dead = True
                 if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
                     self.snake.change_direction(event.key)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.env.take_screenshot()
 
             self.snake.move()
 
