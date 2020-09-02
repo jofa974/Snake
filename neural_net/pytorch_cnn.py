@@ -7,17 +7,17 @@ from torch.autograd import Variable
 
 
 class ConvolutionalNeuralNetwork(nn.Module):
-    def __init__(self, image_dim=(1, 80, 80), nb_actions=3):
+    def __init__(self, image_dim, nb_actions=3):
         super(ConvolutionalNeuralNetwork, self).__init__()
         self.convolution1 = nn.Conv2d(
-            in_channels=1, out_channels=32, kernel_size=5
+            in_channels=1, out_channels=64, kernel_size=3
         )
         self.convolution2 = nn.Conv2d(
-            in_channels=32, out_channels=32, kernel_size=3
+            in_channels=64, out_channels=32, kernel_size=2
         )
-        self.convolution3 = nn.Conv2d(
-            in_channels=32, out_channels=64, kernel_size=2
-        )
+        # self.convolution3 = nn.Conv2d(
+        #     in_channels=64, out_channels=128, kernel_size=2
+        # )
         self.fc1 = nn.Linear(self.count_neurons(image_dim), 40)
         self.fc2 = nn.Linear(40, nb_actions)
 
@@ -25,13 +25,13 @@ class ConvolutionalNeuralNetwork(nn.Module):
         x = Variable(torch.rand(1, *image_dim))
         x = F.relu(F.max_pool2d(self.convolution1(x), 3, 2))
         x = F.relu(F.max_pool2d(self.convolution2(x), 3, 2))
-        x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
+        # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
         return x.data.view(1, -1).size(1)
 
     def forward(self, state):
         x = F.relu(F.max_pool2d(self.convolution1(state), 3, 2))
         x = F.relu(F.max_pool2d(self.convolution2(x), 3, 2))
-        x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
+        # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
         # Flattening
         x = x.view(x.size(0), -1)
         x = F.relu(self.fc1(x))
@@ -50,6 +50,20 @@ class ReplayMemory:
             del self.memory[0]
 
     def sample(self, batch_size):
-        # TODO fix this so that it returns 4 lists of length 'batch_size' each.
-        vals = list(self.memory)
-        return random.choices(vals, k=batch_size)
+        # Exclude first one because initial state is not relevant
+        idxs = random.choices(range(1, len(self.memory)), k=batch_size)
+        batch_state = []
+        batch_next_state = []
+        batch_action = []
+        batch_reward = []
+        for idx in idxs:
+            batch_state.append(self.memory[idx][0])
+            batch_next_state.append(self.memory[idx][1])
+            batch_action.append(self.memory[idx][2])
+            batch_reward.append(self.memory[idx][3])
+        return (
+            torch.cat(batch_state),
+            torch.cat(batch_next_state),
+            torch.cat(batch_action),
+            torch.cat(batch_reward),
+        )

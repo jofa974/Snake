@@ -101,16 +101,24 @@ def main(args):
             game.save()
         pygame.quit()
     elif args.dqn_cnn:
-        game = dqn_cnn.DQN_CNN()
-        for nb in range(1000):
+        game = dqn_cnn.DQN_CNN(nb_actions=3, gamma=0.99)
+        nb_games = 10000
+        all_score = np.zeros(nb_games)
+        epsilon, eps_min, eps_decay = 1, 0.05, 0.92
+        for nb in range(nb_games):
             print("Game {}".format(nb))
             if nb > 0:
                 game.load()
             training_data = read_training_data()
-            game.play(max_move=10000, training_data=training_data)
+            epsilon = max(epsilon * eps_decay, eps_min)
+            # sepsilon = 0
+            score = game.play(
+                max_move=1000, training_data=training_data, epsilon=epsilon
+            )
             game.save()
+            all_score[nb] = score
         pygame.quit()
-
+        show_stats(all_score)
     else:
         raise NotImplementedError("Game mode not implemented.")
 

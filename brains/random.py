@@ -6,10 +6,10 @@ import pygame
 from components.apple import Apple
 from components.snake import Snake
 
-from . import brain
+from . import Brain
 
 
-class Random(brain):
+class Random(Brain):
     def __init__(self):
         super().__init__(do_display=True)
         self.env.set_caption("Snake: Random mode")

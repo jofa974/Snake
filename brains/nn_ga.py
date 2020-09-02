@@ -10,7 +10,7 @@ from components.apple import Apple
 from components.snake import Snake
 from neural_net.artificial_neural_network import ANN
 
-from . import brain
+from . import Brain
 
 
 def play_individual(individual, gen_nb, game_id, training_data):
@@ -21,7 +21,7 @@ def play_individual(individual, gen_nb, game_id, training_data):
     return fitness
 
 
-class NN_GA(brain):
+class NN_GA(Brain):
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.
@@ -49,7 +49,7 @@ class NN_GA(brain):
             self.env.set_caption(
                 "Snake: Custom Neural Network optimized with a Genetic Algorithm"
             )
-            fig = plt.figure(figsize=[5, 5], dpi=100)
+            fig = plt.figure(figsize=[3, 3], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
 

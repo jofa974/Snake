@@ -8,10 +8,10 @@ import ui
 from components.apple import Apple
 from components.snake import Snake
 
-from . import brain
+from . import Brain
 
 
-class BFS(brain):
+class BFS(Brain):
     def __init__(self, do_display):
         super().__init__(do_display=do_display)
         self.moves = []

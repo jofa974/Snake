@@ -1,4 +1,5 @@
 import os
+import random
 from abc import abstractmethod
 
 import pygame
@@ -7,18 +8,18 @@ import torch.nn.functional as F
 
 from neural_net.pytorch_ann import ReplayMemory
 
-from . import brain
+from . import Brain
 
 
-class DQN(brain):
-    def __init__(self, input_size=10, nb_actions=3, gamma=0.9, do_display=True):
+class DQN(Brain):
+    def __init__(self, input_size, nb_actions=-1, gamma=-1.0, do_display=True):
         super().__init__(do_display=True)
         self.model = None
         self.gamma = gamma
         self.reward_window = []
-        self.memory = ReplayMemory(100)
+        self.memory = ReplayMemory(-1)
         self.optimizer = None
-        self.last_state = torch.Tensor(input_size).unsqueeze(0)
+        self.last_state = None
         self.last_action = 0
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
@@ -31,15 +32,16 @@ class DQN(brain):
     def update(self, reward, new_signal):
         raise NotImplementedError
 
-    def select_action(self, state):
-        temperature = 50
-        probs = F.softmax(self.model(state) * temperature)
-        # action = probs.multinomial(num_samples=1)
+    def select_action(self, state, epsilon):
+        if random.random() < epsilon:
+            action = random.choice(range(3))
+        else:
+            probs = F.softmax(self.model(state), dim=1)
+            action = probs.multinomial(num_samples=1)[0][0].item()
         directions = ["forward", "left", "right"]
-        idx_max = torch.argmax(probs)
-        if directions[idx_max] == "forward":
+        if directions[action] == "forward":
             action = pygame.K_SPACE
-        if directions[idx_max] == "left":
+        elif directions[action] == "left":
             if self.snake.speed[0] > 0:
                 action = pygame.K_UP
             if self.snake.speed[0] < 0:
@@ -48,7 +50,7 @@ class DQN(brain):
                 action = pygame.K_RIGHT
             if self.snake.speed[1] < 0:
                 action = pygame.K_LEFT
-        if directions[idx_max] == "right":
+        elif directions[action] == "right":
             if self.snake.speed[0] > 0:
                 action = pygame.K_DOWN
             if self.snake.speed[0] < 0:
@@ -59,14 +61,9 @@ class DQN(brain):
                 action = pygame.K_RIGHT
         return action
 
+    @abstractmethod
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
-        outputs = self.model(batch_state).max(1)[0]
-        next_outputs = self.model(batch_next_state).detach().max(1)[0]
-        targets = batch_reward + self.gamma * next_outputs
-        td_loss = F.smooth_l1_loss(outputs, targets)
-        self.optimizer.zero_grad()
-        td_loss.backward()
-        self.optimizer.step()
+        return NotImplementedError
 
     def score(self):
         return sum(self.reward_window) / (len(self.reward_window) + 1.0)
@@ -82,10 +79,10 @@ class DQN(brain):
 
     def load(self):
         if os.path.isfile(self.brain_file):
-            print("=> loading checkpoint ...")
+            # print("=> loading checkpoint ...")
             checkpoint = torch.load(self.brain_file)
             self.model.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
-            print("done !")
+            # print("done !")
         else:
             print("no checkpoint found ...")

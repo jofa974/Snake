@@ -1,5 +1,7 @@
 import matplotlib
 import matplotlib.backends.backend_agg as agg
+import matplotlib.pyplot as plt
+import numpy as np
 import pygame
 from PIL import Image
 
@@ -51,7 +53,7 @@ class Environment:
         raw_data = renderer.tostring_rgb()
         size = canvas.get_width_height()
         surf = pygame.image.fromstring(raw_data, size, "RGB")
-        self.screen.blit(surf, (6 * WIDTH / 5, HEIGHT / 5))
+        self.screen.blit(surf, (WIDTH + 75, 75))
         pygame.display.flip()
 
     def take_screenshot(self):

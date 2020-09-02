@@ -6,10 +6,10 @@ import ui
 from components.apple import Apple
 from components.snake import Snake
 
-from . import brain
+from . import Brain
 
 
-class Human(brain):
+class Human(Brain):
     def __init__(self):
         super().__init__(do_display=True)
         self.env.set_caption("Snake: Human mode")
