@@ -1,19 +1,20 @@
 import itertools
+import sys
 import time
+
+import numpy as np
 
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 import pygame
 import torch
 import torch.optim as optim
-from PIL import Image
-from torch import nn
-
 import ui
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork, ReplayMemory
+from PIL import Image
+from torch import nn
 
 from . import Reward
 from .dqn import DQN
@@ -22,9 +23,7 @@ from .dqn import DQN
 class DQN_CNN(DQN):
     def __init__(self, nb_actions=-1, gamma=-1.0):
         self.input_size = (1, ui.X_GRID, ui.Y_GRID)
-        super().__init__(
-            input_size=self.input_size, nb_actions=nb_actions, gamma=gamma
-        )
+        super().__init__(input_size=self.input_size, nb_actions=nb_actions, gamma=gamma)
         self.env.set_caption("Snake: Pytorch Convolutional Neural Network")
 
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)
@@ -58,14 +57,12 @@ class DQN_CNN(DQN):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.snake.dead = True
+                    sys.exit()
 
             nb_moves += 1
 
             score_text = "Score: {}".format(nb_apples)
-            self.env.draw_everything(
-                score_text, [self.snake, self.apple], flip=False
-            )
+            self.env.draw_everything(score_text, [self.snake, self.apple], flip=False)
             self.plot_progress()
             self.env.make_surf_from_figure_on_canvas(fig)
 
@@ -153,9 +150,7 @@ class DQN_CNN(DQN):
         self.optimizer.step()
         return loss.item()
 
-    def update(
-        self, reward, new_signal, batch_size=-1, nb_steps=-1, epsilon=-1.0
-    ):
+    def update(self, reward, new_signal, batch_size=-1, nb_steps=-1, epsilon=-1.0):
         new_state = torch.Tensor(new_signal).unsqueeze(0)
         self.memory.push(
             (
