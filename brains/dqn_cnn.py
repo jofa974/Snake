@@ -67,14 +67,15 @@ class DQN_CNN(DQN):
             self.env.make_surf_from_figure_on_canvas(fig)
 
             last_signal = self.get_input_data()
-            next_move = self.update(
+            next_action = self.update(
                 self.last_reward,
                 last_signal,
-                batch_size=100,
+                batch_size=10,
                 nb_steps=nb_moves,
                 epsilon=epsilon,
             )
 
+            next_move = self.action2direction_key(next_action)
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
@@ -123,10 +124,7 @@ class DQN_CNN(DQN):
         plt.clf()
         ax = plt.gca()
         ax.scatter(
-            np.arange(len(self.loss_history)),
-            np.array(self.loss_history),
-            s=20,
-            c="r",
+            np.arange(len(self.loss_history)), np.array(self.loss_history), s=20, c="r",
         )
         # ax.set_aspect("equal", adjustable="box")
         # self.make_surf_from_figure_on_canvas(fig)
@@ -141,7 +139,9 @@ class DQN_CNN(DQN):
         return arr
 
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
-        outputs = self.model(batch_state).max(1)[0]
+        outputs = (
+            self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
+        )
         next_outputs = self.model(batch_next_state).detach().max(1)[0]
         targets = batch_reward + self.gamma * next_outputs
         loss = self.loss(outputs, targets)

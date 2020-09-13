@@ -34,32 +34,34 @@ class DQN(Brain):
 
     def select_action(self, state, epsilon):
         if random.random() < epsilon:
-            action = random.choice(range(3))
+            return random.choice(range(3))
         else:
             probs = F.softmax(self.model(state), dim=1)
-            action = probs.multinomial(num_samples=1)[0][0].item()
+            action = probs.multinomial(num_samples=1)[0][0]
+            return action.item()
+
+    def action2direction_key(self, action):
         directions = ["forward", "left", "right"]
         if directions[action] == "forward":
-            action = pygame.K_SPACE
+            return pygame.K_SPACE
         elif directions[action] == "left":
             if self.snake.speed[0] > 0:
-                action = pygame.K_UP
+                return pygame.K_UP
             if self.snake.speed[0] < 0:
-                action = pygame.K_DOWN
+                return pygame.K_DOWN
             if self.snake.speed[1] > 0:
-                action = pygame.K_RIGHT
+                return pygame.K_RIGHT
             if self.snake.speed[1] < 0:
-                action = pygame.K_LEFT
+                return pygame.K_LEFT
         elif directions[action] == "right":
             if self.snake.speed[0] > 0:
-                action = pygame.K_DOWN
+                return pygame.K_DOWN
             if self.snake.speed[0] < 0:
-                action = pygame.K_UP
+                return pygame.K_UP
             if self.snake.speed[1] > 0:
-                action = pygame.K_LEFT
+                return pygame.K_LEFT
             if self.snake.speed[1] < 0:
-                action = pygame.K_RIGHT
-        return action
+                return pygame.K_RIGHT
 
     @abstractmethod
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
