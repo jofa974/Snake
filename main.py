@@ -59,10 +59,7 @@ def main(args):
             if i > 0:
                 path = Path("genetic_data")
                 new_pop = generate_new_population(
-                    path,
-                    gen=i - 1,
-                    nb_pop=nb_games,
-                    nb_best=int(nb_games * 0.2),
+                    path, gen=i - 1, nb_pop=nb_games, nb_best=int(nb_games * 0.2),
                 )
             else:
                 new_pop = [None] * nb_games
@@ -71,9 +68,7 @@ def main(args):
             training_data = read_training_data()
 
             # Training
-            with concurrent.futures.ProcessPoolExecutor(
-                max_workers=8
-            ) as executor:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
                 results = executor.map(
                     nn_ga.play_individual,
                     new_pop,
@@ -111,7 +106,8 @@ def main(args):
                 game.load()
             training_data = read_training_data()
             epsilon = max(epsilon * eps_decay, eps_min)
-            # sepsilon = 0
+            epsilon = 0
+            print(epsilon)
             score = game.play(
                 max_move=1000, training_data=training_data, epsilon=epsilon
             )
@@ -127,9 +123,7 @@ if __name__ == "__main__":
     # Input arguments
     parser = argparse.ArgumentParser(description="Snake game options")
     play_mode_group = parser.add_mutually_exclusive_group(required=True)
-    play_mode_group.add_argument(
-        "--human", action="store_true", help="Human play mode"
-    )
+    play_mode_group.add_argument("--human", action="store_true", help="Human play mode")
     play_mode_group.add_argument(
         "--bfs",
         type=int,
@@ -155,9 +149,7 @@ if __name__ == "__main__":
         "--dqn_ann", action="store_true", help="ANN Deep Q-learning mode."
     )
     play_mode_group.add_argument(
-        "--dqn_cnn",
-        action="store_true",
-        help="Convolutional Deep Q-learning mode.",
+        "--dqn_cnn", action="store_true", help="Convolutional Deep Q-learning mode.",
     )
     args = parser.parse_args()
 
