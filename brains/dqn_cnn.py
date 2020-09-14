@@ -16,7 +16,6 @@ from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork, ReplayMemory
 from PIL import Image
 from torch import nn
 
-from . import Reward
 from .dqn import DQN
 
 
@@ -70,7 +69,7 @@ class DQN_CNN(DQN):
             next_action = self.update(
                 self.last_reward,
                 last_signal,
-                batch_size=10,
+                batch_size=32,
                 nb_steps=nb_moves,
                 epsilon=epsilon,
             )
@@ -88,13 +87,13 @@ class DQN_CNN(DQN):
             )
 
             if new_dist < prev_dist:
-                self.last_reward = Reward.CLOSER
+                self.last_reward = 0.1
             else:
-                self.last_reward = Reward.FURTHER
+                self.last_reward = -0.2
 
             self.snake.detect_collisions()
             if self.snake.dead:
-                self.last_reward = Reward.DEAD
+                self.last_reward = -1
 
             if self.snake.eat(self.apple):
                 nb_moves = 0
@@ -106,7 +105,7 @@ class DQN_CNN(DQN):
                     self.apple.new(x, y)
                 else:
                     self.apple.new_random()
-                self.last_reward = Reward.EAT
+                self.last_reward = 1
             # else:
             #     self.last_reward = nb_moves_wo_apple
 

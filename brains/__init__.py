@@ -1,14 +1,6 @@
 from abc import ABC, abstractmethod
-from enum import IntEnum
 
 from game import Environment
-
-
-class Reward(IntEnum):
-    EAT = 10
-    DEAD = -100
-    CLOSER = 1
-    FURTHER = -1
 
 
 class Brain(ABC):
