@@ -20,7 +20,7 @@ from . import Brain
 
 
 class DQN(Brain):
-    def __init__(self, input_size, nb_actions, gamma, do_display=False, learn=True):
+    def __init__(self, input_size, nb_actions, gamma, do_display=False, learning=True):
         super().__init__(do_display=do_display)
         self.input_size = input_size
         self.model = None
@@ -40,7 +40,7 @@ class DQN(Brain):
         self.last_action = 0
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
-        self.learn = learn
+        self.learning = learning
         if self.do_display:
             matplotlib.use("Agg")
 
@@ -240,7 +240,7 @@ class DQN(Brain):
         )
         action = self.select_action(new_state, epsilon)
 
-        if self.learn and (len(self.memory.memory)) > self.batch_size + 1:
+        if self.learning and (len(self.memory.memory)) > self.batch_size + 1:
             (
                 batch_state,
                 batch_next_state,

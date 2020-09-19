@@ -20,14 +20,14 @@ from .dqn import DQN
 
 class DQN_ANN(DQN):
     def __init__(
-        self, input_size=10, nb_actions=3, gamma=0.98, do_display=False, learn=True
+        self, input_size=10, nb_actions=3, gamma=0.98, do_display=False, learning=True
     ):
         super().__init__(
             input_size=input_size,
             nb_actions=nb_actions,
             gamma=gamma,
             do_display=do_display,
-            learn=learn,
+            learning=learning,
         )
         self.env.set_caption("Snake: Pytorch Artificial Neural Network")
 
