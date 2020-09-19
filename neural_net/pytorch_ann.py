@@ -6,20 +6,18 @@ from torch.autograd import Variable
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size=10, nb_actions=3):
+    def __init__(self, input_size, nb_actions):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.nb_actions = nb_actions
-        self.fc1 = nn.Linear(input_size, 120)
-        self.fc2 = nn.Linear(120, 120)
-        self.fc3 = nn.Linear(120, 120)
-        self.fc4 = nn.Linear(120, nb_actions)
+        self.fc1 = nn.Linear(input_size, 32)
+        self.fc2 = nn.Linear(32, 12)
+        self.fc3 = nn.Linear(12, nb_actions)
 
     def forward(self, state):
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        q_values = self.fc4(x)
+        q_values = self.fc3(x)
         return q_values
 
 
@@ -34,5 +32,5 @@ class ReplayMemory:
             del self.memory[0]
 
     def sample(self, batch_size):
-        samples = zip(*random.sample(self.memory, batch_size))
+        samples = zip(*random.sample(self.memory[1:], batch_size))
         return map(lambda x: Variable(torch.cat(x, dim=0)), samples)
