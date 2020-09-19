@@ -53,8 +53,8 @@ class DQN(Brain):
             return random.choice(range(3))
         else:
             probs = F.softmax(self.model(state), dim=1)
-            action = probs.argmax()
             # action = probs.multinomial(num_samples=1)[0][0]
+            action = probs.argmax()
             return action.item()
 
     def action2direction_key(self, action):

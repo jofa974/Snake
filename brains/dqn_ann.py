@@ -20,7 +20,7 @@ from .dqn import DQN
 
 class DQN_ANN(DQN):
     def __init__(
-        self, input_size=10, nb_actions=3, gamma=0.98, do_display=False, learning=True
+        self, input_size=16, nb_actions=3, gamma=0.9, do_display=False, learning=True
     ):
         super().__init__(
             input_size=input_size,
@@ -33,23 +33,23 @@ class DQN_ANN(DQN):
 
         self.model = NeuralNetwork(self.input_size, nb_actions)
         self.memory = ReplayMemory(10000)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
-        self.loss = F.smooth_l1_loss
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
+        self.loss = nn.MSELoss()
         self.batch_size = 32
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()
         input_data = [
-            # self.snake.get_distance_to_north_wall(norm=2),
-            # self.snake.get_distance_to_south_wall(norm=2),
-            # self.snake.get_distance_to_east_wall(norm=2),
-            # self.snake.get_distance_to_west_wall(norm=2),
-            # self.snake.get_distance_to_target(
-            #     self.snake.get_position(0), self.apple.get_position(), norm=2
-            # ),
-            # self.snake.get_distance_to_target(
-            #     self.snake.get_position(0), self.snake.get_position(-1), norm=2
-            # ),
+            self.snake.get_distance_to_north_wall(norm=2),
+            self.snake.get_distance_to_south_wall(norm=2),
+            self.snake.get_distance_to_east_wall(norm=2),
+            self.snake.get_distance_to_west_wall(norm=2),
+            self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.apple.get_position(), norm=2
+            ),
+            self.snake.get_distance_to_target(
+                self.snake.get_position(0), self.snake.get_position(-1), norm=2
+            ),
             int(self.snake.is_clear_ahead()),
             int(self.snake.is_clear_left()),
             int(self.snake.is_clear_right()),
