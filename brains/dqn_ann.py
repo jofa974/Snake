@@ -19,15 +19,23 @@ from .dqn import DQN
 
 
 class DQN_ANN(DQN):
-    def __init__(self, input_size=10, nb_actions=3, gamma=0.98):
-        super().__init__(input_size=input_size, nb_actions=nb_actions, gamma=gamma)
+    def __init__(
+        self, input_size=10, nb_actions=3, gamma=0.98, do_display=False, learn=True
+    ):
+        super().__init__(
+            input_size=input_size,
+            nb_actions=nb_actions,
+            gamma=gamma,
+            do_display=do_display,
+            learn=learn,
+        )
         self.env.set_caption("Snake: Pytorch Artificial Neural Network")
 
         self.model = NeuralNetwork(self.input_size, nb_actions)
-        self.memory = ReplayMemory(1000)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.01)
+        self.memory = ReplayMemory(10000)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = F.smooth_l1_loss
-        self.batch_size = 64
+        self.batch_size = 32
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()

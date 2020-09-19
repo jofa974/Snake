@@ -15,6 +15,7 @@ from brains import bfs, dqn_ann, dqn_cnn, human, nn_ga, random
 from game import read_training_data
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
+from gen_xy import gen_xy
 
 
 def cleanup(path):
@@ -86,14 +87,27 @@ def main(args):
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     elif args.dqn_ann:
-        game = dqn_ann.DQN_ANN()
-        for nb in range(1000):
+        nb_games = 100
+        game = dqn_ann.DQN_ANN(do_display=False)
+        all_score = np.zeros(nb_games)
+        for nb in range(nb_games):
             print("Game {}".format(nb))
-            if nb > 0:
-                game.load()
+            if (nb % 10) == 0:
+                print("Generating new random training input")
+                gen_xy()
             training_data = read_training_data()
-            game.play(max_move=10000, training_data=training_data)
+            score = game.play(max_move=10000, training_data=training_data)
             game.save()
+            if score >= np.max(all_score):
+                game.save_best()
+            all_score[nb] = score
+        show_stats(all_score)
+        pygame.quit()
+    elif args.dqn_ann_play:
+        game = dqn_ann.DQN_ANN(do_display=True, learn=False)
+        training_data = read_training_data()
+        game.load_best()
+        score = game.play(max_move=10000, training_data=training_data)
         pygame.quit()
     elif args.dqn_cnn:
         game = dqn_cnn.DQN_CNN(nb_actions=3, gamma=0.99)
@@ -112,9 +126,11 @@ def main(args):
                 max_move=1000, training_data=training_data, epsilon=epsilon
             )
             game.save()
+            if score > np.max(all_score):
+                game.save_best()
             all_score[nb] = score
-        pygame.quit()
         show_stats(all_score)
+        pygame.quit()
     else:
         raise NotImplementedError("Game mode not implemented.")
 
@@ -147,6 +163,11 @@ if __name__ == "__main__":
     )
     play_mode_group.add_argument(
         "--dqn_ann", action="store_true", help="ANN Deep Q-learning mode."
+    )
+    play_mode_group.add_argument(
+        "--dqn_ann_play",
+        action="store_true",
+        help="Play the best agent trained by the DQN-ANN.",
     )
     play_mode_group.add_argument(
         "--dqn_cnn", action="store_true", help="Convolutional Deep Q-learning mode.",

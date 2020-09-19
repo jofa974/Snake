@@ -20,8 +20,8 @@ from . import Brain
 
 
 class DQN(Brain):
-    def __init__(self, input_size, nb_actions, gamma, do_display=True):
-        super().__init__(do_display=True)
+    def __init__(self, input_size, nb_actions, gamma, do_display=False, learn=True):
+        super().__init__(do_display=do_display)
         self.input_size = input_size
         self.model = None
         self.gamma = gamma
@@ -35,11 +35,14 @@ class DQN(Brain):
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
         self.loss_history = []
+        self.mean_reward_history = []
         self.last_state = torch.Tensor(self.input_size).unsqueeze(0)
         self.last_action = 0
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
-        matplotlib.use("Agg")
+        self.learn = learn
+        if self.do_display:
+            matplotlib.use("Agg")
 
     @abstractmethod
     def get_input_data(self):
@@ -50,7 +53,8 @@ class DQN(Brain):
             return random.choice(range(3))
         else:
             probs = F.softmax(self.model(state), dim=1)
-            action = probs.multinomial(num_samples=1)[0][0]
+            action = probs.argmax()
+            # action = probs.multinomial(num_samples=1)[0][0]
             return action.item()
 
     def action2direction_key(self, action):
@@ -86,40 +90,58 @@ class DQN(Brain):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        if self.steps % 10 == 0:
+        if self.steps % 1 == 0:
             self.loss_history.append(loss.item())
+            self.mean_reward_history.append(self.mean_reward())
         if loss.item() > 1.0e7:
             print("outputs {}".format(outputs))
             print("targets {}".format(targets))
 
-    def score(self):
+    def mean_reward(self):
         return sum(self.reward_window) / (len(self.reward_window) + 1.0)
 
-    def save(self):
+    def save(self, filename=None):
+        if filename is None:
+            filename = self.brain_file
         torch.save(
             {
                 "state_dict": self.model.state_dict(),
                 "optimizer": self.optimizer.state_dict(),
             },
-            self.brain_file,
+            filename,
         )
 
-    def load(self):
-        if os.path.isfile(self.brain_file):
+    def save_best(self):
+        self.save(filename="best_brain.pth")
+
+    def load(self, filename=None):
+        if filename is None:
+            filename = self.brain_file
+        if os.path.isfile(filename):
             # print("=> loading checkpoint ...")
-            checkpoint = torch.load(self.brain_file)
+            checkpoint = torch.load(filename)
             self.model.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
             # print("done !")
         else:
             print("no checkpoint found ...")
 
+    def load_best(self):
+        self.load(filename="best_brain.pth")
+
     def plot_progress(self):
         plt.cla()
         plt.clf()
-        ax = plt.gca()
-        ax.scatter(
+        ax1 = plt.subplot(1, 2, 1)
+        ax1.scatter(
             np.arange(len(self.loss_history)), np.array(self.loss_history), s=20, c="r",
+        )
+        ax2 = plt.subplot(1, 2, 2)
+        ax2.scatter(
+            np.arange(len(self.mean_reward_history)),
+            np.array(self.mean_reward_history),
+            s=20,
+            c="b",
         )
 
     def play(self, max_move=-1, training_data=None, epsilon=0):
@@ -145,11 +167,15 @@ class DQN(Brain):
             self.steps += 1
 
             score_text = "Score: {}".format(nb_apples)
-            self.env.draw_everything(score_text, [self.snake, self.apple], flip=False)
-            self.plot_progress()
-            self.env.make_surf_from_figure_on_canvas(fig)
+            if self.do_display:
+                self.env.draw_everything(
+                    score_text, [self.snake, self.apple], flip=False
+                )
+                self.plot_progress()
+                self.env.make_surf_from_figure_on_canvas(fig)
 
             last_signal = self.get_input_data()
+
             next_action = self.update(
                 self.last_reward, last_signal, nb_steps=nb_moves, epsilon=epsilon,
             )
@@ -195,6 +221,8 @@ class DQN(Brain):
             # time.sleep(0.01)
 
         print("Final score: {}".format(nb_apples))
+        if len(self.loss_history) > 1:
+            print("Final loss: {}".format(self.loss_history[-1]))
         plt.close(fig)
         return nb_apples
 
@@ -212,7 +240,7 @@ class DQN(Brain):
         )
         action = self.select_action(new_state, epsilon)
 
-        if (len(self.memory.memory)) > self.batch_size + 1:
+        if self.learn and (len(self.memory.memory)) > self.batch_size + 1:
             (
                 batch_state,
                 batch_next_state,
@@ -224,7 +252,7 @@ class DQN(Brain):
         self.last_action = action
         self.last_state = new_state
         self.last_reward = reward
-        # self.reward_window.append(reward)
-        # if len(self.reward_window) > 1000:
-        #     del self.reward_window[0]
+        self.reward_window.append(reward)
+        if len(self.reward_window) > self.batch_size:
+            del self.reward_window[0]
         return action

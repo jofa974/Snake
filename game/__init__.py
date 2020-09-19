@@ -1,5 +1,5 @@
 import matplotlib
-import matplotlib.backends.backend_agg as agg
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pygame
@@ -10,9 +10,9 @@ from ui import BLACK, HEIGHT, WHITE, WIDTH
 
 
 class Environment:
-    def __init__(self, do_display=False):
+    def __init__(self, do_display):
         pygame.init()
-        w = 2 * WIDTH
+        w = 3 * WIDTH
         h = HEIGHT
 
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
@@ -25,7 +25,7 @@ class Environment:
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
 
-        self.do_display = do_display
+        # self.do_display = do_display
         self.screen = None
         if do_display:
             self.screen = pygame.display.set_mode((w, h))
@@ -46,6 +46,8 @@ class Environment:
 
     # TODO: refactor this
     def make_surf_from_figure_on_canvas(self, fig):
+        import matplotlib.backends.backend_agg as agg
+
         matplotlib.use("Agg")
         canvas = agg.FigureCanvasAgg(fig)
         canvas.draw()

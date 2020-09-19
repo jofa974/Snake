@@ -10,14 +10,16 @@ class NeuralNetwork(nn.Module):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.nb_actions = nb_actions
-        self.fc1 = nn.Linear(input_size, 32)
-        self.fc2 = nn.Linear(32, 12)
-        self.fc3 = nn.Linear(12, nb_actions)
+        self.fc1 = nn.Linear(input_size, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, nb_actions)
 
     def forward(self, state):
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
-        q_values = self.fc3(x)
+        x = F.relu(self.fc3(x))
+        q_values = self.fc4(x)
         return q_values
 
 
