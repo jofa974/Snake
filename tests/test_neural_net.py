@@ -1,6 +1,5 @@
 import itertools
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 from neural_net.artificial_neural_network import ANN, forward_layer

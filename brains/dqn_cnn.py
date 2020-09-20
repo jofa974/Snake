@@ -1,11 +1,5 @@
-import sys
-import time
 
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
-import pygame
-import torch
 import torch.optim as optim
 from PIL import Image
 from torch import nn

@@ -2,11 +2,8 @@ import itertools
 import pickle
 from pathlib import Path
 
-import matplotlib
-import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import numpy as np
-import pygame
 from scipy.special import softmax
 
 

@@ -1,18 +1,7 @@
-import itertools
-import sys
-import time
 
-import matplotlib
-import matplotlib.pyplot as plt
-import pygame
-import torch
-import torch.nn.functional as F
 import torch.optim as optim
 from torch import nn
 
-import ui
-from components.apple import Apple
-from components.snake import Snake
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
 
 from .dqn import DQN

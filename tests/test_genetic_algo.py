@@ -1,4 +1,4 @@
-from neural_net.genetic_algorithm import select_best_parents, generate_child
+from neural_net.genetic_algorithm import select_best_parents
 
 parent0 = [
     -500, "I am", "the", "useless one.."

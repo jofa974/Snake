@@ -15,7 +15,6 @@ from brains import bfs, dqn_ann, dqn_cnn, human, nn_ga, random
 from game import read_training_data
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import plot_fitness, show_stats
-from gen_xy import gen_xy
 
 
 def cleanup(path):
