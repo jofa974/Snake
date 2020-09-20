@@ -5,19 +5,18 @@ import pygame
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from game import Game
+
+from . import Brain
 
 
-class Human(Game):
+class Human(Brain):
     def __init__(self):
         super().__init__(do_display=True)
-
-        pygame.display.set_caption("Snake: Human mode")
+        self.env.set_caption("Snake: Human mode")
 
     def play(self):
         self.snake = Snake()
         self.apple = Apple()
-        myfont = pygame.font.SysFont("Comic Sans MS", 30)
         score = 0
 
         while not self.snake.dead:
@@ -26,6 +25,8 @@ class Human(Game):
                     self.snake.dead = True
                 if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
                     self.snake.change_direction(event.key)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.env.take_screenshot()
 
             self.snake.move()
 
@@ -37,26 +38,13 @@ class Human(Game):
                 self.apple.new_random()
                 score += 1
 
-            textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
-
-            # Draw Everything
-            self.screen.fill(ui.BLACK)
-            self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-            self.snake.draw(self.screen)
-            self.apple.draw(self.screen)
-            self.walls.draw(self.screen)
-            pygame.display.flip()
+            score_text = "Score: {}".format(score)
+            self.env.draw_everything(score_text, [self.snake, self.apple])
 
             time.sleep(150.0 / 1000.0)
 
-        self.screen.fill(ui.BLACK)
-        textsurface = myfont.render(
-            "GAME OVER! Your score is {}".format(score), False, ui.WHITE
-        )
-        self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-        self.snake.draw(self.screen)
-        self.apple.draw(self.screen)
-        self.walls.draw(self.screen)
-        pygame.display.flip()
+        final_text = "GAME OVER! Your score is {}".format(score)
+
+        self.env.draw_everything(final_text, [self.snake, self.apple])
 
         time.sleep(2)

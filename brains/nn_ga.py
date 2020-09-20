@@ -2,33 +2,26 @@ import itertools
 import time
 
 import matplotlib
-import matplotlib.backends.backend_agg as agg
 import matplotlib.pyplot as plt
 import pygame
 
-import game
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from neural_net.neural_network import (NeuralNetwork,
-                                       create_surf_from_figure_on_canvas)
+from neural_net.artificial_neural_network import ANN
 
-
-def read_training_data():
-    training_data = []
-    with open("apple_position.in", "r") as f:
-        for line in f.readlines():
-            training_data.append((int(line.split()[0]), int(line.split()[1])))
-    return training_data
+from . import Brain
 
 
 def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
-    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
+    score, fitness = game.play(
+        max_move=1000, dump=True, training_data=training_data
+    )
     return fitness
 
 
-class NN_GA(game.Game):
+class NN_GA(Brain):
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.
@@ -36,7 +29,7 @@ class NN_GA(game.Game):
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None):
         super().__init__(do_display=do_display)
-        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[4])
+        self.nn = ANN(gen_id, dna, hidden_nb=[4])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
@@ -53,9 +46,10 @@ class NN_GA(game.Game):
 
         if self.do_display:
             matplotlib.use("Agg")
-            pygame.display.set_caption("Snake: Neural Network mode")
-            myfont = pygame.font.SysFont("Comic Sans MS", 30)
-            fig = plt.figure(figsize=[5, 5], dpi=100)
+            self.env.set_caption(
+                "Snake: Custom Neural Network optimized with a Genetic Algorithm"
+            )
+            fig = plt.figure(figsize=[3, 3], dpi=100)
 
         while not self.snake.dead and nb_moves < max_move:
 
@@ -104,25 +98,12 @@ class NN_GA(game.Game):
                 fitness += 20
 
             if self.do_display:
-                score_text = myfont.render("Score: {}".format(score), False, ui.WHITE)
-                fitness_text = myfont.render(
-                    "Fitness: {}".format(fitness), False, ui.WHITE
+                score_text = "Score: {}".format(score)
+                self.env.draw_everything(
+                    score_text, [self.snake, self.apple], flip=False
                 )
-                moves_text = myfont.render(
-                    "Moves: {}".format(nb_moves), False, ui.WHITE
-                )
-                # Draw Everything
-                self.screen.fill(ui.BLACK)
-                self.screen.blit(score_text, (ui.WIDTH + 50, 50))
-                self.screen.blit(fitness_text, (ui.WIDTH + 150, 50))
-                self.screen.blit(moves_text, (ui.WIDTH + 350, 50))
-                self.walls.draw(self.screen)
-                self.snake.draw(self.screen)
-                self.apple.draw(self.screen)
                 self.nn.plot(fig)
-                surf = create_surf_from_figure_on_canvas(fig)
-                self.screen.blit(surf, (6 * ui.WIDTH / 5, ui.HEIGHT / 5))
-                pygame.display.flip()
+                self.env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1

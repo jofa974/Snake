@@ -1,14 +1,17 @@
-import time
-import pygame
-import ui
-import game
 import itertools
+import time
 from collections import deque
+
+import pygame
+
+import ui
 from components.apple import Apple
 from components.snake import Snake
 
+from . import Brain
 
-class BFS(game.Game):
+
+class BFS(Brain):
     def __init__(self, do_display):
         super().__init__(do_display=do_display)
         self.moves = []
@@ -18,7 +21,10 @@ class BFS(game.Game):
             for x in range(ui.X_GRID):
                 grid.append(
                     pygame.Rect(
-                        x * ui.BASE_SIZE, y * ui.BASE_SIZE, ui.BASE_SIZE, ui.BASE_SIZE
+                        x * ui.BASE_SIZE,
+                        y * ui.BASE_SIZE,
+                        ui.BASE_SIZE,
+                        ui.BASE_SIZE,
                     )
                 )
             self.grid.append(grid)
@@ -28,8 +34,8 @@ class BFS(game.Game):
         self.snake = Snake()
         score = 0
         if self.do_display:
-            pygame.display.set_caption("Snake: BFS mode")
-            myfont = pygame.font.SysFont("Comic Sans MS", 30)
+            self.env.set_caption("Snake: BFS mode")
+
         while not self.snake.dead:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -59,20 +65,16 @@ class BFS(game.Game):
                 score += 1
 
             if self.do_display:
-                textsurface = myfont.render("Score: {}".format(score), False, ui.WHITE)
-                # Draw Everything
-                self.screen.fill(ui.BLACK)
-                self.screen.blit(textsurface, (ui.WIDTH + 50, 50))
-                self.walls.draw(self.screen)
-                self.snake.draw(self.screen)
-                self.apple.draw(self.screen)
-                pygame.display.flip()
+                score_text = "Score: {}".format(score)
+                self.env.draw_everything(score_text, [self.snake, self.apple])
                 time.sleep(50.0 / 1000.0)
 
         return score
 
     def make_grid_map(self):
-        self.grid_map = [[True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)]
+        self.grid_map = [
+            [True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)
+        ]
         self.grid_map[0][:] = [False for _ in range(ui.X_GRID)]
         self.grid_map[-1][:] = [False for _ in range(ui.X_GRID)]
         for i in range(ui.Y_GRID):
