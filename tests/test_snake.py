@@ -1,7 +1,7 @@
 from components.apple import Apple
 from components.snake import Snake
+from ui import BASE_SPEED
 
-BASE_SPEED = 20
 apple = Apple()
 apple.new(20, 20)
 apple_pos = apple.get_position()
