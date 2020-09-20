@@ -1,4 +1,3 @@
-
 import torch.optim as optim
 from torch import nn
 
@@ -51,4 +50,3 @@ class DQN_ANN(DQN):
             int(self.snake.is_going_left()),
         ]
         return input_data
-

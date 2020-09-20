@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch.optim as optim
 from PIL import Image
@@ -36,4 +35,3 @@ class DQN_CNN(DQN):
             arr = np.asarray(img_conv)
             arr = np.array([arr[:: ui.BASE_SIZE, :: ui.BASE_SIZE] / 255.0])
         return arr
-

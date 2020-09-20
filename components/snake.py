@@ -137,10 +137,7 @@ class Snake:
     def is_collision_wall(self, pos):
         x_head, y_head = pos
         return (
-            x_head == 0
-            or x_head == X_GRID - 1
-            or y_head == 0
-            or y_head == Y_GRID - 1
+            x_head == 0 or x_head == X_GRID - 1 or y_head == 0 or y_head == Y_GRID - 1
         )
 
     def is_collision_body(self, pos):
@@ -152,9 +149,7 @@ class Snake:
         return False
 
     def get_distance_to_target(self, snake_pos, target_pos, norm=2):
-        dist = sum(
-            [pow(abs(snake_pos[i] - target_pos[i]), norm) for i in range(2)]
-        )
+        dist = sum([pow(abs(snake_pos[i] - target_pos[i]), norm) for i in range(2)])
         dist = pow(dist, 1.0 / norm)
         return dist
 
@@ -162,9 +157,9 @@ class Snake:
         snake_pos = self.get_position(0)
         speed = self.speed
         next_pos = [snake_pos[i] + speed[i] for i in range(2)]
-        return not self.is_collision_wall(
+        return not self.is_collision_wall(next_pos) and not self.is_collision_body(
             next_pos
-        ) and not self.is_collision_body(next_pos)
+        )
 
     def get_next_pos_left(self):
         snake_pos = self.get_position(0)
@@ -190,24 +185,22 @@ class Snake:
 
     def is_clear_left(self):
         next_pos = self.get_next_pos_left()
-        return not self.is_collision_wall(
+        return not self.is_collision_wall(next_pos) and not self.is_collision_body(
             next_pos
-        ) and not self.is_collision_body(next_pos)
+        )
 
     def is_clear_right(self):
         next_pos = self.get_next_pos_right()
-        return not self.is_collision_wall(
+        return not self.is_collision_wall(next_pos) and not self.is_collision_body(
             next_pos
-        ) and not self.is_collision_body(next_pos)
+        )
 
     def is_food_ahead(self, apple_pos):
         snake_pos = self.get_position(0)
         current_dist = self.get_distance_to_target(snake_pos, apple_pos)
 
         speed = self.speed
-        next_pos = tuple(
-            [snake_pos[i] + int(speed[i] / BASE_SPEED) for i in range(2)]
-        )
+        next_pos = tuple([snake_pos[i] + int(speed[i] / BASE_SPEED) for i in range(2)])
         next_dist = self.get_distance_to_target(next_pos, apple_pos)
 
         return next_dist < current_dist
