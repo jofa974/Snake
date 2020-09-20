@@ -1,5 +1,4 @@
 import matplotlib
-
 import pygame
 from PIL import Image
 
@@ -23,10 +22,7 @@ class Environment:
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
 
-        # self.do_display = do_display
-        self.screen = None
-        if do_display:
-            self.screen = pygame.display.set_mode((w, h))
+        self.screen = pygame.display.set_mode((w, h))
 
     def draw_everything(self, text=None, sprites=None, flip=True):
         if text:

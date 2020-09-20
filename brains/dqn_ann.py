@@ -1,6 +1,9 @@
+import numpy as np
 import torch.optim as optim
+from PIL import Image
 from torch import nn
 
+import ui
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
 
 from .dqn import DQN
@@ -50,3 +53,31 @@ class DQN_ANN(DQN):
             int(self.snake.is_going_left()),
         ]
         return input_data
+
+
+class DQN_ANN_PIC(DQN_ANN):
+    def __init__(self, gamma=0.9, do_display=False, learning=True):
+        input_size = ui.X_GRID * ui.Y_GRID
+        nb_actions = 3
+        super().__init__(
+            input_size=input_size,
+            nb_actions=nb_actions,
+            gamma=gamma,
+            do_display=do_display,
+            learning=learning,
+        )
+        self.env.set_caption("Snake: Pytorch Artificial Neural Network")
+
+        self.model = NeuralNetwork(self.input_size, nb_actions)
+        self.memory = ReplayMemory(10000)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.00001)
+        self.loss = nn.MSELoss()
+        self.batch_size = 32
+
+    def get_input_data(self):
+        self.env.take_screenshot()
+        with Image.open("screenshot.png") as img:
+            img_conv = img.convert("L")
+            arr = np.asarray(img_conv)
+            arr = np.array([arr[:: ui.BASE_SIZE, :: ui.BASE_SIZE] / 255.0])
+        return arr.flatten()

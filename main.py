@@ -86,16 +86,14 @@ def main(args):
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     elif args.dqn_ann:
-        nb_games = 100
+        nb_games = 500
+        # game = dqn_ann.DQN_ANN(do_display=False)
         game = dqn_ann.DQN_ANN(do_display=False)
         all_score = np.zeros(nb_games)
         for nb in range(nb_games):
             print("Game {}".format(nb))
-            # if (nb % 10) == 0:
-            #     print("Generating new random training input")
-            #     gen_xy()
             training_data = read_training_data()
-            score = game.play(max_move=10000, training_data=training_data)
+            score = game.play(max_move=1000, training_data=training_data)
             game.save()
             if score >= np.max(all_score):
                 game.save_best()
