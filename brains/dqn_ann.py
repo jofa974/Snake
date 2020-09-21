@@ -78,7 +78,7 @@ class DQN_ANN_PIC(DQN_ANN):
 
         self.model = NeuralNetwork(self.input_size, nb_actions)
         self.memory = ReplayMemory(10000)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.00001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
         self.loss = nn.MSELoss()
         self.batch_size = 32
 
