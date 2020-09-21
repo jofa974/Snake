@@ -1,4 +1,5 @@
 import itertools
+import math
 import time
 
 import matplotlib
@@ -29,17 +30,19 @@ class NN_GA(Brain):
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None):
         super().__init__(do_display=do_display)
-        self.nn = ANN(gen_id, dna, hidden_nb=[4])
+        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[6, 5, 5, 4, 4, 3])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
+        self.snake = Snake()
+
+        forbidden_positions = self.snake.get_body_position_list()
         if training_data:
             training_data = itertools.cycle(training_data)
-            self.apple = Apple(xy=next(training_data))
+            self.apple = Apple(forbidden=forbidden_positions, xy=next(training_data))
         else:
-            self.apple = Apple()
+            self.apple = Apple(forbidden=forbidden_positions)
 
-        self.snake = Snake()
         score = 0
         fitness = 0
         nb_moves = 0
@@ -77,10 +80,10 @@ class NN_GA(Brain):
                 self.snake.get_position(0), self.apple.get_position(), norm=2
             )
 
-            if new_dist < prev_dist:
-                fitness += 2
-            else:
-                fitness -= 3
+            # if new_dist < prev_dist:
+            #     fitness += 2
+            # else:
+            #     fitness -= 3
 
             self.snake.detect_collisions()
             if self.snake.dead:
@@ -89,13 +92,14 @@ class NN_GA(Brain):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
+                forbidden_positions = self.snake.get_body_position_list()
                 if training_data:
                     x, y = next(training_data)
-                    self.apple.new(x, y)
+                    self.apple.new(x, y, forbidden=forbidden_positions)
                 else:
-                    self.apple.new_random()
+                    self.apple.new_random(forbidden=forbidden_positions)
                 score += 1
-                fitness += 20
+                # fitness += 5
 
             if self.do_display:
                 score_text = "Score: {}".format(score)
@@ -107,6 +111,11 @@ class NN_GA(Brain):
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
+            fitness = (
+                nb_moves
+                + (math.pow(2, score) + math.pow(score, 2.1) * 500)
+                - (math.pow(score, 1.2) * math.pow(0.25 * score, 1.3))
+            )
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 

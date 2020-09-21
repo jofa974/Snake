@@ -175,7 +175,6 @@ class ANN:
             )
             try:
                 f = open(file_path, "rb")
-                print("Loading generation {} id {}".format(gen_id[0], gen_id[1]))
                 fitness, self.weights, self.bias = pickle.load(f)
             except IOError:
                 # print("Initialising random NN")

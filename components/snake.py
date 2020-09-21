@@ -140,11 +140,17 @@ class Snake:
             x_head == 0 or x_head == X_GRID - 1 or y_head == 0 or y_head == Y_GRID - 1
         )
 
+    def get_body_position_list(self):
+        to_return = []
+        for idx in range(0, len(self.body_list)):
+            to_return.append(self.get_position(idx))
+        return to_return
+
     def is_collision_body(self, pos):
         x_head, y_head = pos
-        for idx in range(1, len(self.body_list)):
-            x_b, y_b = self.get_position(idx)
-            if x_b == x_head and y_b == y_head:
+        body_positions = self.get_body_position_list()
+        for body_pos in body_positions[1:]:
+            if body_pos[0] == x_head and body_pos[1] == y_head:
                 return True
         return False
 
