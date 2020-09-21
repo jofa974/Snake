@@ -82,7 +82,6 @@ def main(args):
             show_stats(all_score)
         pygame.quit()
     elif args.nnga_learn:
-<<<<<<< HEAD
         cleanup("genetic_data/*")
         nb_gen = args.nnga_learn[0]
         nb_games = args.nnga_learn[1]
@@ -116,18 +115,13 @@ def main(args):
         pygame.quit()
     elif args.nnga_play:
         game = nn_ga.NN_GA(do_display=True, gen_id=args.nnga_play)
-=======
-        learn(args.nnga_learn[0], args.nnga_learn[1])
-    elif args.genetic:
-        game = nn_ga.NN_GA(do_display=True, gen_id=args.genetic)
->>>>>>> dashboard
         nb_games = 1
         # Read training_data
         training_data = read_training_data()
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     elif args.dqn_ann:
-        nb_games = 500
+        nb_games = 150
         # game = dqn_ann.DQN_ANN(do_display=False)
         game = dqn_ann.DQN_ANN(do_display=False)
         all_score = np.zeros(nb_games)
