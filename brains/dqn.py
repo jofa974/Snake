@@ -145,13 +145,15 @@ class DQN(Brain):
         )
 
     def play(self, max_move=-1, training_data=None, epsilon=0):
+        self.snake = Snake()
+
+        forbidden_positions = self.snake.get_body_position_list()
         if training_data:
             training_data = itertools.cycle(training_data)
-            self.apple = Apple(xy=next(training_data))
+            self.apple = Apple(forbidden=forbidden_positions, xy=next(training_data))
         else:
-            self.apple = Apple()
+            self.apple = Apple(forbidden=forbidden_positions)
 
-        self.snake = Snake()
         nb_moves = 0
         nb_apples = 0
 
@@ -206,11 +208,12 @@ class DQN(Brain):
                 nb_apples += 1
                 self.snake.grow()
                 self.snake.update()
+                forbidden_positions = self.snake.get_body_position_list()
                 if training_data:
                     x, y = next(training_data)
-                    self.apple.new(x, y)
+                    self.apple.new(x, y, forbidden=forbidden_positions)
                 else:
-                    self.apple.new_random()
+                    self.apple.new_random(forbidden=forbidden_positions)
                 self.last_reward = 1
             # else:
             #     self.last_reward = nb_moves_wo_apple
