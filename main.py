@@ -121,14 +121,18 @@ def main(args):
         game.play(max_move=10000, dump=False, training_data=training_data)
         pygame.quit()
     elif args.dqn_ann:
-        nb_games = 150
-        # game = dqn_ann.DQN_ANN(do_display=False)
+        nb_games = 500
         game = dqn_ann.DQN_ANN(do_display=False)
         all_score = np.zeros(nb_games)
+        epsilon, eps_min, eps_decay = 1, 0.2, 0.99
         for nb in range(nb_games):
             print("Game {}".format(nb))
+            epsilon = max(epsilon * eps_decay, eps_min)
             training_data = read_training_data()
-            score = game.play(max_move=1000, training_data=training_data)
+            print("epsilon = {}".format(epsilon))
+            score = game.play(
+                max_move=1000, training_data=training_data, epsilon=epsilon
+            )
             game.save()
             if score >= np.max(all_score):
                 game.save_best()
@@ -136,9 +140,9 @@ def main(args):
         show_stats(all_score)
         pygame.quit()
     elif args.dqn_ann_play:
-        game = dqn_ann.DQN_ANN(do_display=True, learning=False)
+        game = dqn_ann.DQN_ANN_PIC(do_display=True, learning=False)
         training_data = read_training_data()
-        game.load_best()
+        game.load()
         score = game.play(max_move=10000, training_data=training_data)
         pygame.quit()
     elif args.dqn_cnn:
@@ -148,13 +152,10 @@ def main(args):
         epsilon, eps_min, eps_decay = 1, 0.05, 0.92
         for nb in range(nb_games):
             print("Game {}".format(nb))
-            # if nb > 0:
-            #     game.load()
             training_data = read_training_data()
             epsilon = max(epsilon * eps_decay, eps_min)
-            epsilon = 0
             score = game.play(
-                max_move=10000, training_data=training_data, epsilon=epsilon
+                max_move=100, training_data=training_data, epsilon=epsilon
             )
             game.save()
             if score > np.max(all_score):

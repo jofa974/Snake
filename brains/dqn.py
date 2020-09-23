@@ -49,13 +49,12 @@ class DQN(Brain):
         raise NotImplementedError
 
     def select_action(self, state, epsilon):
-        if random.random() < epsilon:
-            return random.choice(range(3))
+        probs = F.softmax(self.model(state), dim=1)
+        if self.learning and random.random() < epsilon:
+            action = probs.multinomial(num_samples=1)[0][0]
         else:
-            probs = F.softmax(self.model(state), dim=1)
-            # action = probs.multinomial(num_samples=1)[0][0]
             action = probs.argmax()
-            return action.item()
+        return action.item()
 
     def action2direction_key(self, action):
         directions = ["forward", "left", "right"]
@@ -98,7 +97,7 @@ class DQN(Brain):
             print("targets {}".format(targets))
 
     def mean_reward(self):
-        return sum(self.reward_window) / (len(self.reward_window) + 1.0)
+        return sum(self.reward_window)
 
     def save(self, filename=None):
         if filename is None:
@@ -117,6 +116,7 @@ class DQN(Brain):
     def load(self, filename=None):
         if filename is None:
             filename = self.brain_file
+        print("Loading brain stored in {}".format(filename))
         if os.path.isfile(filename):
             # print("=> loading checkpoint ...")
             checkpoint = torch.load(filename)
@@ -195,9 +195,11 @@ class DQN(Brain):
             )
 
             if new_dist < prev_dist:
-                self.last_reward = 0.1
+                self.last_reward = (prev_dist - new_dist) / (
+                    np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
+                )
             else:
-                self.last_reward = -0.2
+                self.last_reward = -0.7
 
             self.snake.detect_collisions()
             if self.snake.dead:
@@ -219,6 +221,7 @@ class DQN(Brain):
             #     self.last_reward = nb_moves_wo_apple
 
             if nb_moves == max_move:
+                self.last_reward = -1
                 break
 
             # time.sleep(0.01)
@@ -231,26 +234,27 @@ class DQN(Brain):
 
     def update(self, reward, new_signal, nb_steps=-1, epsilon=-1.0):
         new_state = torch.Tensor(new_signal).unsqueeze(0)
-        if np.any(new_state.abs().gt(1.0e7).numpy()):
-            print(new_state)
-        self.memory.push(
-            (
-                self.last_state,
-                new_state,
-                torch.LongTensor([int(self.last_action)]),
-                torch.Tensor([self.last_reward]),
-            )
-        )
-        action = self.select_action(new_state, epsilon)
 
-        if self.learning and (len(self.memory.memory)) > self.batch_size + 1:
-            (
-                batch_state,
-                batch_next_state,
-                batch_action,
-                batch_reward,
-            ) = self.memory.sample(self.batch_size)
-            self.learn(batch_state, batch_next_state, batch_reward, batch_action)
+        if self.learning:
+            self.memory.push(
+                (
+                    self.last_state,
+                    new_state,
+                    torch.LongTensor([int(self.last_action)]),
+                    torch.Tensor([self.last_reward]),
+                )
+            )
+
+            if len(self.memory.memory) > self.batch_size + 1:
+                (
+                    batch_state,
+                    batch_next_state,
+                    batch_action,
+                    batch_reward,
+                ) = self.memory.sample(self.batch_size)
+                self.learn(batch_state, batch_next_state, batch_reward, batch_action)
+
+        action = self.select_action(new_state, epsilon)
 
         self.last_action = action
         self.last_state = new_state

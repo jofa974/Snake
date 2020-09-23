@@ -26,7 +26,7 @@ class DQN_ANN(DQN):
         self.memory = ReplayMemory(10000)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
-        self.batch_size = 32
+        self.batch_size = 128
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()
