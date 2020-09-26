@@ -1,0 +1,21 @@
+{
+    "BFS": {
+        "games": 10
+    },
+    "NNGA": {
+        "learn": false,
+        "generations": 15,
+        "individuals": 100,
+        "breed_fraction": 0.2,
+        "workers": 8,
+        "neurons_per_hidden": [
+            10,
+            10
+        ]
+    },
+    "DQN": {
+        "learn": false,
+        "max_move": 10000,
+        "games": 150
+    }
+}

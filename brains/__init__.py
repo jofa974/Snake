@@ -1,3 +1,4 @@
+import random
 from abc import ABC, abstractmethod
 
 from game import Environment
