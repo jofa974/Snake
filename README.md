@@ -1,5 +1,4 @@
 
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 # Table of Contents
 
@@ -24,16 +23,16 @@ This is an implementation of the Snake game. The available game modes are:
 ## How to play
 
 ### Clone repository
+
 ```bash
 git clone https://github.com/jofa974/Snake.git
 ```
 
-
 ### Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
-
 
 ### Read help menu
 
@@ -45,5 +44,5 @@ pip install -r requirements.txt
 
 ### General interface
 
--  Use a json configuration file as input
-
+- Use a json configuration file as input.
+- Make neural network able to learn from the whole scene.
