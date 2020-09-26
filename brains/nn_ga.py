@@ -15,9 +15,7 @@ from . import Brain
 
 def play_individual(individual, gen_nb, game_id, training_data):
     game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
-    score, fitness = game.play(
-        max_move=1000, dump=True, training_data=training_data
-    )
+    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
@@ -32,7 +30,7 @@ class NN_GA(Brain):
         self.nn = ANN(gen_id, dna, hidden_nb=[4])
         self.gen_id = gen_id
 
-    def play(self, max_move, dump=False, training_data=None):
+    def play(self, max_move=-1, dump=False, training_data=None):
         if training_data:
             training_data = itertools.cycle(training_data)
             self.apple = Apple(xy=next(training_data))
@@ -51,7 +49,7 @@ class NN_GA(Brain):
             )
             fig = plt.figure(figsize=[3, 3], dpi=100)
 
-        while not self.snake.dead and nb_moves < max_move:
+        while not self.snake.dead:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -107,6 +105,9 @@ class NN_GA(Brain):
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
+            if max_move > 0 and nb_moves >= max_move:
+                break
+
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 
