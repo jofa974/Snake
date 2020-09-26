@@ -112,6 +112,9 @@ def nnga():
                     itertools.repeat(i, nb_individuals),
                     range(nb_individuals),
                     itertools.repeat(training_data, nb_individuals),
+                    itertools.repeat(
+                        inputs["NNGA"]["neurons_per_hidden"], nb_individuals
+                    ),
                 )
                 all_fitness[i][:] = np.array(list(results))
         pygame.quit()
@@ -119,7 +122,9 @@ def nnga():
     else:
         # Play the best individual of the last generation
         game = brains.nn_ga.NN_GA(
-            do_display=True, gen_id=(inputs["NNGA"]["generations"] - 1, 0)
+            do_display=True,
+            gen_id=(inputs["NNGA"]["generations"] - 1, 0),
+            hidden_nb=inputs["NNGA"]["neurons_per_hidden"],
         )
         game.play(dump=False, training_data=training_data)
         pygame.quit()
