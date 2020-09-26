@@ -11,9 +11,6 @@ class ConvolutionalNeuralNetwork(nn.Module):
         super(ConvolutionalNeuralNetwork, self).__init__()
         self.convolution1 = nn.Conv2d(in_channels=1, out_channels=64, kernel_size=2)
         self.convolution2 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=2)
-        # self.convolution3 = nn.Conv2d(
-        #     in_channels=64, out_channels=128, kernel_size=2
-        # )
         self.fc1 = nn.Linear(self.count_neurons(image_dim), 32)
         self.fc2 = nn.Linear(32, nb_actions)
         # self.fc3 = nn.Linear(32, nb_actions)
