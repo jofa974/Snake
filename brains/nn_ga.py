@@ -5,7 +5,6 @@ import time
 import matplotlib
 import matplotlib.pyplot as plt
 import pygame
-
 import ui
 from components.apple import Apple
 from components.snake import Snake
@@ -14,11 +13,11 @@ from neural_net.artificial_neural_network import ANN
 from . import Brain
 
 
-def play_individual(individual, gen_nb, game_id, training_data):
-    game = NN_GA(do_display=False, gen_id=(gen_nb, game_id), dna=individual)
-    score, fitness = game.play(
-        max_move=1000, dump=True, training_data=training_data
+def play_individual(individual, gen_nb, game_id, training_data, hidden_nb=[4]):
+    game = NN_GA(
+        do_display=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
     )
+    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
@@ -28,9 +27,9 @@ class NN_GA(Brain):
     using a genetic algorithm.
     """
 
-    def __init__(self, do_display, gen_id=(-1, -1), dna=None):
+    def __init__(self, do_display, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
         super().__init__(do_display=do_display)
-        self.nn = NeuralNetwork(gen_id, dna, hidden_nb=[6, 5, 5, 4, 4, 3])
+        self.nn = ANN(gen_id, dna, hidden_nb=[6, 5, 5, 4, 4, 3])
         self.gen_id = gen_id
 
     def play(self, max_move, dump=False, training_data=None):
@@ -54,7 +53,7 @@ class NN_GA(Brain):
             )
             fig = plt.figure(figsize=[3, 3], dpi=100)
 
-        while not self.snake.dead and nb_moves < max_move:
+        while not self.snake.dead:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -116,6 +115,9 @@ class NN_GA(Brain):
                 + (math.pow(2, score) + math.pow(score, 2.1) * 500)
                 - (math.pow(score, 1.2) * math.pow(0.25 * score, 1.3))
             )
+            if max_move > 0 and nb_moves >= max_move:
+                break
+
         if dump:
             self.nn.dump_data(self.gen_id, fitness)
 

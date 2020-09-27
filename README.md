@@ -1,50 +1,48 @@
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 # Table of Contents
 
-1.  [Snake](#org3e8463d)
-    1.  [How-to](#orgaccb551)
-    2.  [Ideas](#org6f00632)
-        1.  [General interface](#orga594d3b)
-        2.  [Parallelism](#orgdb56295)
-        3.  [Neural network](#org210d77b)
-
-
-<a id="org3e8463d"></a>
+- [Table of Contents](#table-of-contents)
+- [Snake](#snake)
+  - [How to play](#how-to-play)
+    - [Clone repository](#clone-repository)
+    - [Install dependencies](#install-dependencies)
+    - [Read help menu](#read-help-menu)
+  - [Ideas](#ideas)
+    - [General interface](#general-interface)
 
 # Snake
 
+This is an implementation of the Snake game. The available game modes are:
 
-<a id="orgaccb551"></a>
+- human: you play using the arrow keys.
+- random: a very dumb agent that takes random actions.
+- nnga: the agent takes actions based on a neural network optimized by genetic algorithm.
+- dqn: the agent takes actions based on a neural network optimized with deep Q-learning.
 
-## How-to
+## How to play
 
+### Clone repository
 
-<a id="org6f00632"></a>
+```bash
+git clone https://github.com/jofa974/Snake.git
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Read help menu
+
+```bash
+./main.py -h
+```
 
 ## Ideas
 
-
-<a id="orga594d3b"></a>
-
 ### General interface
 
-1.  Use a json configuration file as input
-
-
-<a id="orgdb56295"></a>
-
-### Parallelism
-
-1.  Initialize pygame and pygame screen only once
-
-
-<a id="org210d77b"></a>
-
-### Neural network
-
-1.  Flexible number of hidden layers
-
-2.  Flexible activation function
-
-3.  New architecture with more input neurons
-
+- Use a json configuration file as input.
+- Make neural network able to learn from the whole scene.
