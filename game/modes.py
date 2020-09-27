@@ -8,16 +8,15 @@ import shutil
 import time
 from pathlib import Path
 
-import numpy as np
-import pygame
-
 import brains.bfs
 import brains.dqn_ann
 import brains.human
 import brains.nn_ga
 import brains.random
+import numpy as np
+import pygame
 from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import plot_fitness, show_stats
+from stats.stats import show_fitness, show_stats
 
 from . import read_training_data
 
@@ -118,7 +117,7 @@ def nnga():
                 )
                 all_fitness[i][:] = np.array(list(results))
         pygame.quit()
-        plot_fitness(nb_gen=nb_gen, nb_games=nb_individuals)
+        show_fitness(all_fitness)
     else:
         # Play the best individual of the last generation
         game = brains.nn_ga.NN_GA(
