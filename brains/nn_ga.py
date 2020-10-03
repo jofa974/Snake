@@ -89,14 +89,13 @@ class NN_GA(Brain):
                 else:
                     self.apple.new_random(forbidden=forbidden_positions)
                 score += 1
-                # fitness += 5
 
             if self.do_display:
                 score_text = "Score: {}".format(score)
                 self.env.draw_everything(
                     score_text, [self.snake, self.apple], flip=False
                 )
-                self.nn.plot(fig)
+                # self.nn.plot(fig)
                 self.env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 

@@ -13,6 +13,8 @@ import brains.dqn_ann
 import brains.human
 import brains.nn_ga
 import brains.random
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pygame
 from neural_net.genetic_algorithm import generate_new_population
@@ -54,25 +56,49 @@ def bfs():
 
 
 def dqn_ann():
-    nb_games = inputs["DQN"]["games"]
-    all_score = np.zeros(nb_games)
+    nb_epochs = inputs["DQN"]["epochs"]
+    all_score = np.zeros(nb_epochs)
     training_data = read_training_data()
+    fig = plt.figure()
+    ax = plt.gca()
+    ax.set_xlabel("epochs")
+    ax.set_ylabel("loss")
     if inputs["DQN"]["learn"]:
-        game = brains.dqn_ann.DQN_ANN(do_display=False, learning=True)
-        for nb in range(nb_games):
-            print("Game {}".format(nb))
-            score = game.play(
-                max_move=inputs["DQN"]["max_move"], training_data=training_data
+        agent = brains.dqn_ann.DQN_ANN(
+            batch_size=inputs["DQN"]["batch_sample_size"],
+            memory_size=inputs["DQN"]["moves_per_epoch"],
+            do_display=False,
+            learning=True,
+        )
+        epsilon, eps_min, eps_decay = 1, 0.2, 0.99
+        for epoch in range(nb_epochs):
+            epsilon = max(epsilon * eps_decay, eps_min)
+            agent.play(
+                max_move=inputs["DQN"]["moves_per_epoch"],
+                init_training_data=training_data,
+                epsilon=epsilon,
             )
-            game.save()
-            all_score[nb] = score
-        show_stats(all_score)
+            (
+                batch_state,
+                batch_next_state,
+                batch_action,
+                batch_reward,
+            ) = agent.memory.sample(agent.batch_size)
+            loss = agent.learn(
+                batch_state, batch_next_state, batch_reward, batch_action
+            )
+            ax.scatter(
+                [epoch], [loss], s=20, c="r",
+            )
+            agent.save()
+            plt.draw()
+            plt.pause(0.00001)
         pygame.quit()
     else:
-        game = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
+        agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
         training_data = read_training_data()
-        game.load()
-        score = game.play(training_data=training_data)
+        agent.load()
+        score = agent.play(max_move=1000000, init_training_data=training_data)
         pygame.quit()
 
 

@@ -10,7 +10,6 @@ import numpy as np
 import pygame
 import torch
 import torch.nn.functional as F
-
 import ui
 from components.apple import Apple
 from components.snake import Snake
@@ -20,14 +19,15 @@ from . import Brain
 
 
 class DQN(Brain):
-    def __init__(self, input_size, nb_actions, gamma, do_display=False, learning=True):
+    def __init__(
+        self, batch_size, gamma, memory_size, do_display=False, learning=True,
+    ):
         super().__init__(do_display=do_display)
-        self.input_size = input_size
         self.model = None
         self.gamma = gamma
         self.reward_window = []
-        self.memory = ReplayMemory(-1)
-        self.batch_size = -1
+        self.memory = ReplayMemory(memory_size)
+        self.batch_size = batch_size
         self.optimizer = None
         self.steps = 0
         self.last_state = None
@@ -36,11 +36,14 @@ class DQN(Brain):
         self.brain_file = "last_brain.pth"
         self.loss_history = []
         self.mean_reward_history = []
-        self.last_state = torch.Tensor(self.input_size).unsqueeze(0)
+        self.last_state = None
         self.last_action = 0
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
         self.learning = learning
+
+        self.fig = plt.figure(figsize=[4, 3], dpi=100)
+
         if self.do_display:
             matplotlib.use("Agg")
 
@@ -89,12 +92,13 @@ class DQN(Brain):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        if self.steps % 1 == 0:
-            self.loss_history.append(loss.item())
-            self.mean_reward_history.append(self.mean_reward())
+        # if self.steps % 1 == 0:
+        #     self.loss_history.append(loss.item())
+        #     self.mean_reward_history.append(self.mean_reward())
         if loss.item() > 1.0e7:
             print("outputs {}".format(outputs))
             print("targets {}".format(targets))
+        return loss.item()
 
     def mean_reward(self):
         return sum(self.reward_window)
@@ -144,12 +148,12 @@ class DQN(Brain):
             c="b",
         )
 
-    def play(self, max_move=-1, training_data=None, epsilon=0):
+    def play(self, max_move=-1, init_training_data=None, epsilon=0):
         self.snake = Snake()
 
         forbidden_positions = self.snake.get_body_position_list()
-        if training_data:
-            training_data = itertools.cycle(training_data)
+        if init_training_data:
+            training_data = itertools.cycle(init_training_data)
             self.apple = Apple(forbidden=forbidden_positions, xy=next(training_data))
         else:
             self.apple = Apple(forbidden=forbidden_positions)
@@ -157,9 +161,7 @@ class DQN(Brain):
         nb_moves = 0
         nb_apples = 0
 
-        fig = plt.figure(figsize=[4, 3], dpi=100)
-
-        while not self.snake.dead:
+        while (not self.snake.dead) and (nb_moves < max_move):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -174,7 +176,7 @@ class DQN(Brain):
                     score_text, [self.snake, self.apple], flip=False
                 )
                 self.plot_progress()
-                self.env.make_surf_from_figure_on_canvas(fig)
+                self.env.make_surf_from_figure_on_canvas(self.fig)
 
             last_signal = self.get_input_data()
 
@@ -206,12 +208,11 @@ class DQN(Brain):
                 self.last_reward = -1
 
             if self.snake.eat(self.apple):
-                nb_moves = 0
                 nb_apples += 1
                 self.snake.grow()
                 self.snake.update()
                 forbidden_positions = self.snake.get_body_position_list()
-                if training_data:
+                if init_training_data:
                     x, y = next(training_data)
                     self.apple.new(x, y, forbidden=forbidden_positions)
                 else:
@@ -220,16 +221,15 @@ class DQN(Brain):
             # else:
             #     self.last_reward = nb_moves_wo_apple
 
-            if nb_moves == max_move:
-                self.last_reward = -1
-                break
+        if self.learn and nb_moves < max_move:
+            # Restart game
+            self.play(
+                max_move=max_move - nb_moves,
+                init_training_data=init_training_data,
+                epsilon=epsilon,
+            )
 
-            # time.sleep(0.01)
-
-        print("Final score: {}".format(nb_apples))
-        if len(self.loss_history) > 1:
-            print("Final loss: {}".format(self.loss_history[-1]))
-        plt.close(fig)
+        plt.close(self.fig)
         return nb_apples
 
     def update(self, reward, new_signal, nb_steps=-1, epsilon=-1.0):
@@ -244,15 +244,6 @@ class DQN(Brain):
                     torch.Tensor([self.last_reward]),
                 )
             )
-
-            if len(self.memory.memory) > self.batch_size + 1:
-                (
-                    batch_state,
-                    batch_next_state,
-                    batch_action,
-                    batch_reward,
-                ) = self.memory.sample(self.batch_size)
-                self.learn(batch_state, batch_next_state, batch_reward, batch_action)
 
         action = self.select_action(new_state, epsilon)
 

@@ -1,32 +1,40 @@
 import numpy as np
+import torch
 import torch.optim as optim
-from PIL import Image
-from torch import nn
-
 import ui
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
+from PIL import Image
+from torch import nn
 
 from .dqn import DQN
 
 
 class DQN_ANN(DQN):
     def __init__(
-        self, input_size=18, nb_actions=3, gamma=0.9, do_display=False, learning=True
+        self,
+        batch_size=128,
+        gamma=0.9,
+        memory_size=200,
+        do_display=False,
+        learning=True,
     ):
         super().__init__(
-            input_size=input_size,
-            nb_actions=nb_actions,
+            batch_size=batch_size,
             gamma=gamma,
+            memory_size=memory_size,
             do_display=do_display,
             learning=learning,
         )
         self.env.set_caption("Snake: Pytorch Artificial Neural Network")
 
-        self.model = NeuralNetwork(self.input_size, nb_actions)
-        self.memory = ReplayMemory(10000)
+        input_size = 18
+        nb_actions = 3
+        self.model = NeuralNetwork(input_size, nb_actions)
+        self.memory = ReplayMemory(memory_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
-        self.batch_size = 128
+        self.batch_size = batch_size
+        self.last_state = torch.Tensor(input_size).unsqueeze(0)
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()
@@ -68,11 +76,7 @@ class DQN_ANN_PIC(DQN_ANN):
         input_size = ui.X_GRID * ui.Y_GRID
         nb_actions = 3
         super().__init__(
-            input_size=input_size,
-            nb_actions=nb_actions,
-            gamma=gamma,
-            do_display=do_display,
-            learning=learning,
+            gamma=gamma, do_display=do_display, learning=learning,
         )
         self.env.set_caption("Snake: Pytorch Artificial Neural Network")
 

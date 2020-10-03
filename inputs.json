@@ -4,18 +4,20 @@
     },
     "NNGA": {
         "learn": false,
-        "generations": 15,
-        "individuals": 100,
+        "generations": 25,
+        "individuals": 200,
         "breed_fraction": 0.2,
         "workers": 8,
         "neurons_per_hidden": [
-            10,
-            10
+            64,
+            64,
+            12
         ]
     },
     "DQN": {
         "learn": false,
-        "max_move": 10000,
-        "games": 150
+        "moves_per_epoch": 200,
+        "epochs": 1000,
+        "batch_sample_size": 128
     }
 }
