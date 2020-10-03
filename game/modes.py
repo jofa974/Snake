@@ -93,6 +93,7 @@ def dqn_ann():
             agent.save()
             plt.draw()
             plt.pause(0.00001)
+        plt.savefig("last_training.eps")
         pygame.quit()
     else:
         agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)

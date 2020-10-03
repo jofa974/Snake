@@ -2,10 +2,9 @@ import itertools
 import os
 import random
 import sys
+import time
 from abc import abstractmethod
 
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pygame
 import torch
@@ -41,11 +40,6 @@ class DQN(Brain):
         self.last_reward = 0
         self.brain_file = "last_brain.pth"
         self.learning = learning
-
-        self.fig = plt.figure(figsize=[4, 3], dpi=100)
-
-        if self.do_display:
-            matplotlib.use("Agg")
 
     @abstractmethod
     def get_input_data(self):
@@ -133,21 +127,6 @@ class DQN(Brain):
     def load_best(self):
         self.load(filename="best_brain.pth")
 
-    def plot_progress(self):
-        plt.cla()
-        plt.clf()
-        ax1 = plt.subplot(1, 2, 1)
-        ax1.scatter(
-            np.arange(len(self.loss_history)), np.array(self.loss_history), s=20, c="r",
-        )
-        ax2 = plt.subplot(1, 2, 2)
-        ax2.scatter(
-            np.arange(len(self.mean_reward_history)),
-            np.array(self.mean_reward_history),
-            s=20,
-            c="b",
-        )
-
     def play(self, max_move=-1, init_training_data=None, epsilon=0):
         self.snake = Snake()
 
@@ -173,10 +152,9 @@ class DQN(Brain):
             score_text = "Score: {}".format(nb_apples)
             if self.do_display:
                 self.env.draw_everything(
-                    score_text, [self.snake, self.apple], flip=False
+                    score_text, [self.snake, self.apple], flip=True
                 )
-                self.plot_progress()
-                self.env.make_surf_from_figure_on_canvas(self.fig)
+                time.sleep(0.1)
 
             last_signal = self.get_input_data()
 
@@ -218,18 +196,15 @@ class DQN(Brain):
                 else:
                     self.apple.new_random(forbidden=forbidden_positions)
                 self.last_reward = 1
-            # else:
-            #     self.last_reward = nb_moves_wo_apple
 
         if self.learn and nb_moves < max_move:
-            # Restart game
+            # Restart game and try to finish epoch
             self.play(
                 max_move=max_move - nb_moves,
                 init_training_data=init_training_data,
                 epsilon=epsilon,
             )
 
-        plt.close(self.fig)
         return nb_apples
 
     def update(self, reward, new_signal, nb_steps=-1, epsilon=-1.0):
