@@ -72,19 +72,30 @@ class DQN_ANN(DQN):
 
 
 class DQN_ANN_PIC(DQN_ANN):
-    def __init__(self, gamma=0.9, do_display=False, learning=True):
-        input_size = ui.X_GRID * ui.Y_GRID
-        nb_actions = 3
+    def __init__(
+        self,
+        batch_size=128,
+        gamma=0.9,
+        memory_size=200,
+        do_display=False,
+        learning=True,
+    ):
         super().__init__(
-            gamma=gamma, do_display=do_display, learning=learning,
+            batch_size=batch_size,
+            gamma=gamma,
+            memory_size=memory_size,
+            do_display=do_display,
+            learning=learning,
         )
         self.env.set_caption("Snake: Pytorch Artificial Neural Network")
 
-        self.model = NeuralNetwork(self.input_size, nb_actions)
-        self.memory = ReplayMemory(10000)
+        input_size = ui.X_GRID * ui.Y_GRID
+        nb_actions = 3
+        self.model = NeuralNetwork(input_size, nb_actions)
+        self.memory = ReplayMemory(memory_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
         self.loss = nn.MSELoss()
-        self.batch_size = 32
+        self.batch_size = batch_size
 
     def get_input_data(self):
         self.env.take_screenshot()

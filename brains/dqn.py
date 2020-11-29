@@ -76,24 +76,6 @@ class DQN(Brain):
             if self.snake.speed[1] < 0:
                 return pygame.K_RIGHT
 
-    def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
-        outputs = (
-            self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
-        )
-        next_outputs = self.model(batch_next_state).detach().max(1)[0]
-        targets = batch_reward + self.gamma * next_outputs
-        loss = self.loss(outputs, targets)
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
-        # if self.steps % 1 == 0:
-        #     self.loss_history.append(loss.item())
-        #     self.mean_reward_history.append(self.mean_reward())
-        if loss.item() > 1.0e7:
-            print("outputs {}".format(outputs))
-            print("targets {}".format(targets))
-        return loss.item()
-
     def mean_reward(self):
         return sum(self.reward_window)
 
@@ -229,3 +211,25 @@ class DQN(Brain):
         if len(self.reward_window) > self.batch_size:
             del self.reward_window[0]
         return action
+
+    def learn(self):
+        (
+            batch_state,
+            batch_next_state,
+            batch_action,
+            batch_reward,
+        ) = self.memory.sample(self.batch_size)
+
+        outputs = (
+            self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
+        )
+        next_outputs = self.model(batch_next_state).detach().max(1)[0]
+        targets = batch_reward + self.gamma * next_outputs
+        loss = self.loss(outputs, targets)
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        if loss.item() > 1.0e7:
+            print("outputs {}".format(outputs))
+            print("targets {}".format(targets))
+        return loss.item()

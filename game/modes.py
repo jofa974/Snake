@@ -22,8 +22,10 @@ from stats.stats import show_fitness, show_stats
 
 from . import read_training_data
 
+INPUTS = {}
+
 with open("inputs.json") as json_file:
-    inputs = json.load(json_file)
+    INPUTS = json.load(json_file)
 
 
 def human():
@@ -40,7 +42,7 @@ def random():
 
 
 def bfs():
-    nb_games = inputs["BFS"]["games"]
+    nb_games = INPUTS["BFS"]["games"]
     if nb_games == 1:
         game = brains.bfs.BFS(do_display=True)
         game.play()
@@ -56,17 +58,17 @@ def bfs():
 
 
 def dqn_ann():
-    nb_epochs = inputs["DQN"]["epochs"]
+    nb_epochs = INPUTS["DQN"]["epochs"]
     all_score = np.zeros(nb_epochs)
     training_data = read_training_data()
     fig = plt.figure()
     ax = plt.gca()
     ax.set_xlabel("epochs")
     ax.set_ylabel("loss")
-    if inputs["DQN"]["learn"]:
+    if INPUTS["DQN"]["learn"]:
         agent = brains.dqn_ann.DQN_ANN(
-            batch_size=inputs["DQN"]["batch_sample_size"],
-            memory_size=inputs["DQN"]["moves_per_epoch"],
+            batch_size=INPUTS["DQN"]["batch_sample_size"],
+            memory_size=INPUTS["DQN"]["moves_per_epoch"],
             do_display=False,
             learning=True,
         )
@@ -74,19 +76,11 @@ def dqn_ann():
         for epoch in range(nb_epochs):
             epsilon = max(epsilon * eps_decay, eps_min)
             agent.play(
-                max_move=inputs["DQN"]["moves_per_epoch"],
+                max_move=INPUTS["DQN"]["moves_per_epoch"],
                 init_training_data=training_data,
                 epsilon=epsilon,
             )
-            (
-                batch_state,
-                batch_next_state,
-                batch_action,
-                batch_reward,
-            ) = agent.memory.sample(agent.batch_size)
-            loss = agent.learn(
-                batch_state, batch_next_state, batch_reward, batch_action
-            )
+            loss = agent.learn()
             ax.scatter(
                 [epoch], [loss], s=20, c="r",
             )
@@ -104,14 +98,14 @@ def dqn_ann():
 
 
 def nnga():
-    nb_gen = inputs["NNGA"]["generations"]
-    nb_individuals = inputs["NNGA"]["individuals"]
-    breed_fraction = inputs["NNGA"]["breed_fraction"]
-    workers = inputs["NNGA"]["workers"]
+    nb_gen = INPUTS["NNGA"]["generations"]
+    nb_individuals = INPUTS["NNGA"]["individuals"]
+    breed_fraction = INPUTS["NNGA"]["breed_fraction"]
+    workers = INPUTS["NNGA"]["workers"]
     all_fitness = np.zeros([nb_gen, nb_individuals])
     training_data = read_training_data()
 
-    if inputs["NNGA"]["learn"]:
+    if INPUTS["NNGA"]["learn"]:
         if os.path.isdir("genetic_data"):
             shutil.rmtree("genetic_data")
         os.makedirs("genetic_data")
@@ -139,7 +133,7 @@ def nnga():
                     range(nb_individuals),
                     itertools.repeat(training_data, nb_individuals),
                     itertools.repeat(
-                        inputs["NNGA"]["neurons_per_hidden"], nb_individuals
+                        INPUTS["NNGA"]["neurons_per_hidden"], nb_individuals
                     ),
                 )
                 all_fitness[i][:] = np.array(list(results))
@@ -149,8 +143,8 @@ def nnga():
         # Play the best individual of the last generation
         game = brains.nn_ga.NN_GA(
             do_display=True,
-            gen_id=(inputs["NNGA"]["generations"] - 1, 0),
-            hidden_nb=inputs["NNGA"]["neurons_per_hidden"],
+            gen_id=(INPUTS["NNGA"]["generations"] - 1, 0),
+            hidden_nb=INPUTS["NNGA"]["neurons_per_hidden"],
         )
         game.play(dump=False, training_data=training_data)
         pygame.quit()
