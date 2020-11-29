@@ -65,14 +65,16 @@ def dqn_ann():
     ax = plt.gca()
     ax.set_xlabel("epochs")
     ax.set_ylabel("loss")
+    ax.set_xlim([1, nb_epochs])
+    ax.set_ylim([0, 0.5])
     if INPUTS["DQN"]["learn"]:
-        agent = brains.dqn_ann.DQN_ANN(
+        agent = brains.dqn_ann.DQN_ANN_PIC(
             batch_size=INPUTS["DQN"]["batch_sample_size"],
             memory_size=INPUTS["DQN"]["moves_per_epoch"],
             do_display=False,
             learning=True,
         )
-        epsilon, eps_min, eps_decay = 1, 0.2, 0.99
+        epsilon, eps_min, eps_decay = 1, 0.2, 0.999
         for epoch in range(nb_epochs):
             epsilon = max(epsilon * eps_decay, eps_min)
             agent.play(
@@ -81,16 +83,17 @@ def dqn_ann():
                 epsilon=epsilon,
             )
             loss = agent.learn()
-            ax.scatter(
-                [epoch], [loss], s=20, c="r",
-            )
             agent.save()
+            ax.scatter(
+                [epoch + 1], [loss], s=20, c="r",
+            )
+            plt.title(f"epsilon={epsilon}")
             plt.draw()
             plt.pause(0.00001)
         plt.savefig("last_training.eps")
         pygame.quit()
     else:
-        agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
+        agent = brains.dqn_ann.DQN_ANN_PIC(do_display=True, learning=False)
         training_data = read_training_data()
         agent.load()
         score = agent.play(max_move=1000000, init_training_data=training_data)

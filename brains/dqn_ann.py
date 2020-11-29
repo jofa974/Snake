@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.optim as optim
@@ -75,7 +76,7 @@ class DQN_ANN_PIC(DQN_ANN):
     def __init__(
         self,
         batch_size=128,
-        gamma=0.9,
+        gamma=0.99,
         memory_size=200,
         do_display=False,
         learning=True,
@@ -87,7 +88,9 @@ class DQN_ANN_PIC(DQN_ANN):
             do_display=do_display,
             learning=learning,
         )
-        self.env.set_caption("Snake: Pytorch Artificial Neural Network")
+        self.env.set_caption(
+            "Snake: Pytorch Artificial Neural Network <- whole picture"
+        )
 
         input_size = ui.X_GRID * ui.Y_GRID
         nb_actions = 3
@@ -98,9 +101,17 @@ class DQN_ANN_PIC(DQN_ANN):
         self.batch_size = batch_size
 
     def get_input_data(self):
-        self.env.take_screenshot()
-        with Image.open("screenshot.png") as img:
-            img_conv = img.convert("L")
-            arr = np.asarray(img_conv)
-            arr = np.array([arr[:: ui.BASE_SIZE, :: ui.BASE_SIZE] / 255.0])
+        arr = np.zeros([ui.X_GRID, ui.Y_GRID])
+        # Walls
+        arr[0, :] = 1.0
+        arr[-1, :] = 1.0
+        arr[:, 0] = 1.0
+        arr[:, -1] = 1.0
+        # Apple
+        apple_pos = self.apple.get_position()
+        arr[apple_pos[0], apple_pos[1]] = 2.0
+        # Snake
+        for idx in range(len(self.snake.body_list)):
+            position = self.snake.get_position(idx)
+            arr[position[0], position[1]] = 1.0
         return arr.flatten()

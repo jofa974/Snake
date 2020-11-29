@@ -15,7 +15,7 @@
         ]
     },
     "DQN": {
-        "learn": false,
+        "learn": true,
         "moves_per_epoch": 200,
         "epochs": 700,
         "batch_sample_size": 128
