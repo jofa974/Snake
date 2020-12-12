@@ -1,10 +1,10 @@
 import itertools
+import math
 import time
 
 import matplotlib
 import matplotlib.pyplot as plt
 import pygame
-
 import ui
 from components.apple import Apple
 from components.snake import Snake
@@ -13,11 +13,13 @@ from neural_net.artificial_neural_network import ANN
 from . import Brain
 
 
-def play_individual(individual, gen_nb, game_id, training_data, hidden_nb=[4]):
+def play_individual(
+    individual, gen_nb, game_id, training_data, hidden_nb=[4], max_move=-1
+):
     game = NN_GA(
         do_display=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
     )
-    score, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
+    _, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
@@ -33,13 +35,15 @@ class NN_GA(Brain):
         self.gen_id = gen_id
 
     def play(self, max_move=-1, dump=False, training_data=None):
+        self.snake = Snake()
+
+        forbidden_positions = self.snake.get_body_position_list()
         if training_data:
             training_data = itertools.cycle(training_data)
-            self.apple = Apple(xy=next(training_data))
+            self.apple = Apple(forbidden=forbidden_positions, xy=next(training_data))
         else:
-            self.apple = Apple()
+            self.apple = Apple(forbidden=forbidden_positions)
 
-        self.snake = Snake()
         score = 0
         fitness = 0
         nb_moves = 0
@@ -69,18 +73,7 @@ class NN_GA(Brain):
             if next_move in ui.CONTROLS:
                 self.snake.change_direction(next_move)
 
-            prev_dist = self.snake.get_distance_to_target(
-                self.snake.get_position(0), self.apple.get_position(), norm=2
-            )
             self.snake.move()
-            new_dist = self.snake.get_distance_to_target(
-                self.snake.get_position(0), self.apple.get_position(), norm=2
-            )
-
-            if new_dist < prev_dist:
-                fitness += 2
-            else:
-                fitness -= 3
 
             self.snake.detect_collisions()
             if self.snake.dead:
@@ -89,24 +82,29 @@ class NN_GA(Brain):
             if self.snake.eat(self.apple):
                 self.snake.grow()
                 self.snake.update()
+                forbidden_positions = self.snake.get_body_position_list()
                 if training_data:
                     x, y = next(training_data)
-                    self.apple.new(x, y)
+                    self.apple.new(x, y, forbidden=forbidden_positions)
                 else:
-                    self.apple.new_random()
+                    self.apple.new_random(forbidden=forbidden_positions)
                 score += 1
-                fitness += 20
 
             if self.do_display:
                 score_text = "Score: {}".format(score)
                 self.env.draw_everything(
                     score_text, [self.snake, self.apple], flip=False
                 )
-                self.nn.plot(fig)
+                # self.nn.plot(fig)
                 self.env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
+            fitness = (
+                nb_moves
+                + (math.pow(2, score) + math.pow(score, 2.1) * 500)
+                - (math.pow(score, 1.2) * math.pow(0.25 * score, 1.3))
+            )
             if max_move > 0 and nb_moves >= max_move:
                 break
 

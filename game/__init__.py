@@ -1,8 +1,7 @@
 import matplotlib
 import pygame
-from PIL import Image
-
 from components.walls import Wall
+from PIL import Image
 from ui import BLACK, HEIGHT, WHITE, WIDTH
 
 
@@ -22,7 +21,6 @@ class Environment:
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
 
-        # self.do_display = do_display
         self.screen = None
         if do_display:
             self.screen = pygame.display.set_mode((w, h))

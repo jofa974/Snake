@@ -13,7 +13,7 @@ import pygame
 
 from game import modes, read_training_data
 from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import plot_fitness, show_stats
+from stats.stats import read_fitness, show_fitness, show_stats
 
 GAME_MODES = {
     "human": modes.human,
