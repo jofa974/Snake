@@ -17,6 +17,7 @@ This is an implementation of the Snake game. The available game modes are:
 
 - human: you play using the arrow keys.
 - random: a very dumb agent that takes random actions.
+- bfs: the agent takes the shortest path to the apple following a Breadth First Search algorithm.
 - nnga: the agent takes actions based on a neural network optimized by genetic algorithm.
 - dqn: the agent takes actions based on a neural network optimized with deep Q-learning.
 
@@ -44,5 +45,4 @@ pip install -r requirements.txt
 
 ### General interface
 
-- Use a json configuration file as input.
-- Make neural network able to learn from the whole scene.
+- Create a Flask App
