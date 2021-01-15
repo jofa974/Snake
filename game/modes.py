@@ -68,7 +68,7 @@ def dqn_ann():
     ax.set_xlim([1, nb_epochs])
     ax.set_ylim([0, 0.5])
     if INPUTS["DQN"]["learn"]:
-        agent = brains.dqn_ann.DQN_ANN_PIC(
+        agent = brains.dqn_ann.DQN_ANN(
             batch_size=INPUTS["DQN"]["batch_sample_size"],
             memory_size=INPUTS["DQN"]["moves_per_epoch"],
             do_display=False,
@@ -93,7 +93,7 @@ def dqn_ann():
         plt.savefig("last_training.eps")
         pygame.quit()
     else:
-        agent = brains.dqn_ann.DQN_ANN_PIC(do_display=True, learning=False)
+        agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
         training_data = read_training_data()
         agent.load()
         score = agent.play(max_move=1000000, init_training_data=training_data)

@@ -40,15 +40,16 @@ class DQN_ANN(DQN):
     def get_input_data(self):
         apple_pos = self.apple.get_position()
         input_data = [
-            # Distances to walls
-            self.snake.get_distance_to_north_wall(norm=2),
-            self.snake.get_distance_to_south_wall(norm=2),
-            self.snake.get_distance_to_east_wall(norm=2),
-            self.snake.get_distance_to_west_wall(norm=2),
-            # Distance to apple
+            # Normalized Distances to walls
+            self.snake.get_distance_to_north_wall(norm=2) / (ui.X_GRID * ui.Y_GRID),
+            self.snake.get_distance_to_south_wall(norm=2) / (ui.X_GRID * ui.Y_GRID),
+            self.snake.get_distance_to_east_wall(norm=2) / (ui.X_GRID * ui.Y_GRID),
+            self.snake.get_distance_to_west_wall(norm=2) / (ui.X_GRID * ui.Y_GRID),
+            # Normalized Distance to apple
             self.snake.get_distance_to_target(
                 self.snake.get_position(0), self.apple.get_position(), norm=2
-            ),
+            )
+            / (ui.X_GRID * ui.Y_GRID),
             # Indicate collision on next move
             int(self.snake.is_clear_ahead()),
             int(self.snake.is_clear_left()),
