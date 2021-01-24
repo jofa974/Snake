@@ -1,4 +1,4 @@
 train:
-  nb_epochs: 2000
+  nb_epochs: 10000
   batch_sample_size: 10
   moves_per_epoch: 20
