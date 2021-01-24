@@ -15,8 +15,8 @@ train:
         moves_per_epoch: 20
   outs:
   - path: last_brain.pth
-    md5: c5ec6e6a9b6528a74a93b23f104e6f4c
-    size: 2929023
+    md5: b53f50d9abc59e208f5a601793447c12
+    size: 557936
   - path: loss.csv
-    md5: ef258173471fc168a7c7d181a49a014c
-    size: 4637
+    md5: abdb48c65300d5528d011755575eb040
+    size: 4704

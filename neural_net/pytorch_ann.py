@@ -14,12 +14,6 @@ class NeuralNetwork(nn.Module):
         self.model = nn.Sequential(
             nn.Linear(input_size, 256),
             nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
             nn.Linear(256, 128),
             nn.ReLU(),
             nn.Linear(128, 64),
