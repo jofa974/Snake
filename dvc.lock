@@ -10,13 +10,13 @@ train:
   params:
     params.yaml:
       train:
-        nb_epochs: 200
+        nb_epochs: 700
         batch_sample_size: 10
         moves_per_epoch: 20
   outs:
   - path: last_brain.pth
-    md5: b53f50d9abc59e208f5a601793447c12
-    size: 557936
+    md5: f36d726d49df0c334a21279d21e743da
+    size: 1348258
   - path: loss.csv
-    md5: abdb48c65300d5528d011755575eb040
-    size: 4704
+    md5: ccf38fe31b0f5c726ee5a6bb53c96890
+    size: 16599
