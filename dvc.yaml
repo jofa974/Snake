@@ -8,6 +8,6 @@ stages:
       - train
     outs:
       - last_brain.pth
-    metrics:
+    plots:
       - loss.csv:
           cache: false
