@@ -1,0 +1,19 @@
+train:
+  cmd: python train.py
+  deps:
+  - path: apple_position.in
+    md5: 60a4812b777eb03d9f1b284aa783cc18
+    size: 50000
+  - path: train.py
+    md5: 6debe147182901d9282fdb6c591309be
+    size: 1074
+  params:
+    params.yaml:
+      train:
+        nb_epochs: 700
+        batch_sample_size: 10
+        moves_per_epoch: 20
+  outs:
+  - path: last_brain.pth
+    md5: e45c0b333f10424370d9b045ae0bdb73
+    size: 2929037

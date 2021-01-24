@@ -1,0 +1,10 @@
+stages:
+  train:
+    cmd: python train.py
+    deps:
+    - apple_position.in
+    - train.py
+    params:
+    - train
+    outs:
+    - last_brain.pth
