@@ -97,22 +97,22 @@ class DQN_ANN_PIC(DQN_ANN):
         nb_actions = 3
         self.model = NeuralNetwork(input_size, nb_actions)
         self.memory = ReplayMemory(memory_size)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
         self.batch_size = batch_size
 
     def get_input_data(self):
         arr = np.zeros([ui.X_GRID, ui.Y_GRID])
         # Walls
-        arr[0, :] = 1.0
-        arr[-1, :] = 1.0
-        arr[:, 0] = 1.0
-        arr[:, -1] = 1.0
+        arr[0, :] = 0.1
+        arr[-1, :] = 0.1
+        arr[:, 0] = 0.1
+        arr[:, -1] = 0.1
         # Apple
         apple_pos = self.apple.get_position()
-        arr[apple_pos[0], apple_pos[1]] = 2.0
+        arr[apple_pos[0], apple_pos[1]] = 1.0
         # Snake
         for idx in range(len(self.snake.body_list)):
             position = self.snake.get_position(idx)
-            arr[position[0], position[1]] = 1.0
+            arr[position[0], position[1]] = 0.1
         return arr.flatten()

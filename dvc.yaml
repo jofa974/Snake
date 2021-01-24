@@ -2,9 +2,12 @@ stages:
   train:
     cmd: python train.py
     deps:
-    - apple_position.in
-    - train.py
+      - apple_position.in
+      - train.py
     params:
-    - train
+      - train
     outs:
-    - last_brain.pth
+      - last_brain.pth
+    metrics:
+      - loss.csv:
+          cache: false

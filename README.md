@@ -10,6 +10,7 @@
     - [Read help menu](#read-help-menu)
   - [Ideas](#ideas)
     - [General interface](#general-interface)
+      - [Create a Dash App](#create-a-dash-app)
 
 # Snake
 
@@ -45,4 +46,6 @@ pip install -r requirements.txt
 
 ### General interface
 
-- Create a Flask App
+#### Create a Dash App
+  - Remove all use of Pygame
+  - Plot game using go.Heatmap or equivalent of imshow

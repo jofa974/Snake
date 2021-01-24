@@ -15,9 +15,9 @@
         ]
     },
     "DQN": {
-        "learn": true,
-        "moves_per_epoch": 200,
+        "learn": false,
+        "moves_per_epoch": 20,
         "epochs": 700,
-        "batch_sample_size": 128
+        "batch_sample_size": 10
     }
 }

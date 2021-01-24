@@ -1,11 +1,10 @@
-import json
-
 import numpy as np
+import pandas as pd
 import pygame
 import yaml
 
 import brains.dqn_ann
-from game import modes, read_training_data
+from game import read_training_data
 
 # with open("inputs.json") as json_file:
 #     INPUTS = json.load(json_file)
@@ -33,11 +32,18 @@ agent = brains.dqn_ann.DQN_ANN(
     learning=True,
 )
 epsilon, eps_min, eps_decay = 1, 0.2, 0.999
+losses = []
 for epoch in range(nb_epochs):
     epsilon = max(epsilon * eps_decay, eps_min)
     agent.play(
         max_move=moves_per_epoch, init_training_data=training_data, epsilon=epsilon,
     )
     loss = agent.learn()
+    losses.append(loss)
     agent.save()
 pygame.quit()
+
+# Results
+
+df = pd.DataFrame({"epochs": np.arange(1, nb_epochs + 1), "loss": losses})
+df.to_csv("loss.csv", index=False)
