@@ -32,18 +32,25 @@ agent = brains.dqn_ann.DQN_ANN(
     learning=True,
 )
 epsilon, eps_min, eps_decay = 1, 0.2, 0.999
-losses = []
+losses, mean_rewards = [], []
 for epoch in range(nb_epochs):
+    print(f"epoch: {epoch}")
     epsilon = max(epsilon * eps_decay, eps_min)
     agent.play(
         max_move=moves_per_epoch, init_training_data=training_data, epsilon=epsilon,
     )
     loss = agent.learn()
     losses.append(loss)
+    mean_reward = agent.mean_reward()
+    mean_rewards.append(mean_reward)
+    agent.list_of_rewards = []
     agent.save()
 pygame.quit()
 
 # Results
 
-df = pd.DataFrame({"epochs": np.arange(1, nb_epochs + 1), "loss": losses})
-df.to_csv("loss.csv", index=False)
+df = pd.DataFrame(
+    {"epochs": np.arange(1, nb_epochs + 1), "loss": losses, "rewards": mean_rewards}
+)
+df[["epochs", "loss"]].to_csv("loss.csv", index=False)
+df[["epochs", "rewards"]].to_csv("rewards.csv", index=False)
