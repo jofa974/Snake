@@ -25,7 +25,7 @@ all_score = np.zeros(nb_epochs)
 training_data = read_training_data()
 
 
-agent = brains.dqn_ann.DQN_ANN(
+agent = brains.dqn_ann.DQN_ANN_PIC(
     batch_size=batch_sample_size,
     memory_size=moves_per_epoch,
     do_display=False,

@@ -4,22 +4,31 @@ train:
   - path: apple_position.in
     md5: 60a4812b777eb03d9f1b284aa783cc18
     size: 50000
+  - path: brains/dqn.py
+    md5: c0d31465870ffa47c03b6a40d6cc3cc1
+    size: 7577
+  - path: brains/dqn_ann.py
+    md5: f94c72090ca8cc0cb630f5ed4db8a34e
+    size: 4465
+  - path: neural_net/pytorch_ann.py
+    md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
+    size: 1277
   - path: train.py
-    md5: e41228465bec55fd20ef9fbb5d6d4b97
-    size: 1497
+    md5: 2444c2fc00faae3dbda4d2e880ec7e84
+    size: 1501
   params:
     params.yaml:
       train:
-        nb_epochs: 2000
+        nb_epochs: 1000
         batch_sample_size: 50
         moves_per_epoch: 200
   outs:
   - path: last_brain.pth
-    md5: 6a2a9c3493b1e4b68e704c16d46d6cab
-    size: 1348258
+    md5: d1cc339b30d62064c0031581c5c60ed4
+    size: 1600162
   - path: loss.csv
-    md5: 4c9fd41f61cf1172a7182474b415b084
-    size: 48818
+    md5: b6c73e4db644f075c6a35ec6b541fb23
+    size: 23582
   - path: rewards.csv
-    md5: f12cfaa92a480f89707ca320fff8b967
-    size: 49049
+    md5: 993840363dbdbde3de958dfb8129cbaf
+    size: 24269

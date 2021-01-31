@@ -77,7 +77,7 @@ class DQN_ANN_PIC(DQN_ANN):
     def __init__(
         self,
         batch_size=128,
-        gamma=0.99,
+        gamma=0.95,
         memory_size=200,
         do_display=False,
         learning=True,
@@ -95,6 +95,24 @@ class DQN_ANN_PIC(DQN_ANN):
 
         input_size = ui.X_GRID * ui.Y_GRID
         nb_actions = 3
+        model = nn.Sequential(
+            nn.Linear(input_size, 1024),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(1024, 1024),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(512, 128),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(64, nb_actions),
+        )
         self.model = NeuralNetwork(input_size, nb_actions)
         self.memory = ReplayMemory(memory_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)

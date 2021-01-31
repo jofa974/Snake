@@ -4,6 +4,9 @@ stages:
     deps:
       - apple_position.in
       - train.py
+      - brains/dqn.py
+      - brains/dqn_ann.py
+      - neural_net/pytorch_ann.py
     params:
       - train
     outs:
