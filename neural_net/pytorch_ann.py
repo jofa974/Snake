@@ -7,21 +7,24 @@ from torch.autograd import Variable
 
 
 class NeuralNetwork(nn.Module):
-    def __init__(self, input_size, nb_actions):
+    def __init__(self, input_size, nb_actions, model=None):
         super(NeuralNetwork, self).__init__()
         self.input_size = input_size
         self.nb_actions = nb_actions
-        self.model = nn.Sequential(
-            nn.Linear(input_size, 512),
-            nn.ReLU(),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, 128),
-            nn.ReLU(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, nb_actions),
-        )
+        if model is None:
+            self.model = nn.Sequential(
+                nn.Linear(input_size, 256),
+                nn.ReLU(),
+                nn.Linear(256, 256),
+                nn.ReLU(),
+                nn.Linear(256, 128),
+                nn.ReLU(),
+                nn.Linear(128, 64),
+                nn.ReLU(),
+                nn.Linear(64, nb_actions),
+            )
+        else:
+            self.model = model
 
     def forward(self, state):
         q_values = self.model(state)

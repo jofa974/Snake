@@ -9,7 +9,6 @@ import time
 from pathlib import Path
 
 import numpy as np
-import pygame
 
 from game import modes, read_training_data
 from neural_net.genetic_algorithm import generate_new_population

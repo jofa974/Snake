@@ -2,8 +2,6 @@ import itertools
 import time
 from collections import deque
 
-import pygame
-
 import ui
 from components.apple import Apple
 from components.snake import Snake
@@ -21,10 +19,7 @@ class BFS(Brain):
             for x in range(ui.X_GRID):
                 grid.append(
                     pygame.Rect(
-                        x * ui.BASE_SIZE,
-                        y * ui.BASE_SIZE,
-                        ui.BASE_SIZE,
-                        ui.BASE_SIZE,
+                        x * ui.BASE_SIZE, y * ui.BASE_SIZE, ui.BASE_SIZE, ui.BASE_SIZE,
                     )
                 )
             self.grid.append(grid)
@@ -72,9 +67,7 @@ class BFS(Brain):
         return score
 
     def make_grid_map(self):
-        self.grid_map = [
-            [True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)
-        ]
+        self.grid_map = [[True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)]
         self.grid_map[0][:] = [False for _ in range(ui.X_GRID)]
         self.grid_map[-1][:] = [False for _ in range(ui.X_GRID)]
         for i in range(ui.Y_GRID):

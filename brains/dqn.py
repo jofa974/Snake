@@ -35,10 +35,7 @@ class DQN(Brain):
         self.brain_file = "last_brain.pth"
         self.loss_history = []
         self.mean_reward_history = []
-        self.last_state = None
-        self.last_action = 0
-        self.last_reward = 0
-        self.brain_file = "last_brain.pth"
+        self.list_of_rewards = []
         self.learning = learning
 
     @abstractmethod
@@ -77,7 +74,7 @@ class DQN(Brain):
                 return pygame.K_RIGHT
 
     def mean_reward(self):
-        return sum(self.reward_window)
+        return np.mean(self.list_of_rewards)
 
     def save(self, filename=None):
         if filename is None:
@@ -178,6 +175,8 @@ class DQN(Brain):
                 else:
                     self.apple.new_random(forbidden=forbidden_positions)
                 self.last_reward = 1
+
+            self.list_of_rewards.append(self.last_reward)
 
         if self.learn and nb_moves < max_move:
             # Restart game and try to finish epoch
