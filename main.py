@@ -10,13 +10,13 @@ from pathlib import Path
 
 import numpy as np
 
-from game import modes, read_training_data
+from game import interactive_modes, modes, read_training_data
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import read_fitness, show_fitness, show_stats
 
 GAME_MODES = {
-    "human": modes.human,
-    "random": modes.random,
+    "human": interactive_modes.human,
+    "random": interactive_modes.random,
     "bfs": modes.bfs,
     "nnga": modes.nnga,
     "dqn": modes.dqn_ann,

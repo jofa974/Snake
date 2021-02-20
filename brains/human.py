@@ -1,10 +1,10 @@
 import time
 
 import pygame
-
-import ui
 from components.apple import Apple
 from components.snake import Snake
+from graphics.sprite import BasicSprite
+from ui.controls import CONTROLS
 
 from . import Brain
 
@@ -23,8 +23,8 @@ class Human(Brain):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.snake.dead = True
-                if event.type == pygame.KEYDOWN and event.key in ui.CONTROLS:
-                    self.snake.change_direction(event.key)
+                if event.type == pygame.KEYDOWN and event.key in CONTROLS:
+                    self.snake.change_direction(CONTROLS[event.key])
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.env.take_screenshot()
 
@@ -32,19 +32,23 @@ class Human(Brain):
 
             self.snake.detect_collisions()
 
-            if self.snake.eat(self.apple):
+            if self.snake.eat(self.apple.get_position()):
                 self.snake.grow()
                 self.snake.update()
                 self.apple.new_random()
                 score += 1
 
             score_text = "Score: {}".format(score)
-            self.env.draw_everything(score_text, [self.snake, self.apple])
+            snake_sprite = pygame.sprite.Group()
+            for coords in self.snake.get_body_position_list():
+                body = BasicSprite(coords[0], coords[1])
+                snake_sprite.add(body)
+            self.env.draw_everything(score_text, [snake_sprite, self.apple])
 
             time.sleep(150.0 / 1000.0)
 
         final_text = "GAME OVER! Your score is {}".format(score)
 
-        self.env.draw_everything(final_text, [self.snake, self.apple])
+        self.env.draw_everything(final_text, [snake_sprite, self.apple])
 
         time.sleep(2)

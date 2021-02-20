@@ -28,19 +28,6 @@ with open("inputs.json") as json_file:
     INPUTS = json.load(json_file)
 
 
-def human():
-    game = brains.human.Human()
-    game.play()
-    pygame.quit()
-
-
-def random():
-    for _ in range(3):
-        game = brains.random.Random()
-        game.play()
-    pygame.quit()
-
-
 def bfs():
     nb_games = INPUTS["BFS"]["games"]
     if nb_games == 1:

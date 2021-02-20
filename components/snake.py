@@ -11,36 +11,26 @@ def speed_sign(speed):
     return int(math.copysign(1, norm_speed(speed)))
 
 
-# class SnakePart(pygame.sprite.Sprite):
-#     def __init__(self):
-#         super().__init__()
-#         size = (BASE_SIZE, BASE_SIZE)
-#         colour = 0, 155, 0
-#         self.image = pygame.Surface(size)
-#         self.image.fill(colour)
-#         self.rect = self.image.get_rect()
-
-#     def draw(self, surface):
-#         surface.blit(self.image, self.rect.center)
-
-
 class Snake:
     """Snake player"""
 
     def __init__(self, x=int(X_GRID / 2), y=int(Y_GRID / 2), s=(BASE_SPEED, 0)):
         self.speed = s
         self.dead = False
-        self.body_list = [(x * BASE_SIZE, y * BASE_SIZE)]
+        self.body_list = [(x * BASE_SIZE, y * BASE_SIZE,)]
+
         for i in range(1, 3):
-            self.body_list.append((int(WIDTH / 2) - i * BASE_SPEED, int(HEIGHT / 2),))
+            self.body_list.append((int(WIDTH / 2) - i * BASE_SPEED, int(HEIGHT / 2)))
 
     def update(self):
         for i in range(len(self.body_list) - 1, 0, -1):
-            self.body_list[i] = self.body_list[i - 1].copy()
+            self.body_list[i] = self.body_list[i - 1]
 
     def move(self):
         self.update()
-        self.body_list[0] = (self.body_list[0][i] + self.speed[i] for i in range(2))
+        self.body_list[0] = tuple(
+            self.body_list[0][i] + self.speed[i] for i in range(2)
+        )
 
     def detect_collisions(self):
         # Did this update cause us to hit a wall?

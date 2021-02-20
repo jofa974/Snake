@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 
-from game import Environment
+from game.environment import Environment
 
 
 class Brain(ABC):
