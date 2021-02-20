@@ -3,15 +3,14 @@ import time
 import pygame
 from components.apple import Apple
 from components.snake import Snake
+from game.environment import Environment
 from graphics.sprite import BasicSprite
 from ui.controls import CONTROLS
 
-from . import Brain
 
-
-class Human(Brain):
+class Human:
     def __init__(self):
-        super().__init__(do_display=True)
+        self.env = Environment()
         self.env.set_caption("Snake: Human mode")
 
     def play(self):

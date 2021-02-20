@@ -14,14 +14,11 @@ from components.apple import Apple
 from components.snake import Snake
 from neural_net.pytorch_ann import ReplayMemory
 
-from . import Brain
 
-
-class DQN(Brain):
+class DQN:
     def __init__(
-        self, batch_size, gamma, memory_size, do_display=False, learning=True,
+        self, batch_size, gamma, memory_size, learning=True,
     ):
-        super().__init__(do_display=do_display)
         self.model = None
         self.gamma = gamma
         self.reward_window = []

@@ -2,16 +2,18 @@ import itertools
 import time
 from collections import deque
 
+import pygame
 import ui
 from components.apple import Apple
 from components.snake import Snake
+from game.environment import Environment
+from graphics.sprite import BasicSprite
+from ui.controls import CONTROLS
 
-from . import Brain
 
-
-class BFS(Brain):
-    def __init__(self, do_display):
-        super().__init__(do_display=do_display)
+class BFS:
+    def __init__(self):
+        self.env = Environment()
         self.moves = []
         self.grid = []
         for y in range(ui.Y_GRID):
@@ -28,8 +30,7 @@ class BFS(Brain):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
-        if self.do_display:
-            self.env.set_caption("Snake: BFS mode")
+        self.env.set_caption("Snake: BFS mode")
 
         while not self.snake.dead:
             for event in pygame.event.get():
@@ -46,23 +47,26 @@ class BFS(Brain):
             else:
                 next_move = "forward"
 
-            if next_move in ui.CONTROLS:
-                self.snake.change_direction(next_move)
+            if next_move in CONTROLS:
+                self.snake.change_direction(CONTROLS[next_move])
 
             self.snake.move()
 
             self.snake.detect_collisions()
 
-            if self.snake.eat(self.apple):
+            if self.snake.eat(self.apple.get_position()):
                 self.snake.grow()
                 self.snake.update()
                 self.apple.new_random()
                 score += 1
 
-            if self.do_display:
-                score_text = "Score: {}".format(score)
-                self.env.draw_everything(score_text, [self.snake, self.apple])
-                time.sleep(50.0 / 1000.0)
+            score_text = "Score: {}".format(score)
+            snake_sprite = pygame.sprite.Group()
+            for coords in self.snake.get_body_position_list():
+                body = BasicSprite(coords[0], coords[1])
+                snake_sprite.add(body)
+            self.env.draw_everything(score_text, [snake_sprite, self.apple])
+            time.sleep(50.0 / 1000.0)
 
         return score
 

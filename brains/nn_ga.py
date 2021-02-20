@@ -10,8 +10,6 @@ from components.apple import Apple
 from components.snake import Snake
 from neural_net.artificial_neural_network import ANN
 
-from . import Brain
-
 
 def play_individual(
     individual, gen_nb, game_id, training_data, hidden_nb=[4], max_move=-1
@@ -23,14 +21,13 @@ def play_individual(
     return fitness
 
 
-class NN_GA(Brain):
+class NN_GA:
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.
     """
 
     def __init__(self, do_display, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
-        super().__init__(do_display=do_display)
         self.nn = ANN(gen_id, dna, hidden_nb=hidden_nb)
         self.gen_id = gen_id
 

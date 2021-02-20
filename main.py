@@ -17,7 +17,7 @@ from stats.stats import read_fitness, show_fitness, show_stats
 GAME_MODES = {
     "human": interactive_modes.human,
     "random": interactive_modes.random,
-    "bfs": modes.bfs,
+    "bfs": interactive_modes.bfs,
     "nnga": modes.nnga,
     "dqn": modes.dqn_ann,
 }

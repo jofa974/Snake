@@ -6,7 +6,7 @@ from ui import BASE_SIZE, BLACK, HEIGHT, WHITE, WIDTH
 
 
 class Environment:
-    def __init__(self, do_display):
+    def __init__(self):
         pygame.init()
         w = 3 * WIDTH
         h = HEIGHT
@@ -14,17 +14,14 @@ class Environment:
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
 
         self.walls = pygame.sprite.Group()
-        # wall_left = BasicSprite(0, 0, (BASE_SIZE, HEIGHT), WHITE)
-        # wall_top = BasicSprite(0, 0, (WIDTH, BASE_SIZE), WHITE)
+        wall_left = BasicSprite(0, 0, (BASE_SIZE, HEIGHT), WHITE)
+        wall_top = BasicSprite(0, 0, (WIDTH, BASE_SIZE), WHITE)
         wall_bottom = BasicSprite(0, HEIGHT - BASE_SIZE, (WIDTH, BASE_SIZE), WHITE)
         wall_right = BasicSprite(WIDTH - BASE_SIZE, 0, (BASE_SIZE, HEIGHT), WHITE)
-        # for wall in [wall_left, wall_right, wall_top, wall_bottom]:
-        for wall in [wall_right, wall_bottom]:
+        for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
 
-        self.screen = None
-        if do_display:
-            self.screen = pygame.display.set_mode((w, h))
+        self.screen = pygame.display.set_mode((w, h))
 
     def draw_everything(self, text=None, sprites=None, flip=True):
         if text:

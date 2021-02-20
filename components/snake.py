@@ -43,7 +43,8 @@ class Snake:
 
     def eat(self, target):
         """returns true if the snake collides with the target"""
-        return self.body_list[0][0] == target[0] and self.body_list[0][1] == target[1]
+        head_pos = self.get_position(0)
+        return head_pos[0] == target[0] and head_pos[1] == target[1]
 
     def change_direction(self, key):
         if key == "up" and self.speed[1] == 0:
@@ -58,10 +59,6 @@ class Snake:
     def grow(self):
         tail = self.body_list[-1]
         self.body_list.append(tail)
-
-    # def draw(self, surface):
-    #     for part in self.body_list:
-    #         part.draw(surface)
 
     def get_position(self, idx):
         return (

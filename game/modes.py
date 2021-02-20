@@ -28,21 +28,6 @@ with open("inputs.json") as json_file:
     INPUTS = json.load(json_file)
 
 
-def bfs():
-    nb_games = INPUTS["BFS"]["games"]
-    if nb_games == 1:
-        game = brains.bfs.BFS(do_display=True)
-        game.play()
-        pygame.quit()
-    else:
-        all_score = np.zeros(nb_games)
-        game = brains.bfs.BFS(do_display=False)
-        for i in range(nb_games):
-            score = game.play()
-            all_score[i] = score
-        pygame.quit()
-        show_stats(all_score)
-
 
 def dqn_ann():
     nb_epochs = INPUTS["DQN"]["epochs"]
