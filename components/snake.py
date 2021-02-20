@@ -1,7 +1,5 @@
 import math
 
-import pygame
-
 from ui import BASE_SIZE, BASE_SPEED, HEIGHT, WIDTH, X_GRID, Y_GRID
 
 
@@ -13,17 +11,17 @@ def speed_sign(speed):
     return int(math.copysign(1, norm_speed(speed)))
 
 
-class SnakePart(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        size = (BASE_SIZE, BASE_SIZE)
-        colour = 0, 155, 0
-        self.image = pygame.Surface(size)
-        self.image.fill(colour)
-        self.rect = self.image.get_rect()
+# class SnakePart(pygame.sprite.Sprite):
+#     def __init__(self):
+#         super().__init__()
+#         size = (BASE_SIZE, BASE_SIZE)
+#         colour = 0, 155, 0
+#         self.image = pygame.Surface(size)
+#         self.image.fill(colour)
+#         self.rect = self.image.get_rect()
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect.center)
+#     def draw(self, surface):
+#         surface.blit(self.image, self.rect.center)
 
 
 class Snake:
@@ -32,27 +30,17 @@ class Snake:
     def __init__(self, x=int(X_GRID / 2), y=int(Y_GRID / 2), s=(BASE_SPEED, 0)):
         self.speed = s
         self.dead = False
-        head = SnakePart()
-        head.rect.center = (x * BASE_SIZE, y * BASE_SIZE)
-        self.body_list = [head]
+        self.body_list = [(x * BASE_SIZE, y * BASE_SIZE)]
         for i in range(1, 3):
-            body = SnakePart()
-            body.rect.center = (
-                int(WIDTH / 2) - i * BASE_SPEED,
-                int(HEIGHT / 2),
-            )
-            self.body_list.append(body)
+            self.body_list.append((int(WIDTH / 2) - i * BASE_SPEED, int(HEIGHT / 2),))
 
     def update(self):
         for i in range(len(self.body_list) - 1, 0, -1):
-            self.body_list[i].rect = self.body_list[i - 1].rect.copy()
+            self.body_list[i] = self.body_list[i - 1].copy()
 
     def move(self):
         self.update()
-        # self.body_list[0].rect.move_ip(self.speed)
-        self.body_list[0].rect.center = [
-            self.body_list[0].rect.center[i] + self.speed[i] for i in range(2)
-        ]
+        self.body_list[0] = (self.body_list[0][i] + self.speed[i] for i in range(2))
 
     def detect_collisions(self):
         # Did this update cause us to hit a wall?
@@ -65,30 +53,30 @@ class Snake:
 
     def eat(self, target):
         """returns true if the snake collides with the target"""
-        hitbox = self.body_list[0].rect
-        return hitbox.colliderect(target.rect)
+        return self.body_list[0][0] == target[0] and self.body_list[0][1] == target[1]
 
     def change_direction(self, key):
-        if key == pygame.K_UP and self.speed[1] == 0:
+        if key == "up" and self.speed[1] == 0:
             self.speed = (0, -BASE_SPEED)
-        elif key == pygame.K_DOWN and self.speed[1] == 0:
+        elif key == "down" and self.speed[1] == 0:
             self.speed = (0, BASE_SPEED)
-        elif key == pygame.K_LEFT and self.speed[0] == 0:
+        elif key == "left" and self.speed[0] == 0:
             self.speed = (-BASE_SPEED, 0)
-        elif key == pygame.K_RIGHT and self.speed[0] == 0:
+        elif key == "right" and self.speed[0] == 0:
             self.speed = (BASE_SPEED, 0)
 
     def grow(self):
-        self.body_list.append(SnakePart())
+        tail = self.body_list[-1]
+        self.body_list.append(tail)
 
-    def draw(self, surface):
-        for part in self.body_list:
-            part.draw(surface)
+    # def draw(self, surface):
+    #     for part in self.body_list:
+    #         part.draw(surface)
 
     def get_position(self, idx):
         return (
-            int(self.body_list[idx].rect.centerx / BASE_SIZE),
-            int(self.body_list[idx].rect.centery / BASE_SIZE),
+            int(self.body_list[idx][0] / BASE_SIZE),
+            int(self.body_list[idx][1] / BASE_SIZE),
         )
 
     def get_neighbors(self, position, direction):
@@ -117,22 +105,22 @@ class Snake:
             return "front", self.speed
         if way == "left":
             if self.speed == (BASE_SPEED, 0):
-                return pygame.K_UP, (0, -BASE_SPEED)
+                return "up", (0, -BASE_SPEED)
             if self.speed == (-BASE_SPEED, 0):
-                return pygame.K_DOWN, (0, BASE_SPEED)
+                return "down", (0, BASE_SPEED)
             if self.speed == (0, BASE_SPEED):
-                return pygame.K_LEFT, (-BASE_SPEED, 0)
+                return "left", (-BASE_SPEED, 0)
             if self.speed == (0, -BASE_SPEED):
-                return pygame.K_RIGHT, (BASE_SPEED, 0)
+                return "right", (BASE_SPEED, 0)
         if way == "right":
             if self.speed == (BASE_SPEED, 0):
-                return pygame.K_DOWN, (0, BASE_SPEED)
+                return "down", (0, BASE_SPEED)
             if self.speed == (-BASE_SPEED, 0):
-                return pygame.K_UP, (0, -BASE_SPEED)
+                return "up", (0, -BASE_SPEED)
             if self.speed == (0, BASE_SPEED):
-                return pygame.K_RIGHT, (BASE_SPEED, 0)
+                return "right", (BASE_SPEED, 0)
             if self.speed == (0, -BASE_SPEED):
-                return pygame.K_LEFT, (-BASE_SPEED, 0)
+                return "left", (-BASE_SPEED, 0)
 
     def is_collision_wall(self, pos):
         x_head, y_head = pos
