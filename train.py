@@ -39,5 +39,5 @@ for epoch in range(nb_epochs):
 df = pd.DataFrame(
     {"epochs": np.arange(1, nb_epochs + 1), "loss": losses, "rewards": mean_rewards}
 )
-df[["epochs", "loss"]].to_csv("loss.csv", index=False)
-df[["epochs", "rewards"]].to_csv("rewards.csv", index=False)
+df[["epochs", "loss"]].to_csv("metrics/train/loss.csv", index=False)
+df[["epochs", "rewards"]].to_csv("metrics/train/rewards.csv", index=False)

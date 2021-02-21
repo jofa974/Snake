@@ -5,17 +5,17 @@ train:
     md5: 60a4812b777eb03d9f1b284aa783cc18
     size: 50000
   - path: brains/dqn.py
-    md5: c0d31465870ffa47c03b6a40d6cc3cc1
-    size: 7577
+    md5: 0b9f5678bd978cbf03a850328c23117f
+    size: 7287
   - path: brains/dqn_ann.py
-    md5: f94c72090ca8cc0cb630f5ed4db8a34e
-    size: 4465
+    md5: 1336c7a908b2b0fdf1bdd25eaa1c104c
+    size: 4243
   - path: neural_net/pytorch_ann.py
     md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
     size: 1277
   - path: train.py
-    md5: e41228465bec55fd20ef9fbb5d6d4b97
-    size: 1497
+    md5: 5d0dd08e54e62acbeebda8f02d7767a6
+    size: 1239
   params:
     params.yaml:
       train:
@@ -24,11 +24,11 @@ train:
         moves_per_epoch: 200
   outs:
   - path: last_brain.pth
-    md5: de7f9bc81a575ee0201b58607c00eaf2
-    size: 1348258
-  - path: loss.csv
-    md5: 2aa55dbbe09678f584da3b2b5a9ba848
-    size: 23680
-  - path: rewards.csv
-    md5: a5facfed24b6c15de0b4f8edeb69411f
-    size: 24274
+    md5: 3dc38102718602c2649dda5f3931b61e
+    size: 1353469
+  - path: metrics/train/loss.csv
+    md5: fa7497d59c05f3c69fb72c3ef020ea0d
+    size: 23718
+  - path: metrics/train/rewards.csv
+    md5: c23d52f584e215ab033bb34e8d298480
+    size: 24717
