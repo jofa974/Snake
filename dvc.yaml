@@ -12,7 +12,17 @@ stages:
     outs:
       - last_brain.pth
     plots:
-      - loss.csv:
+      - metrics/train/loss.csv:
           cache: false
-      - rewards.csv:
+          y: loss
+          y_label: loss
+          x: epochs
+          x_label: epochs
+          title: Loss
+      - metrics/train/rewards.csv:
           cache: false
+          y: rewards
+          y_label: rewards
+          x: epochs
+          x_label: epochs
+          title: Rewards

@@ -12,21 +12,15 @@ from .dqn import DQN
 
 class DQN_ANN(DQN):
     def __init__(
-        self,
-        batch_size=128,
-        gamma=0.9,
-        memory_size=200,
-        do_display=False,
-        learning=True,
+        self, batch_size=128, gamma=0.9, memory_size=200, learning=True,
     ):
         super().__init__(
             batch_size=batch_size,
             gamma=gamma,
             memory_size=memory_size,
-            do_display=do_display,
             learning=learning,
         )
-        self.env.set_caption("Snake: Pytorch Artificial Neural Network")
+        self.caption = "Snake: Pytorch Artificial Neural Network"
 
         input_size = 18
         nb_actions = 3
@@ -75,23 +69,15 @@ class DQN_ANN(DQN):
 
 class DQN_ANN_PIC(DQN_ANN):
     def __init__(
-        self,
-        batch_size=128,
-        gamma=0.95,
-        memory_size=200,
-        do_display=False,
-        learning=True,
+        self, batch_size=128, gamma=0.95, memory_size=200, learning=True,
     ):
         super().__init__(
             batch_size=batch_size,
             gamma=gamma,
             memory_size=memory_size,
-            do_display=do_display,
             learning=learning,
         )
-        self.env.set_caption(
-            "Snake: Pytorch Artificial Neural Network <- whole picture"
-        )
+        self.caption = "Snake: Pytorch Artificial Neural Network <- whole picture"
 
         input_size = ui.X_GRID * ui.Y_GRID
         nb_actions = 3

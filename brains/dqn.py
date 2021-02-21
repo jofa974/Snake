@@ -6,7 +6,6 @@ import time
 from abc import abstractmethod
 
 import numpy as np
-import pygame
 import torch
 import torch.nn.functional as F
 import ui
@@ -15,15 +14,12 @@ from components.snake import Snake
 from neural_net.pytorch_ann import ReplayMemory
 from torch.autograd import Variable
 
-from . import Brain
 
-
-class DQN(Brain):
+class DQN:
     def __init__(
-        self, batch_size, gamma, memory_size, do_display=False, learning=True,
+        self, batch_size, gamma, memory_size, learning=True,
     ):
-        super().__init__(do_display=do_display)
-        self.model = None
+        self.model = torch.nn.Module()
         self.gamma = gamma
         self.reward_window = []
         self.memory = ReplayMemory(memory_size)
@@ -38,6 +34,7 @@ class DQN(Brain):
         self.mean_reward_history = []
         self.list_of_rewards = []
         self.learning = learning
+        self.caption = "DQN game"
 
     @abstractmethod
     def get_input_data(self):
@@ -53,26 +50,26 @@ class DQN(Brain):
 
     def action2direction_key(self, action):
         directions = ["forward", "left", "right"]
-        if directions[action] == "forward":
-            return pygame.K_SPACE
-        elif directions[action] == "left":
+        if directions[action] == "left":
             if self.snake.speed[0] > 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[0] < 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[1] > 0:
-                return pygame.K_RIGHT
+                return "right"
             if self.snake.speed[1] < 0:
-                return pygame.K_LEFT
-        elif directions[action] == "right":
+                return "left"
+        if directions[action] == "right":
             if self.snake.speed[0] > 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[0] < 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[1] > 0:
-                return pygame.K_LEFT
+                return "left"
             if self.snake.speed[1] < 0:
-                return pygame.K_RIGHT
+                return "right"
+        else:
+            return "forward"
 
     def mean_reward(self):
         return np.mean(self.list_of_rewards)
@@ -107,7 +104,7 @@ class DQN(Brain):
     def load_best(self):
         self.load(filename="best_brain.pth")
 
-    def play(self, max_move=-1, init_training_data=None, epsilon=0):
+    def play(self, max_move=-1, init_training_data=None, epsilon=0, env=None):
         self.snake = Snake()
 
         forbidden_positions = self.snake.get_body_position_list()
@@ -120,20 +117,17 @@ class DQN(Brain):
         nb_moves = 0
         nb_apples = 0
 
-        while (not self.snake.dead) and (nb_moves < max_move):
+        if env:
+            env.set_caption(self.caption)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+        while (not self.snake.dead) and (nb_moves < max_move):
 
             nb_moves += 1
             self.steps += 1
 
-            score_text = "Score: {}".format(nb_apples)
-            if self.do_display:
-                self.env.draw_everything(
-                    score_text, [self.snake, self.apple], flip=True
-                )
+            if env:
+                score_text = "Score: {}".format(nb_apples)
+                env.draw_everything(self.snake, self.apple, score_text, flip=True)
                 time.sleep(0.1)
 
             last_signal = self.get_input_data()
@@ -143,8 +137,7 @@ class DQN(Brain):
             )
 
             next_move = self.action2direction_key(next_action)
-            if next_move in ui.CONTROLS:
-                self.snake.change_direction(next_move)
+            self.snake.change_direction(next_move)
 
             prev_dist = self.snake.get_distance_to_target(
                 self.snake.get_position(0), self.apple.get_position(), norm=2
@@ -165,7 +158,7 @@ class DQN(Brain):
             if self.snake.dead:
                 self.last_reward = -1
 
-            if self.snake.eat(self.apple):
+            if self.snake.eat(self.apple.get_position()):
                 nb_apples += 1
                 self.snake.grow()
                 self.snake.update()
@@ -179,7 +172,7 @@ class DQN(Brain):
 
             self.list_of_rewards.append(self.last_reward)
 
-        if self.learn and nb_moves < max_move:
+        if self.learning and nb_moves < max_move:
             # Restart game and try to finish epoch
             self.play(
                 max_move=max_move - nb_moves,

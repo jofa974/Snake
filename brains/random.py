@@ -2,16 +2,14 @@ import random
 import time
 
 import pygame
-
 from components.apple import Apple
 from components.snake import Snake
+from game.environment import Environment
 
-from . import Brain
 
-
-class Random(Brain):
+class Random:
     def __init__(self):
-        super().__init__(do_display=True)
+        self.env = Environment()
         self.env.set_caption("Snake: Random mode")
 
     def play(self):

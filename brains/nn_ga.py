@@ -4,33 +4,32 @@ import time
 
 import matplotlib
 import matplotlib.pyplot as plt
-import pygame
 import ui
 from components.apple import Apple
 from components.snake import Snake
+from graphics.sprite import BasicSprite
 from neural_net.artificial_neural_network import ANN
-
-from . import Brain
+from ui.controls import CONTROLS
 
 
 def play_individual(
     individual, gen_nb, game_id, training_data, hidden_nb=[4], max_move=-1
 ):
     game = NN_GA(
-        do_display=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
+        learning=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
     )
     _, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
-class NN_GA(Brain):
+class NN_GA:
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.
     """
 
-    def __init__(self, do_display, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
-        super().__init__(do_display=do_display)
+    def __init__(self, learning, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
+        self.learning = learning
         self.nn = ANN(gen_id, dna, hidden_nb=hidden_nb)
         self.gen_id = gen_id
 
@@ -48,8 +47,9 @@ class NN_GA(Brain):
         fitness = 0
         nb_moves = 0
 
-        if self.do_display:
+        if not self.learning:
             matplotlib.use("Agg")
+            self.env = Environment()
             self.env.set_caption(
                 "Snake: Custom Neural Network optimized with a Genetic Algorithm"
             )
@@ -70,8 +70,7 @@ class NN_GA(Brain):
 
             # Deduce which key to press based on next direction
             next_move = self.get_move_from_direction(next_direction)
-            if next_move in ui.CONTROLS:
-                self.snake.change_direction(next_move)
+            self.snake.change_direction(next_move)
 
             self.snake.move()
 
@@ -90,7 +89,7 @@ class NN_GA(Brain):
                     self.apple.new_random(forbidden=forbidden_positions)
                 score += 1
 
-            if self.do_display:
+            if not self.learning:
                 score_text = "Score: {}".format(score)
                 self.env.draw_everything(
                     score_text, [self.snake, self.apple], flip=False
@@ -118,22 +117,22 @@ class NN_GA(Brain):
             return "forward"
         if direction == "left":
             if self.snake.speed[0] > 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[0] < 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[1] > 0:
-                return pygame.K_RIGHT
+                return "right"
             if self.snake.speed[1] < 0:
-                return pygame.K_LEFT
+                return "left"
         if direction == "right":
             if self.snake.speed[0] > 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[0] < 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[1] > 0:
-                return pygame.K_LEFT
+                return "left"
             if self.snake.speed[1] < 0:
-                return pygame.K_RIGHT
+                return "right"
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()

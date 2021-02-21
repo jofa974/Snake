@@ -8,11 +8,8 @@ import shutil
 import time
 from pathlib import Path
 
-import brains.bfs
 import brains.dqn_ann
-import brains.human
 import brains.nn_ga
-import brains.random
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,41 +17,10 @@ import pygame
 from neural_net.genetic_algorithm import generate_new_population
 from stats.stats import show_fitness, show_stats
 
-from . import read_training_data
-
 INPUTS = {}
 
 with open("inputs.json") as json_file:
     INPUTS = json.load(json_file)
-
-
-def human():
-    game = brains.human.Human()
-    game.play()
-    pygame.quit()
-
-
-def random():
-    for _ in range(3):
-        game = brains.random.Random()
-        game.play()
-    pygame.quit()
-
-
-def bfs():
-    nb_games = INPUTS["BFS"]["games"]
-    if nb_games == 1:
-        game = brains.bfs.BFS(do_display=True)
-        game.play()
-        pygame.quit()
-    else:
-        all_score = np.zeros(nb_games)
-        game = brains.bfs.BFS(do_display=False)
-        for i in range(nb_games):
-            score = game.play()
-            all_score[i] = score
-        pygame.quit()
-        show_stats(all_score)
 
 
 def dqn_ann():
@@ -93,7 +59,7 @@ def dqn_ann():
         plt.savefig("last_training.eps")
         pygame.quit()
     else:
-        agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
+        agent = brains.dqn_ann.DQN_ANN(learning=False)
         training_data = read_training_data()
         agent.load()
         score = agent.play(max_move=1000000, init_training_data=training_data)
@@ -142,15 +108,6 @@ def nnga():
                 all_fitness[i][:] = np.array(list(results))
         pygame.quit()
         show_fitness(all_fitness)
-    else:
-        # Play the best individual of the last generation
-        game = brains.nn_ga.NN_GA(
-            do_display=True,
-            gen_id=(INPUTS["NNGA"]["generations"] - 1, 0),
-            hidden_nb=INPUTS["NNGA"]["neurons_per_hidden"],
-        )
-        game.play(dump=False, training_data=training_data)
-        pygame.quit()
 
     # elif args.dqn_cnn:
     #     game = dqn_cnn.DQN_CNN(do_display=True)
