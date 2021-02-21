@@ -14,22 +14,37 @@ class Environment:
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
 
         self.walls = pygame.sprite.Group()
-        wall_left = BasicSprite(0, 0, (BASE_SIZE, HEIGHT), WHITE)
-        wall_top = BasicSprite(0, 0, (WIDTH, BASE_SIZE), WHITE)
-        wall_bottom = BasicSprite(0, HEIGHT - BASE_SIZE, (WIDTH, BASE_SIZE), WHITE)
-        wall_right = BasicSprite(WIDTH - BASE_SIZE, 0, (BASE_SIZE, HEIGHT), WHITE)
+        wall_left = BasicSprite(BASE_SIZE / 2, HEIGHT / 2, (BASE_SIZE, HEIGHT), WHITE)
+        wall_top = BasicSprite(WIDTH / 2, BASE_SIZE / 2, (WIDTH, BASE_SIZE), WHITE)
+        wall_bottom = BasicSprite(
+            WIDTH / 2, HEIGHT - BASE_SIZE / 2, (WIDTH, BASE_SIZE), WHITE,
+        )
+        wall_right = BasicSprite(
+            WIDTH - BASE_SIZE / 2, HEIGHT / 2, (BASE_SIZE, HEIGHT), WHITE,
+        )
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
 
         self.screen = pygame.display.set_mode((w, h))
 
-    def draw_everything(self, text=None, sprites=None, flip=True):
+    def draw_everything(self, snake, apple, text=None, flip=True):
         if text:
             textsurface = self.font.render(text, False, WHITE)
         self.screen.fill(BLACK)
         self.screen.blit(textsurface, (WIDTH + 50, 50))
-        for s in sprites:
-            s.draw(self.screen)
+
+        for coords in snake.get_body_position_list():
+            body = BasicSprite(coords[0] * BASE_SIZE, coords[1] * BASE_SIZE,)
+            body.draw(self.screen)
+
+        apple_coords = apple.get_position()
+        apple_sprite = BasicSprite(
+            apple_coords[0] * BASE_SIZE,
+            apple_coords[1] * BASE_SIZE,
+            colour=(155, 0, 0),
+        )
+        apple_sprite.draw(self.screen)
+
         self.walls.draw(self.screen)
         if flip:
             pygame.display.flip()

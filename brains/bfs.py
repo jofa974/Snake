@@ -61,11 +61,7 @@ class BFS:
                 score += 1
 
             score_text = "Score: {}".format(score)
-            snake_sprite = pygame.sprite.Group()
-            for coords in self.snake.get_body_position_list():
-                body = BasicSprite(coords[0], coords[1])
-                snake_sprite.add(body)
-            self.env.draw_everything(score_text, [snake_sprite, self.apple])
+            self.env.draw_everything(self.snake, self.apple, score_text)
             time.sleep(50.0 / 1000.0)
 
         return score

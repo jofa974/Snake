@@ -17,10 +17,10 @@ class Snake:
     def __init__(self, x=int(X_GRID / 2), y=int(Y_GRID / 2), s=(BASE_SPEED, 0)):
         self.speed = s
         self.dead = False
-        self.body_list = [(x * BASE_SIZE, y * BASE_SIZE,)]
+        self.body_list = [(x, y,)]
 
         for i in range(1, 3):
-            self.body_list.append((int(WIDTH / 2) - i * BASE_SPEED, int(HEIGHT / 2)))
+            self.body_list.append((x - i, y,))
 
     def update(self):
         for i in range(len(self.body_list) - 1, 0, -1):
@@ -61,10 +61,7 @@ class Snake:
         self.body_list.append(tail)
 
     def get_position(self, idx):
-        return (
-            int(self.body_list[idx][0] / BASE_SIZE),
-            int(self.body_list[idx][1] / BASE_SIZE),
-        )
+        return (self.body_list[idx][0], self.body_list[idx][1])
 
     def get_neighbors(self, position, direction):
         """Get the coordinates of the nearest neighbors: in front, to the left and the right"""
@@ -181,7 +178,7 @@ class Snake:
         current_dist = self.get_distance_to_target(snake_pos, apple_pos)
 
         speed = self.speed
-        next_pos = tuple([snake_pos[i] + int(speed[i] / BASE_SPEED) for i in range(2)])
+        next_pos = tuple([snake_pos[i] + speed[i] for i in range(2)])
         next_dist = self.get_distance_to_target(next_pos, apple_pos)
 
         return next_dist < current_dist

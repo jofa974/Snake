@@ -1,6 +1,7 @@
 import time
 
 import pygame
+import ui
 from components.apple import Apple
 from components.snake import Snake
 from game.environment import Environment
@@ -38,16 +39,11 @@ class Human:
                 score += 1
 
             score_text = "Score: {}".format(score)
-            snake_sprite = pygame.sprite.Group()
-            for coords in self.snake.get_body_position_list():
-                body = BasicSprite(coords[0], coords[1])
-                snake_sprite.add(body)
-            self.env.draw_everything(score_text, [snake_sprite, self.apple])
+            self.env.draw_everything(self.snake, self.apple, score_text)
 
             time.sleep(150.0 / 1000.0)
 
         final_text = "GAME OVER! Your score is {}".format(score)
 
-        self.env.draw_everything(final_text, [snake_sprite, self.apple])
-
+        self.env.draw_everything(self.snake, self.apple, final_text)
         time.sleep(2)

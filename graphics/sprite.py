@@ -8,8 +8,7 @@ class BasicSprite(pygame.sprite.Sprite):
         self.image = pygame.Surface(size)
         self.image.fill(colour)
         self.rect = self.image.get_rect()
-        self.rect.y = y * ui.BASE_SIZE
-        self.rect.x = x * ui.BASE_SIZE
+        self.rect.center = x, y
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.center)

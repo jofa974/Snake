@@ -1,4 +1,3 @@
-# TODO move this somewhere else
 def read_training_data():
     training_data = []
     with open("apple_position.in", "r") as f:
