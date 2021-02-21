@@ -3,15 +3,19 @@ import json
 import pygame
 from brains import bfs, human, random
 
+from game.environment import Environment
+
 INPUTS = {}
 
 with open("inputs.json") as json_file:
     INPUTS = json.load(json_file)
 
+env = Environment()
+
 
 def human_game():
     game = human.Human()
-    game.play()
+    game.play(env)
     pygame.quit()
 
 
@@ -23,12 +27,9 @@ def random_game():
 
 
 def bfs_game():
-    # nb_games = INPUTS["BFS"]["games"]
-    nb_games = 1
-    if nb_games == 1:
-        game = bfs.BFS()
-        game.play()
-        pygame.quit()
+    game = bfs.BFS()
+    game.play(env)
+    pygame.quit()
     # else:
     #     all_score = np.zeros(nb_games)
     #     game = brains.bfs.BFS(do_display=False)

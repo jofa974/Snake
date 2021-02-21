@@ -13,7 +13,6 @@ from ui.controls import CONTROLS
 
 class BFS:
     def __init__(self):
-        self.env = Environment()
         self.moves = []
         self.grid = []
         for y in range(ui.Y_GRID):
@@ -26,11 +25,11 @@ class BFS:
                 )
             self.grid.append(grid)
 
-    def play(self):
+    def play(self, env):
         self.apple = Apple()
         self.snake = Snake()
         score = 0
-        self.env.set_caption("Snake: BFS mode")
+        env.set_caption("Snake: BFS mode")
 
         while not self.snake.dead:
             for event in pygame.event.get():
@@ -61,7 +60,7 @@ class BFS:
                 score += 1
 
             score_text = "Score: {}".format(score)
-            self.env.draw_everything(self.snake, self.apple, score_text)
+            env.draw_everything(self.snake, self.apple, score_text)
             time.sleep(50.0 / 1000.0)
 
         return score

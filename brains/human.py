@@ -11,14 +11,12 @@ from ui.controls import CONTROLS
 
 class Human:
     def __init__(self):
-        self.env = Environment()
-        self.env.set_caption("Snake: Human mode")
-
-    def play(self):
         self.snake = Snake()
         self.apple = Apple()
-        score = 0
+        self.score = 0
 
+    def play(self, env):
+        env.set_caption("Snake: Human mode")
         while not self.snake.dead:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -36,14 +34,14 @@ class Human:
                 self.snake.grow()
                 self.snake.update()
                 self.apple.new_random()
-                score += 1
+                self.score += 1
 
-            score_text = "Score: {}".format(score)
-            self.env.draw_everything(self.snake, self.apple, score_text)
+            score_text = "Score: {}".format(self.score)
+            env.draw_everything(self.snake, self.apple, score_text)
 
             time.sleep(150.0 / 1000.0)
 
-        final_text = "GAME OVER! Your score is {}".format(score)
+        final_text = "GAME OVER! Your score is {}".format(self.score)
 
-        self.env.draw_everything(self.snake, self.apple, final_text)
+        env.draw_everything(self.snake, self.apple, final_text)
         time.sleep(2)
