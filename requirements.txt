@@ -7,7 +7,7 @@ Pillow==8.3.2
 pipdeptree==1.0.0
 pygame==1.9.6
 pylint==2.6.0
-pytest==5.4.3
+pytest==6
 rope==0.17.0
 scipy==1.4.1
 torch==1.5.1

@@ -25,12 +25,11 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --select=E9,F63,F7,F82,C901 --show-source --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          pip install pytest
-          pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+          pytest --doctest-modules --junitxml=junit/test-results.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v2
         with:
-          name: pytest-results-3.7
-          path: junit/test-results-3.7.xml
+          name: pytest-results
+          path: junit/test-results.xml
         # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
