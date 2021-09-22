@@ -26,7 +26,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest
-          pytest tests.py --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+          pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v2
         with:
