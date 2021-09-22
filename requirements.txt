@@ -73,7 +73,7 @@ pluggy==0.13.1
 ply==3.11
 prompt-toolkit==3.0.5
 ptyprocess==0.6.0
-py==1.9.0
+py==1.10.0
 pyasn1==0.4.8
 pycodestyle==2.6.0
 pydot==1.4.2
