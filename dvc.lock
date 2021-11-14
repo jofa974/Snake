@@ -1,34 +1,49 @@
-train:
-  cmd: python train.py
-  deps:
-  - path: apple_position.in
-    md5: 60a4812b777eb03d9f1b284aa783cc18
-    size: 50000
-  - path: brains/dqn.py
-    md5: c0d31465870ffa47c03b6a40d6cc3cc1
-    size: 7577
-  - path: brains/dqn_ann.py
-    md5: f94c72090ca8cc0cb630f5ed4db8a34e
-    size: 4465
-  - path: neural_net/pytorch_ann.py
-    md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
-    size: 1277
-  - path: train.py
-    md5: e41228465bec55fd20ef9fbb5d6d4b97
-    size: 1497
-  params:
-    params.yaml:
-      train:
-        nb_epochs: 1000
-        batch_sample_size: 50
-        moves_per_epoch: 200
-  outs:
-  - path: last_brain.pth
-    md5: de7f9bc81a575ee0201b58607c00eaf2
-    size: 1348258
-  - path: loss.csv
-    md5: 2aa55dbbe09678f584da3b2b5a9ba848
-    size: 23680
-  - path: rewards.csv
-    md5: a5facfed24b6c15de0b4f8edeb69411f
-    size: 24274
+schema: '2.0'
+stages:
+  train:
+    cmd: python train.py
+    deps:
+    - path: apple_position.in
+      md5: 0dc87991e174d79360298ed53dcd997f
+      size: 50000
+    - path: brains/dqn.py
+      md5: c0d31465870ffa47c03b6a40d6cc3cc1
+      size: 7577
+    - path: brains/dqn_ann.py
+      md5: f94c72090ca8cc0cb630f5ed4db8a34e
+      size: 4465
+    - path: neural_net/pytorch_ann.py
+      md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
+      size: 1277
+    - path: train.py
+      md5: c88e8e18b25bcadfb1b74e8d11765c4f
+      size: 1513
+    params:
+      params.yaml:
+        train:
+          nb_epochs: 1000
+          batch_sample_size: 50
+          moves_per_epoch: 200
+    outs:
+    - path: last_brain.pth
+      md5: 9d8b1e84f35815830009bef08b23fe66
+      size: 1352203
+    - path: loss.csv
+      md5: dd2073cd2a9d3e9fc1aebb1752fb037d
+      size: 23841
+    - path: rewards.csv
+      md5: a103df021daf407076c60b703cf40d15
+      size: 24581
+  make_apple:
+    cmd: python gen_xy.py
+    deps:
+    - path: gen_xy.py
+      md5: cfe9ae254005c2fe3fea36841676cb55
+      size: 357
+    - path: ui/__init__.py
+      md5: 31573d5055761a050acd6c8c0f5528fd
+      size: 358
+    outs:
+    - path: apple_position.in
+      md5: 0dc87991e174d79360298ed53dcd997f
+      size: 50000

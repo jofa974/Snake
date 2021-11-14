@@ -6,14 +6,6 @@ import yaml
 import brains.dqn_ann
 from game import read_training_data
 
-# with open("inputs.json") as json_file:
-#     INPUTS = json.load(json_file)
-
-
-# nb_epochs = INPUTS["DQN"]["epochs"]
-# batch_sample_size = INPUTS["DQN"]["batch_sample_size"]
-# moves_per_epoch = INPUTS["DQN"]["moves_per_epoch"]
-
 with open("params.yaml", "r") as fd:
     params = yaml.safe_load(fd)
 
@@ -31,13 +23,15 @@ agent = brains.dqn_ann.DQN_ANN(
     do_display=False,
     learning=True,
 )
-epsilon, eps_min, eps_decay = 1, 0.2, 0.999
+epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
 losses, mean_rewards = [], []
 for epoch in range(nb_epochs):
     print(f"epoch: {epoch}")
     epsilon = max(epsilon * eps_decay, eps_min)
     agent.play(
-        max_move=moves_per_epoch, init_training_data=training_data, epsilon=epsilon,
+        max_move=moves_per_epoch,
+        init_training_data=training_data,
+        epsilon=epsilon,
     )
     loss = agent.learn()
     losses.append(loss)

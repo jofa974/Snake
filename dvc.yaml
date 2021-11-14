@@ -1,4 +1,11 @@
 stages:
+  make_apple:
+    cmd: python gen_xy.py
+    deps:
+      - gen_xy.py
+      - ui/__init__.py
+    outs:
+      - apple_position.in
   train:
     cmd: python train.py
     deps:
