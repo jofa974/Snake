@@ -163,9 +163,10 @@ class DQN(Brain):
             )
 
             if new_dist < prev_dist:
-                self.last_reward = (prev_dist - new_dist) / (
-                    np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
-                )
+                # self.last_reward = (prev_dist - new_dist) / (
+                #     np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
+                # )
+                self.last_reward = 0.5
             else:
                 self.last_reward = -0.7
 
@@ -187,7 +188,7 @@ class DQN(Brain):
 
             self.list_of_rewards.append(self.last_reward)
 
-        if self.learn and nb_moves < max_move:
+        if self.learning and nb_moves < max_move:
             # Restart game and try to finish epoch
             self.play(
                 max_move=max_move - nb_moves,

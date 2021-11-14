@@ -4,11 +4,11 @@ stages:
     cmd: python train.py
     deps:
     - path: apple_position.in
-      md5: 0dc87991e174d79360298ed53dcd997f
+      md5: 33a10a01f959d232385ad2a89b98b178
       size: 50000
     - path: brains/dqn.py
-      md5: 439d83dd56896e8a7886f10899d1360b
-      size: 7994
+      md5: 8ca26750c593c076c1b091c2abb76214
+      size: 8042
     - path: brains/dqn_ann.py
       md5: c4ea9a4516de7cef4d07eeaa7d2712ac
       size: 4500
@@ -26,14 +26,14 @@ stages:
           moves_per_epoch: 200
     outs:
     - path: last_brain.pth
-      md5: 0880999941a5bf6fdf2f13da85cc0162
+      md5: e077c2ad99dc4656c4e52d5b687c7302
       size: 1352651
     - path: loss.csv
-      md5: bcd3d4c746e037fdc1884451a658841b
-      size: 23848
+      md5: 7df2a7664329a4a4dbe544162f7e03f9
+      size: 24100
     - path: rewards.csv
-      md5: ca369fa5a9e99847d9774a5c8ae3943c
-      size: 24530
+      md5: 383a040b1b04d762ed21b069951b1de8
+      size: 15947
   make_apple:
     cmd: python gen_xy.py
     deps:
@@ -45,5 +45,5 @@ stages:
       size: 358
     outs:
     - path: apple_position.in
-      md5: 0dc87991e174d79360298ed53dcd997f
+      md5: 33a10a01f959d232385ad2a89b98b178
       size: 50000
