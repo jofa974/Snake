@@ -1,10 +1,9 @@
 import numpy as np
 import torch.optim as optim
-from PIL import Image
-from torch import nn
-
 import ui
 from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork, ReplayMemory
+from PIL import Image
+from torch import nn
 
 from .dqn import DQN
 
@@ -22,6 +21,7 @@ class DQN_CNN(DQN):
         self.env.set_caption("Snake: Pytorch Convolutional Neural Network")
 
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)
+        self.model.to(self.device)
         self.memory = ReplayMemory(500)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
