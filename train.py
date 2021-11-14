@@ -19,17 +19,18 @@ all_score = np.zeros(nb_epochs)
 training_data = read_training_data()
 
 
-agent = brains.dqn_cnn.DQN_CNN(
+agent = brains.dqn_ann.DQN_ANN(
     batch_size=batch_sample_size,
-    memory_size=moves_per_epoch,
+    memory_size=10000,
     do_display=False,
     learning=True,
 )
-epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
+# epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
+epsilon = 0.3
 losses, mean_rewards = [], []
 for ep in range(nb_episodes):
     print(f"episode: {ep}")
-    epsilon = max(epsilon * eps_decay, eps_min)
+    # epsilon = max(epsilon * eps_decay, eps_min)
     agent.play(
         max_move=moves_per_epoch,
         init_training_data=training_data,
