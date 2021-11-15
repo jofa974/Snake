@@ -7,19 +7,34 @@ stages:
     outs:
       - apple_position.in
   train:
-    cmd: python train.py
-    deps:
-      - apple_position.in
-      - train.py
-      - brains/dqn.py
-      - brains/dqn_cnn.py
-      - neural_net/pytorch_cnn.py
-    params:
-      - train
-    outs:
-      - last_brain.pth
-    plots:
-      - loss.csv:
-          cache: false
-      - rewards.csv:
-          cache: false
+    foreach:
+      - algorithm: dqn
+        network: ann
+        
+    do:
+      cmd: mkdir -p metrics/train/${item.algorithm}_${item.network} && python train.py -a ${item.algorithm} -n ${item.network}
+      deps:
+        - apple_position.in
+        - train.py
+        - brains/dqn.py
+        - brains/dqn_ann.py
+        - neural_net/pytorch_ann.py
+      params:
+        - ${item.algorithm}_${item.network}
+      outs:
+        - output/${item.algorithm}_${item.network}/last_brain.pth
+      plots:
+        - metrics/train/${item.algorithm}_${item.network}/loss.csv:
+            cache: false
+            y: loss
+            y_label: loss
+            x: episode
+            x_label: episode
+            title: Loss
+        - metrics/train/${item.algorithm}_${item.network}/rewards.csv:
+            cache: false
+            y: rewards
+            y_label: rewards
+            x: episode
+            x_label: episode
+            title: Rewards

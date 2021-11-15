@@ -4,37 +4,33 @@ import time
 
 import matplotlib
 import matplotlib.pyplot as plt
-import pygame
-import ui
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.artificial_neural_network import ANN
-
-from . import Brain
 
 
 def play_individual(
     individual, gen_nb, game_id, training_data, hidden_nb=[4], max_move=-1
 ):
     game = NN_GA(
-        do_display=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
+        learning=False, gen_id=(gen_nb, game_id), dna=individual, hidden_nb=hidden_nb
     )
     _, fitness = game.play(max_move=1000, dump=True, training_data=training_data)
     return fitness
 
 
-class NN_GA(Brain):
+class NN_GA:
     """
     Class that will play the game with a neural network optimized
     using a genetic algorithm.
     """
 
-    def __init__(self, do_display, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
-        super().__init__(do_display=do_display)
+    def __init__(self, learning, gen_id=(-1, -1), dna=None, hidden_nb=[4]):
+        self.learning = learning
         self.nn = ANN(gen_id, dna, hidden_nb=hidden_nb)
         self.gen_id = gen_id
 
-    def play(self, max_move=-1, dump=False, training_data=None):
+    def play(self, env, max_move=-1, dump=False, training_data=None):
         self.snake = Snake()
 
         forbidden_positions = self.snake.get_body_position_list()
@@ -48,18 +44,14 @@ class NN_GA(Brain):
         fitness = 0
         nb_moves = 0
 
-        if self.do_display:
+        if not self.learning:
             matplotlib.use("Agg")
-            self.env.set_caption(
+            env.set_caption(
                 "Snake: Custom Neural Network optimized with a Genetic Algorithm"
             )
             fig = plt.figure(figsize=[3, 3], dpi=100)
 
         while not self.snake.dead:
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.snake.dead = True
 
             # Feed the NN with input data
             input_data = self.get_input_data()
@@ -70,8 +62,7 @@ class NN_GA(Brain):
 
             # Deduce which key to press based on next direction
             next_move = self.get_move_from_direction(next_direction)
-            if next_move in ui.CONTROLS:
-                self.snake.change_direction(next_move)
+            self.snake.change_direction(next_move)
 
             self.snake.move()
 
@@ -90,13 +81,11 @@ class NN_GA(Brain):
                     self.apple.new_random(forbidden=forbidden_positions)
                 score += 1
 
-            if self.do_display:
+            if not self.learning:
                 score_text = "Score: {}".format(score)
-                self.env.draw_everything(
-                    score_text, [self.snake, self.apple], flip=False
-                )
+                env.draw_everything(score_text, [self.snake, self.apple], flip=False)
                 # self.nn.plot(fig)
-                self.env.make_surf_from_figure_on_canvas(fig)
+                env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1
@@ -118,22 +107,22 @@ class NN_GA(Brain):
             return "forward"
         if direction == "left":
             if self.snake.speed[0] > 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[0] < 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[1] > 0:
-                return pygame.K_RIGHT
+                return "right"
             if self.snake.speed[1] < 0:
-                return pygame.K_LEFT
+                return "left"
         if direction == "right":
             if self.snake.speed[0] > 0:
-                return pygame.K_DOWN
+                return "down"
             if self.snake.speed[0] < 0:
-                return pygame.K_UP
+                return "up"
             if self.snake.speed[1] > 0:
-                return pygame.K_LEFT
+                return "left"
             if self.snake.speed[1] < 0:
-                return pygame.K_RIGHT
+                return "right"
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()

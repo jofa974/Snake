@@ -1,10 +1,11 @@
-import brains.dqn_ann
 import pygame
 
-from game import read_training_data
+from brains import dqn_ann
+from game.environment import Environment
 
-agent = brains.dqn_ann.DQN_ANN(do_display=True, learning=False)
-training_data = read_training_data()
+env = Environment()
+
+agent = dqn_ann.DQN_ANN(learning=False)
 agent.load()
-score = agent.play(max_move=1000000, init_training_data=training_data)
+score = agent.play(max_move=1000000, env=env)
 pygame.quit()

@@ -2,22 +2,19 @@ import random
 import time
 
 import pygame
-
 from components.apple import Apple
 from components.snake import Snake
 
-from . import Brain
 
-
-class Random(Brain):
+class Random:
     def __init__(self):
-        super().__init__(do_display=True)
-        self.env.set_caption("Snake: Random mode")
+        self.score = 0
 
-    def play(self):
+    def play(self, env):
         self.apple = Apple()
         self.snake = Snake()
-        score = 0
+
+        env.set_caption("Snake: Random mode")
 
         while not self.snake.dead:
 
@@ -36,18 +33,17 @@ class Random(Brain):
 
             self.snake.detect_collisions()
 
-            if self.snake.eat(self.apple):
+            if self.snake.eat(self.apple.get_position()):
                 self.snake.grow()
+                self.snake.update()
                 self.apple.new_random()
-                score += 1
+                self.score += 1
 
-            score_text = "Score: {}".format(score)
-            self.env.draw_everything(score_text, [self.snake, self.apple])
+            score_text = "Score: {}".format(self.score)
+            env.draw_everything(self.snake, self.apple, score_text)
 
             time.sleep(100.0 / 1000.0)
 
-        final_text = "GAME OVER! The random score is {}".format(score)
-
-        self.env.draw_everything(final_text, [self.snake, self.apple])
-
+        final_text = "GAME OVER! The random score is {}".format(self.score)
+        env.draw_everything(self.snake, self.apple, final_text)
         time.sleep(2)

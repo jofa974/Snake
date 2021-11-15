@@ -4,8 +4,9 @@
         "values": "<DVC_METRIC_DATA>"
     },
     "title": "<DVC_METRIC_TITLE>",
-    "width": 300,
-    "height": 300,
+    "width": 500,
+    "height": 500,
+    "autosize": "fit",
     "mark": {
         "type": "line"
     },

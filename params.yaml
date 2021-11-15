@@ -1,5 +1,28 @@
-train:
-  nb_episodes: 100
-  nb_epochs: 50
-  batch_sample_size: 128
-  moves_per_epoch: 200
+bfs:
+  games: 10
+
+nnga:
+  train:
+    generations: 25
+    individuals: 200
+    breed_fraction: 0.2
+    workers: 8,
+    neurons_per_hidden: [
+            64,
+            64,
+            12
+        ]
+
+dqn_ann:
+  train:
+    max_moves: 200
+    nb_episodes: 100
+    nb_epochs: 50
+    batch_size: 128
+
+dqn_cnn:
+  train:
+    max_moves: 200
+    nb_episodes: 100
+    nb_epochs: 50
+    batch_size: 128
