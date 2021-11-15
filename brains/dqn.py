@@ -19,10 +19,15 @@ from . import Brain
 
 class DQN(Brain):
     def __init__(
-        self, batch_size, gamma, memory_size, do_display=False, learning=True,
+        self,
+        batch_size,
+        gamma,
+        memory_size,
+        do_display=False,
+        learning=True,
     ):
         super().__init__(do_display=do_display)
-        self.model = None
+        self.model = torch.nn.Module()
         self.gamma = gamma
         self.reward_window = []
         self.memory = ReplayMemory(memory_size)
@@ -37,6 +42,7 @@ class DQN(Brain):
         self.mean_reward_history = []
         self.list_of_rewards = []
         self.learning = learning
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     @abstractmethod
     def get_input_data(self):
@@ -138,7 +144,10 @@ class DQN(Brain):
             last_signal = self.get_input_data()
 
             next_action = self.update(
-                self.last_reward, last_signal, nb_steps=nb_moves, epsilon=epsilon,
+                self.last_reward,
+                last_signal,
+                nb_steps=nb_moves,
+                epsilon=epsilon,
             )
 
             next_move = self.action2direction_key(next_action)
@@ -154,9 +163,10 @@ class DQN(Brain):
             )
 
             if new_dist < prev_dist:
-                self.last_reward = (prev_dist - new_dist) / (
-                    np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
-                )
+                # self.last_reward = (prev_dist - new_dist) / (
+                #     np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
+                # )
+                self.last_reward = 0.5
             else:
                 self.last_reward = -0.7
 
@@ -178,7 +188,7 @@ class DQN(Brain):
 
             self.list_of_rewards.append(self.last_reward)
 
-        if self.learn and nb_moves < max_move:
+        if self.learning and nb_moves < max_move:
             # Restart game and try to finish epoch
             self.play(
                 max_move=max_move - nb_moves,
@@ -201,7 +211,7 @@ class DQN(Brain):
                 )
             )
 
-        action = self.select_action(new_state, epsilon)
+        action = self.select_action(new_state.to(self.device), epsilon)
 
         self.last_action = action
         self.last_state = new_state
@@ -218,6 +228,11 @@ class DQN(Brain):
             batch_action,
             batch_reward,
         ) = self.memory.sample(self.batch_size)
+
+        batch_state = batch_state.to(self.device)
+        batch_next_state = batch_next_state.to(self.device)
+        batch_action = batch_action.to(self.device)
+        batch_reward = batch_reward.to(self.device)
 
         outputs = (
             self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
