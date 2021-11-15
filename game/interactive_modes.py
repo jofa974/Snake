@@ -22,7 +22,7 @@ def human_game():
 def random_game():
     for _ in range(3):
         game = random.Random()
-        game.play()
+        game.play(env)
     pygame.quit()
 
 

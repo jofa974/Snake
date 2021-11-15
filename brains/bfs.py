@@ -20,15 +20,18 @@ class BFS:
             for x in range(ui.X_GRID):
                 grid.append(
                     pygame.Rect(
-                        x * ui.BASE_SIZE, y * ui.BASE_SIZE, ui.BASE_SIZE, ui.BASE_SIZE,
+                        x * ui.BASE_SIZE,
+                        y * ui.BASE_SIZE,
+                        ui.BASE_SIZE,
+                        ui.BASE_SIZE,
                     )
                 )
             self.grid.append(grid)
+        self.score = 0
 
     def play(self, env):
         self.apple = Apple()
         self.snake = Snake()
-        score = 0
         env.set_caption("Snake: BFS mode")
 
         while not self.snake.dead:
@@ -57,13 +60,13 @@ class BFS:
                 self.snake.grow()
                 self.snake.update()
                 self.apple.new_random()
-                score += 1
+                self.score += 1
 
-            score_text = "Score: {}".format(score)
+            score_text = "Score: {}".format(self.score)
             env.draw_everything(self.snake, self.apple, score_text)
             time.sleep(50.0 / 1000.0)
 
-        return score
+        return self.score
 
     def make_grid_map(self):
         self.grid_map = [[True for _ in range(ui.X_GRID)] for _ in range(ui.Y_GRID)]

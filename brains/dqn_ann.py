@@ -12,7 +12,11 @@ from .dqn import DQN
 
 class DQN_ANN(DQN):
     def __init__(
-        self, batch_size=128, gamma=0.9, memory_size=200, learning=True,
+        self,
+        batch_size=128,
+        gamma=0.9,
+        memory_size=200,
+        learning=True,
     ):
         super().__init__(
             batch_size=batch_size,
@@ -66,58 +70,3 @@ class DQN_ANN(DQN):
             apple_pos[1] / ui.Y_GRID,
         ]
         return input_data
-
-
-class DQN_ANN_PIC(DQN_ANN):
-    def __init__(
-        self, batch_size=128, gamma=0.95, memory_size=200, learning=True,
-    ):
-        super().__init__(
-            batch_size=batch_size,
-            gamma=gamma,
-            memory_size=memory_size,
-            learning=learning,
-        )
-        self.caption = "Snake: Pytorch Artificial Neural Network <- whole picture"
-
-        input_size = ui.X_GRID * ui.Y_GRID
-        nb_actions = 3
-        model = nn.Sequential(
-            nn.Linear(input_size, 1024),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(1024, 1024),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(1024, 512),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(512, 128),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(64, nb_actions),
-        )
-        self.model = NeuralNetwork(input_size, nb_actions)
-        self.memory = ReplayMemory(memory_size)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
-        self.loss = nn.MSELoss()
-        self.batch_size = batch_size
-
-    def get_input_data(self):
-        arr = np.zeros([ui.X_GRID, ui.Y_GRID])
-        # Walls
-        arr[0, :] = 0.1
-        arr[-1, :] = 0.1
-        arr[:, 0] = 0.1
-        arr[:, -1] = 0.1
-        # Apple
-        apple_pos = self.apple.get_position()
-        arr[apple_pos[0], apple_pos[1]] = 1.0
-        # Snake
-        for idx in range(len(self.snake.body_list)):
-            position = self.snake.get_position(idx)
-            arr[position[0], position[1]] = 0.1
-        return arr.flatten()

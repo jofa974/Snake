@@ -42,6 +42,5 @@ class Human:
             time.sleep(150.0 / 1000.0)
 
         final_text = "GAME OVER! Your score is {}".format(self.score)
-
         env.draw_everything(self.snake, self.apple, final_text)
         time.sleep(2)
