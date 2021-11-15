@@ -205,29 +205,33 @@ class DQN:
             del self.reward_window[0]
         return action
 
-    def learn(self):
-        (
-            batch_state,
-            batch_next_state,
-            batch_action,
-            batch_reward,
-        ) = self.memory.sample(self.batch_size)
+    def learn(self, epochs):
+        loss = 0.0
+        for epoch in range(epochs):
 
-        batch_state = batch_state.to(self.device)
-        batch_next_state = batch_next_state.to(self.device)
-        batch_action = batch_action.to(self.device)
-        batch_reward = batch_reward.to(self.device)
+            (
+                batch_state,
+                batch_next_state,
+                batch_action,
+                batch_reward,
+            ) = self.memory.sample(self.batch_size)
 
-        outputs = (
-            self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
-        )
-        next_outputs = self.model(batch_next_state).detach().max(1)[0]
-        targets = batch_reward + self.gamma * next_outputs
-        loss = self.loss(outputs, targets)
+            batch_state = batch_state.to(self.device)
+            batch_next_state = batch_next_state.to(self.device)
+            batch_action = batch_action.to(self.device)
+            batch_reward = batch_reward.to(self.device)
+
+            outputs = (
+                self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
+            )
+            next_outputs = self.model(batch_next_state).detach().max(1)[0]
+            targets = batch_reward + self.gamma * next_outputs
+            loss += self.loss(outputs, targets)
+
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
         if loss.item() > 1.0e7:
             print("outputs {}".format(outputs))
             print("targets {}".format(targets))
-        return loss.item()
+        return loss.item() / epochs
