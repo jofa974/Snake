@@ -1,34 +1,50 @@
-train:
-  cmd: python train.py
-  deps:
-  - path: apple_position.in
-    md5: 60a4812b777eb03d9f1b284aa783cc18
-    size: 50000
-  - path: brains/dqn.py
-    md5: 0b9f5678bd978cbf03a850328c23117f
-    size: 7287
-  - path: brains/dqn_ann.py
-    md5: 1336c7a908b2b0fdf1bdd25eaa1c104c
-    size: 4243
-  - path: neural_net/pytorch_ann.py
-    md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
-    size: 1277
-  - path: train.py
-    md5: 5d0dd08e54e62acbeebda8f02d7767a6
-    size: 1239
-  params:
-    params.yaml:
-      train:
-        nb_epochs: 1000
-        batch_sample_size: 50
-        moves_per_epoch: 200
-  outs:
-  - path: last_brain.pth
-    md5: 3dc38102718602c2649dda5f3931b61e
-    size: 1353469
-  - path: metrics/train/loss.csv
-    md5: fa7497d59c05f3c69fb72c3ef020ea0d
-    size: 23718
-  - path: metrics/train/rewards.csv
-    md5: c23d52f584e215ab033bb34e8d298480
-    size: 24717
+schema: '2.0'
+stages:
+  make_apple:
+    cmd: python gen_xy.py
+    deps:
+    - path: gen_xy.py
+      md5: cfe9ae254005c2fe3fea36841676cb55
+      size: 357
+    - path: ui/__init__.py
+      md5: 77207fd95a3f7bd6e709fe4e197787aa
+      size: 263
+    outs:
+    - path: apple_position.in
+      md5: 5cbfd66e993b8ed0c50a8cb4c6ccfbab
+      size: 61282
+  train:
+    cmd: mkdir -p metrics/train && python train.py
+    deps:
+    - path: apple_position.in
+      md5: 5cbfd66e993b8ed0c50a8cb4c6ccfbab
+      size: 61282
+    - path: brains/dqn.py
+      md5: c37185be05cb20815d4bb606e582d098
+      size: 7694
+    - path: brains/dqn_cnn.py
+      md5: 74599dd2e269e6596ed082c6ec8ba4ac
+      size: 1450
+    - path: neural_net/pytorch_cnn.py
+      md5: a75da9f53fb53cd0380ea714ca20a6d6
+      size: 2261
+    - path: train.py
+      md5: f3534d33c9aabe4dda0db05080af2e28
+      size: 1412
+    params:
+      params.yaml:
+        train:
+          nb_episodes: 100
+          nb_epochs: 50
+          batch_sample_size: 128
+          moves_per_epoch: 200
+    outs:
+    - path: last_brain.pth
+      md5: 9bc53df2ee8166f8a4919265ce9313d5
+      size: 1352651
+    - path: metrics/train/loss.csv
+      md5: 0dee5b29ef7353e5adb29d19a41ea722
+      size: 2374
+    - path: metrics/train/rewards.csv
+      md5: 3fa51af73f6e300ac0e00dd2f038a354
+      size: 1508

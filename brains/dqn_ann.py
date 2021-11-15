@@ -25,6 +25,7 @@ class DQN_ANN(DQN):
         input_size = 18
         nb_actions = 3
         self.model = NeuralNetwork(input_size, nb_actions)
+        self.model.to(self.device)
         self.memory = ReplayMemory(memory_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()

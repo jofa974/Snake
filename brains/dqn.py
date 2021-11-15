@@ -16,7 +16,11 @@ from neural_net.pytorch_ann import ReplayMemory
 
 class DQN:
     def __init__(
-        self, batch_size, gamma, memory_size, learning=True,
+        self,
+        batch_size,
+        gamma,
+        memory_size,
+        learning=True,
     ):
         self.model = torch.nn.Module()
         self.gamma = gamma
@@ -33,7 +37,7 @@ class DQN:
         self.mean_reward_history = []
         self.list_of_rewards = []
         self.learning = learning
-        self.caption = "DQN game"
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     @abstractmethod
     def get_input_data(self):
@@ -132,7 +136,10 @@ class DQN:
             last_signal = self.get_input_data()
 
             next_action = self.update(
-                self.last_reward, last_signal, nb_steps=nb_moves, epsilon=epsilon,
+                self.last_reward,
+                last_signal,
+                nb_steps=nb_moves,
+                epsilon=epsilon,
             )
 
             next_move = self.action2direction_key(next_action)
@@ -147,9 +154,10 @@ class DQN:
             )
 
             if new_dist < prev_dist:
-                self.last_reward = (prev_dist - new_dist) / (
-                    np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
-                )
+                # self.last_reward = (prev_dist - new_dist) / (
+                #     np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
+                # )
+                self.last_reward = 0.5
             else:
                 self.last_reward = -0.7
 
@@ -194,7 +202,7 @@ class DQN:
                 )
             )
 
-        action = self.select_action(new_state, epsilon)
+        action = self.select_action(new_state.to(self.device), epsilon)
 
         self.last_action = action
         self.last_state = new_state
@@ -211,6 +219,11 @@ class DQN:
             batch_action,
             batch_reward,
         ) = self.memory.sample(self.batch_size)
+
+        batch_state = batch_state.to(self.device)
+        batch_next_state = batch_next_state.to(self.device)
+        batch_action = batch_action.to(self.device)
+        batch_reward = batch_reward.to(self.device)
 
         outputs = (
             self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
