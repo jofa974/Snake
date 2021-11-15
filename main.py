@@ -1,18 +1,9 @@
 #!/usr/bin/env python3
 import argparse
-import concurrent.futures
-import glob
-import itertools
 import logging
-import os
 import time
-from pathlib import Path
 
-import numpy as np
-
-from game import automatic_modes, interactive_modes, read_training_data
-from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import read_fitness, show_fitness, show_stats
+from game import automatic_modes, interactive_modes
 
 GAME_MODES = {
     "human": interactive_modes.human_game,
@@ -32,7 +23,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Snake game options")
     play_mode_group = parser.add_mutually_exclusive_group(required=True)
     play_mode_group.add_argument(
-        "--mode", type=str, choices=GAME_MODES.keys(), help="TBD",
+        "--mode",
+        type=str,
+        choices=GAME_MODES.keys(),
+        help="TBD",
     )
     args = parser.parse_args()
 
