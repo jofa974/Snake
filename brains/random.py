@@ -4,7 +4,6 @@ import time
 import pygame
 from components.apple import Apple
 from components.snake import Snake
-from game.environment import Environment
 
 
 class Random:

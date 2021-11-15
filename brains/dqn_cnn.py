@@ -2,7 +2,6 @@ import numpy as np
 import torch.optim as optim
 import ui
 from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork, ReplayMemory
-from PIL import Image
 from torch import nn
 
 from .dqn import DQN
@@ -23,7 +22,7 @@ class DQN_CNN(DQN):
             learning=learning,
         )
         self.input_size = (1, ui.X_GRID, ui.Y_GRID)
-        self.env.set_caption("Snake: Pytorch Convolutional Neural Network")
+        self.caption("Snake: Pytorch Convolutional Neural Network")
 
         nb_actions = 3
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)

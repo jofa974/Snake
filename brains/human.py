@@ -1,11 +1,8 @@
 import time
 
 import pygame
-import ui
 from components.apple import Apple
 from components.snake import Snake
-from game.environment import Environment
-from graphics.sprite import BasicSprite
 from ui.controls import CONTROLS
 
 
@@ -23,8 +20,6 @@ class Human:
                     self.snake.dead = True
                 if event.type == pygame.KEYDOWN and event.key in CONTROLS:
                     self.snake.change_direction(CONTROLS[event.key])
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    self.env.take_screenshot()
 
             self.snake.move()
 

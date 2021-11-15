@@ -1,7 +1,6 @@
 import matplotlib
 import pygame
 from graphics.sprite import BasicSprite
-from PIL import Image
 from ui import BASE_SIZE, BLACK, HEIGHT, WHITE, WIDTH
 
 
@@ -17,10 +16,16 @@ class Environment:
         wall_left = BasicSprite(BASE_SIZE / 2, HEIGHT / 2, (BASE_SIZE, HEIGHT), WHITE)
         wall_top = BasicSprite(WIDTH / 2, BASE_SIZE / 2, (WIDTH, BASE_SIZE), WHITE)
         wall_bottom = BasicSprite(
-            WIDTH / 2, HEIGHT - BASE_SIZE / 2, (WIDTH, BASE_SIZE), WHITE,
+            WIDTH / 2,
+            HEIGHT - BASE_SIZE / 2,
+            (WIDTH, BASE_SIZE),
+            WHITE,
         )
         wall_right = BasicSprite(
-            WIDTH - BASE_SIZE / 2, HEIGHT / 2, (BASE_SIZE, HEIGHT), WHITE,
+            WIDTH - BASE_SIZE / 2,
+            HEIGHT / 2,
+            (BASE_SIZE, HEIGHT),
+            WHITE,
         )
         for wall in [wall_left, wall_right, wall_top, wall_bottom]:
             self.walls.add(wall)
@@ -34,7 +39,10 @@ class Environment:
         self.screen.blit(textsurface, (WIDTH + 50, 50))
 
         for coords in snake.get_body_position_list():
-            body = BasicSprite(coords[0] * BASE_SIZE, coords[1] * BASE_SIZE,)
+            body = BasicSprite(
+                coords[0] * BASE_SIZE,
+                coords[1] * BASE_SIZE,
+            )
             body.draw(self.screen)
 
         apple_coords = apple.get_position()
@@ -65,12 +73,3 @@ class Environment:
         surf = pygame.image.fromstring(raw_data, size, "RGB")
         self.screen.blit(surf, (WIDTH + 75, 75))
         pygame.display.flip()
-
-    def take_screenshot(self):
-        rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
-        sub = self.screen.subsurface(rect)
-        pygame.image.save(sub, "screenshot.png")
-
-    def load_screenshot(self):
-        with Image.open("screenshot.png") as img:
-            return img

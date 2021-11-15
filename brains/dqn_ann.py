@@ -1,10 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
 import torch.optim as optim
 import ui
 from neural_net.pytorch_ann import NeuralNetwork, ReplayMemory
-from PIL import Image
 from torch import nn
 
 from .dqn import DQN

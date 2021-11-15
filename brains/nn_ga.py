@@ -4,12 +4,9 @@ import time
 
 import matplotlib
 import matplotlib.pyplot as plt
-import ui
 from components.apple import Apple
 from components.snake import Snake
-from graphics.sprite import BasicSprite
 from neural_net.artificial_neural_network import ANN
-from ui.controls import CONTROLS
 
 
 def play_individual(
@@ -33,7 +30,7 @@ class NN_GA:
         self.nn = ANN(gen_id, dna, hidden_nb=hidden_nb)
         self.gen_id = gen_id
 
-    def play(self, max_move=-1, dump=False, training_data=None):
+    def play(self, env, max_move=-1, dump=False, training_data=None):
         self.snake = Snake()
 
         forbidden_positions = self.snake.get_body_position_list()
@@ -49,17 +46,12 @@ class NN_GA:
 
         if not self.learning:
             matplotlib.use("Agg")
-            self.env = Environment()
-            self.env.set_caption(
+            env.set_caption(
                 "Snake: Custom Neural Network optimized with a Genetic Algorithm"
             )
             fig = plt.figure(figsize=[3, 3], dpi=100)
 
         while not self.snake.dead:
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.snake.dead = True
 
             # Feed the NN with input data
             input_data = self.get_input_data()
@@ -91,11 +83,9 @@ class NN_GA:
 
             if not self.learning:
                 score_text = "Score: {}".format(score)
-                self.env.draw_everything(
-                    score_text, [self.snake, self.apple], flip=False
-                )
+                env.draw_everything(score_text, [self.snake, self.apple], flip=False)
                 # self.nn.plot(fig)
-                self.env.make_surf_from_figure_on_canvas(fig)
+                env.make_surf_from_figure_on_canvas(fig)
                 time.sleep(0.01 / 1000.0)
 
             nb_moves += 1

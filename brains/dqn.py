@@ -1,14 +1,12 @@
 import itertools
 import os
 import random
-import sys
 import time
 from abc import abstractmethod
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-import ui
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.pytorch_ann import ReplayMemory

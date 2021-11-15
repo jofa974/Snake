@@ -6,8 +6,6 @@ import pygame
 import ui
 from components.apple import Apple
 from components.snake import Snake
-from game.environment import Environment
-from graphics.sprite import BasicSprite
 from ui.controls import CONTROLS
 
 
