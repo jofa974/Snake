@@ -1,16 +1,14 @@
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 # Table of Contents
-
 - [Table of Contents](#table-of-contents)
 - [Snake](#snake)
-  - [How to play](#how-to-play)
-    - [Clone repository](#clone-repository)
-    - [Install dependencies](#install-dependencies)
-    - [Read help menu](#read-help-menu)
-  - [Ideas](#ideas)
-    - [General interface](#general-interface)
-      - [Create a Dash App](#create-a-dash-app)
+  - [Getting started](#getting-started)
+  - [Training a DQL agent](#training-a-dql-agent)
+  - [Play](#play)
+    - [Human mode](#human-mode)
+    - [Random mode](#random-mode)
+    - [Breadth-first search algorithm](#breadth-first-search-algorithm)
 
 # Snake
 
@@ -19,33 +17,47 @@ This is an implementation of the Snake game. The available game modes are:
 - human: you play using the arrow keys.
 - random: a very dumb agent that takes random actions.
 - bfs: the agent takes the shortest path to the apple following a Breadth First Search algorithm.
-- nnga: the agent takes actions based on a neural network optimized by genetic algorithm.
 - dqn: the agent takes actions based on a neural network optimized with deep Q-learning.
 
-## How to play
+## Getting started
 
-### Clone repository
-
-```bash
-git clone https://github.com/jofa974/Snake.git
-```
-
-### Install dependencies
+Install the requirements in a virtual environment. I suggest using `pyenv`:
 
 ```bash
-pip install -r requirements.txt
+pyenv virtualenv 3.9.7 Snake
+pyenv local Snake
+pip install -r requirements
+pip install -e .
 ```
 
-### Read help menu
+## Training a DQL agent
+
+Two agents are available with different levels of knowledge about their environment:
+- `dqn_ann.py`: it knows the distances to the walls, the position of the apple, if it's going towards it, how big it is.
+- `dqn_cnn.py`: it knows the full picture of the environment, just like a human player.
+
+Training the agents is done using the `dvc.yaml` pipeline file and the usual `dvc repro` and/or `dvc exp` commands. For more info about `dvc`: www.dvc.org
+
+## Play
+
+### Human mode
+
+Use the command and do your best:
 
 ```bash
-./main.py -h
+./main.py --mode=human
 ```
 
-## Ideas
+### Random mode
 
-### General interface
+```bash
+./main.py --mode=random
+```
 
-#### Create a Dash App
-  - Remove all use of Pygame
-  - Plot game using go.Heatmap or equivalent of imshow
+### Breadth-first search algorithm
+
+```bash
+./main.py --mode=bfs
+```
+
+
