@@ -12,7 +12,6 @@ import ui
 from components.apple import Apple
 from components.snake import Snake
 from neural_net.pytorch_ann import ReplayMemory
-from torch.autograd import Variable
 
 
 class DQN:
@@ -206,14 +205,6 @@ class DQN:
         return action
 
     def learn(self):
-        for batch in self.memory.sample(self.batch_size):
-            inputs, targets = self.eligibility_trace(batch)
-            inputs, targets = Variable(inputs), Variable(targets)
-            predictions = self.model(inputs)
-            loss = self.loss(predictions, targets)
-            self.optimizer.zero_grad()
-            loss.backward()  # compute dloss/dweights
-            self.optimizer.step()  # update weights
         (
             batch_state,
             batch_next_state,
@@ -221,29 +212,16 @@ class DQN:
             batch_reward,
         ) = self.memory.sample(self.batch_size)
 
-        return loss.item()
-
-    def eligibility_trace(self, batch):
-        gamma = 0.99
-        inputs = []
-        targets = []
-        for series in batch:
-            input = Variable(
-                torch.from_numpy(
-                    np.array([series[0].state, series[-1].state], dtype=np.float32)
-                )
-            )
-            output = cnn(input)
-            cumul_reward = 0.0 if series[-1].done else output[1].data.max()
-            for step in reversed(series[:-1]):
-                cumul_reward = step.reward + gamma * cumul_reward
-            state = series[0].state
-            target = output[0].data
-            target[series[0].action] = cumul_reward
-            inputs.append(state)
-            targets.append(target)
-        return (
-            torch.from_numpy(np.array(inputs, dtype=np.float32)),
-            torch.stack(targets),
+        outputs = (
+            self.model(batch_state).gather(1, batch_action.unsqueeze(1)).squeeze(1)
         )
-
+        next_outputs = self.model(batch_next_state).detach().max(1)[0]
+        targets = batch_reward + self.gamma * next_outputs
+        loss = self.loss(outputs, targets)
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        if loss.item() > 1.0e7:
+            print("outputs {}".format(outputs))
+            print("targets {}".format(targets))
+        return loss.item()
