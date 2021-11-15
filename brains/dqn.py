@@ -3,6 +3,7 @@ import os
 import random
 import time
 from abc import abstractmethod
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -30,7 +31,8 @@ class DQN:
         self.last_state = None
         self.last_action = 0
         self.last_reward = 0
-        self.brain_file = "last_brain.pth"
+        self.output_path = Path("output")
+        self.brain_file = ""
         self.loss_history = []
         self.mean_reward_history = []
         self.list_of_rewards = []
@@ -75,27 +77,20 @@ class DQN:
     def mean_reward(self):
         return np.mean(self.list_of_rewards)
 
-    def save(self, filename=None):
-        if filename is None:
-            filename = self.brain_file
+    def save(self):
         torch.save(
             {
                 "state_dict": self.model.state_dict(),
                 "optimizer": self.optimizer.state_dict(),
             },
-            filename,
+            str(self.brain_file),
         )
 
-    def save_best(self):
-        self.save(filename="best_brain.pth")
-
-    def load(self, filename=None):
-        if filename is None:
-            filename = self.brain_file
-        print("Loading brain stored in {}".format(filename))
-        if os.path.isfile(filename):
+    def load(self):
+        print("Loading brain stored in {}".format(self.brain_file))
+        if os.path.isfile(self.brain_file):
             # print("=> loading checkpoint ...")
-            checkpoint = torch.load(filename)
+            checkpoint = torch.load(self.brain_file)
             self.model.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
             # print("done !")
@@ -105,7 +100,7 @@ class DQN:
     def load_best(self):
         self.load(filename="best_brain.pth")
 
-    def play(self, max_move=-1, init_training_data=None, epsilon=0, env=None):
+    def play(self, max_moves=-1, init_training_data=None, epsilon=0, env=None):
         self.snake = Snake()
 
         forbidden_positions = self.snake.get_body_position_list()
@@ -121,7 +116,7 @@ class DQN:
         if env:
             env.set_caption(self.caption)
 
-        while (not self.snake.dead) and (nb_moves < max_move):
+        while (not self.snake.dead) and (nb_moves < max_moves):
 
             nb_moves += 1
             self.steps += 1
@@ -177,10 +172,10 @@ class DQN:
 
             self.list_of_rewards.append(self.last_reward)
 
-        if self.learning and nb_moves < max_move:
+        if self.learning and nb_moves < max_moves:
             # Restart game and try to finish epoch
             self.play(
-                max_move=max_move - nb_moves,
+                max_moves=max_moves - nb_moves,
                 init_training_data=init_training_data,
                 epsilon=epsilon,
             )

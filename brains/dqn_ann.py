@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 import torch.optim as optim
 import ui
@@ -32,6 +34,9 @@ class DQN_ANN(DQN):
         self.loss = nn.MSELoss()
         self.batch_size = batch_size
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
+        self.brain_file = self.output_path / "dqn_ann/last_brain.pth"
+
+        Path.mkdir(self.brain_file.parent, exist_ok=True)
 
     def get_input_data(self):
         apple_pos = self.apple.get_position()

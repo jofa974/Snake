@@ -31,6 +31,7 @@ class DQN_CNN(DQN):
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
         self.batch_size = 20
+        self.brain_file = "output/dqn_cnn/last_brain.pth"
 
     def get_input_data(self):
         arr = np.zeros(self.input_size)

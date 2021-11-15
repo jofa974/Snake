@@ -11,8 +11,8 @@ stages:
       size: 263
     outs:
     - path: apple_position.in
-      md5: 5cbfd66e993b8ed0c50a8cb4c6ccfbab
-      size: 61282
+      md5: eacbac307d435663957ba61e531ea071
+      size: 61352
   train:
     cmd: mkdir -p metrics/train && python train.py
     deps:
@@ -48,3 +48,39 @@ stages:
     - path: metrics/train/rewards.csv
       md5: 3fa51af73f6e300ac0e00dd2f038a354
       size: 1508
+  train@0:
+    cmd: mkdir -p metrics/train/dqn_ann && python train.py -a dqn -n ann
+    deps:
+    - path: apple_position.in
+      md5: eacbac307d435663957ba61e531ea071
+      size: 61352
+    - path: brains/dqn.py
+      md5: 613fa1d6fad6e00a116c7a9a2c9099f6
+      size: 7527
+    - path: brains/dqn_ann.py
+      md5: 12099e5b5e20e8969f6b53c5b330cd41
+      size: 2688
+    - path: neural_net/pytorch_ann.py
+      md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
+      size: 1277
+    - path: train.py
+      md5: 3144c3ef93b7679494ae1cf747178fcb
+      size: 2489
+    params:
+      params.yaml:
+        dqn_ann:
+          train:
+            max_moves: 200
+            nb_episodes: 100
+            nb_epochs: 50
+            batch_size: 128
+    outs:
+    - path: metrics/train/dqn_ann/loss.csv
+      md5: 2fa720aa12f5423fb3981e09dfbc3b59
+      size: 2371
+    - path: metrics/train/dqn_ann/rewards.csv
+      md5: 64bf4df03e4cdf20698c88336e6aed57
+      size: 1582
+    - path: output/dqn_ann/last_brain.pth
+      md5: 582e79c8cdca5c1589782d81d4f2a592
+      size: 1352651

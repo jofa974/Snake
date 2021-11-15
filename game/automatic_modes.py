@@ -1,32 +1,31 @@
-import concurrent.futures
-import glob
-import itertools
-import json
-import logging
-import os
-import shutil
-import time
-from pathlib import Path
+# import concurrent.futures
+# import glob
+# import itertools
+# import logging
+# import os
+# import shutil
+# import time
+# from pathlib import Path
 
-import brains.dqn_ann
-import brains.nn_ga
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
-import pygame
-from neural_net.genetic_algorithm import generate_new_population
-from stats.stats import show_fitness, show_stats
+# import brains.dqn_ann
+# import brains.nn_ga
+# import matplotlib
+# import matplotlib.pyplot as plt
+# import numpy as np
+# import pygame
+# from neural_net.genetic_algorithm import generate_new_population
+# from stats.stats import show_fitness, show_stats
+import yaml
 
-INPUTS = {}
+with open("params.yaml", "r") as fd:
+    INPUTS = yaml.safe_load(fd)
 
-with open("inputs.json") as json_file:
-    INPUTS = json.load(json_file)
-
-
+# TODO
 def dqn_ann():
     raise NotImplementedError("Implemented dqn_ann demo")
 
 
+# TODO
 def nnga():
     raise NotImplementedError("Implemented dqn_ann demo")
     # nb_gen = INPUTS["NNGA"]["generations"]
