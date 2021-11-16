@@ -13,7 +13,7 @@ class DQN_CNN(DQN):
     def __init__(
         self,
         batch_size=128,
-        gamma=0.9,
+        gamma=0.90,
         memory_size=200,
         learning=True,
     ):
@@ -24,12 +24,12 @@ class DQN_CNN(DQN):
             learning=learning,
         )
         self.input_size = (1, ui.X_GRID, ui.Y_GRID)
-        self.caption("Snake: Pytorch Convolutional Neural Network")
+        self.caption = "Snake: Pytorch Convolutional Neural Network"
 
         nb_actions = 3
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)
         self.model.to(self.device)
-        self.memory = ReplayMemory(500)
+        self.memory = ReplayMemory(memory_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
         self.batch_size = batch_size

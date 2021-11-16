@@ -23,6 +23,6 @@ dqn_ann:
 dqn_cnn:
   train:
     max_moves: 200
-    nb_episodes: 100
+    nb_episodes: 1000
     nb_epochs: 50
     batch_size: 128

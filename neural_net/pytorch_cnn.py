@@ -10,7 +10,7 @@ class ConvolutionalNeuralNetwork(nn.Module):
     def __init__(self, image_dim, nb_actions=3):
         super(ConvolutionalNeuralNetwork, self).__init__()
         self.convolution1 = nn.Conv2d(in_channels=1, out_channels=64, kernel_size=2)
-        self.convolution2 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=2)
+        # self.convolution2 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=2)
         self.fc1 = nn.Linear(self.count_neurons(image_dim), 32)
         self.fc2 = nn.Linear(32, nb_actions)
         # self.fc3 = nn.Linear(32, nb_actions)
@@ -18,13 +18,13 @@ class ConvolutionalNeuralNetwork(nn.Module):
     def count_neurons(self, image_dim):
         x = Variable(torch.rand(1, *image_dim))
         x = F.relu(F.max_pool2d(self.convolution1(x), 2, 2))
-        x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
+        # x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
         # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
         return x.data.view(1, -1).size(1)
 
     def forward(self, state):
         x = F.relu(F.max_pool2d(self.convolution1(state), 2, 2))
-        x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
+        # x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
         # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
         # Flattening
         x = x.view(x.size(0), -1)

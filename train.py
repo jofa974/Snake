@@ -11,6 +11,8 @@ import brains.dqn_cnn
 from game import read_training_data
 from gen_xy import gen_xy
 
+AGENT_CLASSES = {"ann": brains.dqn_ann.DQN_ANN, "cnn": brains.dqn_cnn.DQN_CNN}
+
 if __name__ == "__main__":
     # Input arguments
     parser = argparse.ArgumentParser(description="Snake game options")
@@ -42,7 +44,7 @@ if __name__ == "__main__":
         params = yaml.safe_load(fd)
         params = params[f"{args.algorithm}_{args.network}"]["train"]
 
-    agent = brains.dqn_ann.DQN_ANN(
+    agent = AGENT_CLASSES[args.network](
         batch_size=params["batch_size"],
         memory_size=10000,
         learning=True,

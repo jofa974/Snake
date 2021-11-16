@@ -61,8 +61,8 @@ stages:
       md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
       size: 1277
     - path: train.py
-      md5: c554f40c505997371f752c0a0d4d5e18
-      size: 2557
+      md5: 1d8580606eaeec5e4f948524b96cd2db
+      size: 2642
     params:
       params.yaml:
         dqn_ann:
@@ -73,14 +73,50 @@ stages:
             batch_size: 128
     outs:
     - path: metrics/train/dqn_ann/cum_rewards.csv
-      md5: ba0e8afebdae9047be4d64137d962a8b
-      size: 12155
+      md5: 28684cf7f960a8c16feec086c294c4e6
+      size: 11938
     - path: metrics/train/dqn_ann/loss.csv
-      md5: 9b1421f711823ea4a58601786aa8428c
-      size: 24420
+      md5: 80aa190ad537a930889879367845d0ab
+      size: 24353
     - path: metrics/train/dqn_ann/rewards.csv
-      md5: 4b671b1d1ddffbfa9ba5f52e54e30793
-      size: 16483
+      md5: 8a1e68d8b4807c242ab9b25797669210
+      size: 16728
     - path: output/dqn_ann/last_brain.pth
-      md5: d34dcdd29e9d91de550d7473d867b963
+      md5: de87fecaa0fe3910f8918b2320443964
       size: 1352651
+  train@1:
+    cmd: mkdir -p metrics/train/dqn_cnn && python train.py -a dqn -n cnn
+    deps:
+    - path: brains/dqn.py
+      md5: 1cb965f36e619c1080b5973b5afb5ca5
+      size: 7744
+    - path: brains/dqn_cnn.py
+      md5: 3b2c61c8bef6c036a41acf8752210c3d
+      size: 1592
+    - path: neural_net/pytorch_ann.py
+      md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
+      size: 1277
+    - path: train.py
+      md5: 1d8580606eaeec5e4f948524b96cd2db
+      size: 2642
+    params:
+      params.yaml:
+        dqn_cnn:
+          train:
+            max_moves: 200
+            nb_episodes: 1000
+            nb_epochs: 50
+            batch_size: 128
+    outs:
+    - path: metrics/train/dqn_cnn/cum_rewards.csv
+      md5: e3dbc3861a2d7209a09ae2c8b88fc7e1
+      size: 16468
+    - path: metrics/train/dqn_cnn/loss.csv
+      md5: 3bb330df24e3272819fc528b52fdc244
+      size: 23272
+    - path: metrics/train/dqn_cnn/rewards.csv
+      md5: ed6dae82933623cf315d735db985662e
+      size: 19033
+    - path: output/dqn_cnn/last_brain.pth
+      md5: 21b362b41bfccd65ec3c3ae23b02b969
+      size: 2001263

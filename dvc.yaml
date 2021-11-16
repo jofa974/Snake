@@ -3,13 +3,14 @@ stages:
     foreach:
       - algorithm: dqn
         network: ann
-        
+      - algorithm: dqn
+        network: cnn
     do:
       cmd: mkdir -p metrics/train/${item.algorithm}_${item.network} && python train.py -a ${item.algorithm} -n ${item.network}
       deps:
         - train.py
         - brains/dqn.py
-        - brains/dqn_ann.py
+        - brains/${item.algorithm}_${item.network}.py
         - neural_net/pytorch_ann.py
       params:
         - ${item.algorithm}_${item.network}
