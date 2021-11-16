@@ -51,12 +51,9 @@ stages:
   train@0:
     cmd: mkdir -p metrics/train/dqn_ann && python train.py -a dqn -n ann
     deps:
-    - path: apple_position.in
-      md5: eacbac307d435663957ba61e531ea071
-      size: 61352
     - path: brains/dqn.py
-      md5: e38cc79f37558041a0c17521136c0479
-      size: 7666
+      md5: 1cb965f36e619c1080b5973b5afb5ca5
+      size: 7744
     - path: brains/dqn_ann.py
       md5: 12099e5b5e20e8969f6b53c5b330cd41
       size: 2688
@@ -64,8 +61,8 @@ stages:
       md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
       size: 1277
     - path: train.py
-      md5: 1d179d98f9480ab79d4f02e28a67497e
-      size: 2318
+      md5: c554f40c505997371f752c0a0d4d5e18
+      size: 2557
     params:
       params.yaml:
         dqn_ann:
@@ -75,12 +72,15 @@ stages:
             nb_epochs: 50
             batch_size: 128
     outs:
+    - path: metrics/train/dqn_ann/cum_rewards.csv
+      md5: ba0e8afebdae9047be4d64137d962a8b
+      size: 12155
     - path: metrics/train/dqn_ann/loss.csv
-      md5: b30b6ceb1b218c6deaab49e248153deb
-      size: 24567
+      md5: 9b1421f711823ea4a58601786aa8428c
+      size: 24420
     - path: metrics/train/dqn_ann/rewards.csv
-      md5: fb580312bfa5b95e3bb3b848be934538
-      size: 16555
+      md5: 4b671b1d1ddffbfa9ba5f52e54e30793
+      size: 16483
     - path: output/dqn_ann/last_brain.pth
-      md5: 10042b29914a019e4a8006c7a3816a75
+      md5: d34dcdd29e9d91de550d7473d867b963
       size: 1352651

@@ -77,6 +77,9 @@ class DQN:
     def mean_reward(self):
         return np.mean(self.list_of_rewards)
 
+    def cumulative_reward(self):
+        return np.sum(self.list_of_rewards)
+
     def save(self):
         torch.save(
             {

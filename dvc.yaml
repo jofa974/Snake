@@ -1,11 +1,4 @@
 stages:
-  make_apple:
-    cmd: python gen_xy.py
-    deps:
-      - gen_xy.py
-      - ui/__init__.py
-    outs:
-      - apple_position.in
   train:
     foreach:
       - algorithm: dqn
@@ -14,7 +7,6 @@ stages:
     do:
       cmd: mkdir -p metrics/train/${item.algorithm}_${item.network} && python train.py -a ${item.algorithm} -n ${item.network}
       deps:
-        - apple_position.in
         - train.py
         - brains/dqn.py
         - brains/dqn_ann.py
@@ -38,3 +30,10 @@ stages:
             x: episode
             x_label: episode
             title: Rewards
+        - metrics/train/${item.algorithm}_${item.network}/cum_rewards.csv:
+            cache: false
+            y: cum_rewards
+            y_label: cumulative rewards
+            x: episode
+            x_label: episode
+            title: Cumulative Rewards

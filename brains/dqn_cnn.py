@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import torch.optim as optim
 import ui
@@ -30,8 +32,9 @@ class DQN_CNN(DQN):
         self.memory = ReplayMemory(500)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
-        self.batch_size = 20
-        self.brain_file = "output/dqn_cnn/last_brain.pth"
+        self.batch_size = batch_size
+        self.brain_file = self.output_path / "dqn_cnn/last_brain.pth"
+        Path.mkdir(self.brain_file.parent, exist_ok=True)
 
     def get_input_data(self):
         arr = np.zeros(self.input_size)
