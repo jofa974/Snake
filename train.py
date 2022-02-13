@@ -50,7 +50,7 @@ if __name__ == "__main__":
         learning=True,
     )
     # epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
-    epsilon = 0.3
+    epsilon = 0.1
     losses, mean_rewards, cum_rewards = [], [], []
     for ep in range(params["nb_episodes"]):
         gen_xy()

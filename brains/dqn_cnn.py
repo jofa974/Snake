@@ -3,7 +3,8 @@ from pathlib import Path
 import numpy as np
 import torch.optim as optim
 import ui
-from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork, ReplayMemory
+from neural_net.pytorch_ann import ReplayMemory
+from neural_net.pytorch_cnn import ConvolutionalNeuralNetwork
 from torch import nn
 
 from .dqn import DQN
@@ -30,7 +31,7 @@ class DQN_CNN(DQN):
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)
         self.model.to(self.device)
         self.memory = ReplayMemory(memory_size)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
         self.loss = nn.MSELoss()
         self.batch_size = batch_size
         self.brain_file = self.output_path / "dqn_cnn/last_brain.pth"
@@ -39,10 +40,10 @@ class DQN_CNN(DQN):
     def get_input_data(self):
         arr = np.zeros(self.input_size)
         # Walls
-        arr[0, 0, :] = 0.1
-        arr[0, -1, :] = 0.1
-        arr[0, :, 0] = 0.1
-        arr[0, :, -1] = 0.1
+        arr[0, 0, :] = -1.0
+        arr[0, -1, :] = -1.0
+        arr[0, :, 0] = -1.0
+        arr[0, :, -1] = -1.0
         # Apple
         apple_pos = self.apple.get_position()
         arr[0, apple_pos[0], apple_pos[1]] = 1.0

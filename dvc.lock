@@ -52,8 +52,8 @@ stages:
     cmd: mkdir -p metrics/train/dqn_ann && python train.py -a dqn -n ann
     deps:
     - path: brains/dqn.py
-      md5: c2bad9918cf636ae5467e524d3241049
-      size: 7744
+      md5: 03844e6e152a579cc1c57a108be4a362
+      size: 7746
     - path: brains/dqn_ann.py
       md5: 12099e5b5e20e8969f6b53c5b330cd41
       size: 2688
@@ -61,7 +61,7 @@ stages:
       md5: 4f9b87d98ddcdb8f8f0b2924e9df0f85
       size: 1277
     - path: train.py
-      md5: 1d8580606eaeec5e4f948524b96cd2db
+      md5: cd40769f12428f5d846dea8f796dc9a4
       size: 2642
     params:
       params.yaml:
@@ -73,31 +73,31 @@ stages:
             batch_size: 128
     outs:
     - path: metrics/train/dqn_ann/cum_rewards.csv
-      md5: 572234238bcffd61ba7c0531f19b3d86
-      size: 6887
+      md5: 291d1e065dc365834212e6e8508ffd45
+      size: 6901
     - path: metrics/train/dqn_ann/loss.csv
-      md5: 39d0dd1a6954cd8bd97656774f3567d6
-      size: 24430
+      md5: 47dc4793e42db25c9a555863bb37c760
+      size: 24438
     - path: metrics/train/dqn_ann/rewards.csv
-      md5: ffad0169cba2c37472d383d63d8c6083
-      size: 9743
+      md5: b910500b505bf53b1b9fe58520a36e24
+      size: 9690
     - path: output/dqn_ann/last_brain.pth
-      md5: 7df3353af3296f159b9a55117933b52c
+      md5: 456d1b196f1a68f0d21f818943cfb7f3
       size: 1352651
   train@1:
     cmd: mkdir -p metrics/train/dqn_cnn && python train.py -a dqn -n cnn
     deps:
     - path: brains/dqn.py
-      md5: c2bad9918cf636ae5467e524d3241049
-      size: 7744
+      md5: 03844e6e152a579cc1c57a108be4a362
+      size: 7746
     - path: brains/dqn_cnn.py
-      md5: 3b2c61c8bef6c036a41acf8752210c3d
-      size: 1592
+      md5: 780333d8f3a4934c4d7024c3db437fbf
+      size: 1631
     - path: neural_net/pytorch_cnn.py
-      md5: 9b009e8d637a0fc39cf9156cde1e998d
-      size: 2332
+      md5: 8e2eb568ba86e67e764bf50a3a32302d
+      size: 2384
     - path: train.py
-      md5: 1d8580606eaeec5e4f948524b96cd2db
+      md5: cd40769f12428f5d846dea8f796dc9a4
       size: 2642
     params:
       params.yaml:
@@ -109,14 +109,14 @@ stages:
             batch_size: 128
     outs:
     - path: metrics/train/dqn_cnn/cum_rewards.csv
-      md5: 8e01439639b4227a6ca85cf727fd6245
-      size: 7902
+      md5: 3d131c4f8227db8878e7a508134317b7
+      size: 7823
     - path: metrics/train/dqn_cnn/loss.csv
-      md5: 1564ccee7b6768e3d78f54b3ec663994
-      size: 13931
+      md5: 44525ad0e269b1d91520c9a760f2cfff
+      size: 14980
     - path: metrics/train/dqn_cnn/rewards.csv
-      md5: 7c39916b506cc2bf2573fe8d6de3b4ec
-      size: 10695
+      md5: 14f8c9aba1931f9959855ec366b50f38
+      size: 10651
     - path: output/dqn_cnn/last_brain.pth
-      md5: b6072273617eff7515a6efa79f972c0e
-      size: 28161
+      md5: 12c9dc2dbed2324887ed44894ce9bfd7
+      size: 44289

@@ -177,7 +177,7 @@ class DQN:
             self.list_of_rewards.append(self.last_reward)
 
         if self.learning and nb_moves < max_moves:
-            # Restart game and try to finish epoch
+            # Restart game and try to finish episode
             self.play(
                 max_moves=max_moves - nb_moves,
                 init_training_data=init_training_data,
