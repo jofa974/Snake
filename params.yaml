@@ -15,14 +15,14 @@ nnga:
 
 dqn_ann:
   train:
-    max_moves: 200
+    max_moves: 500
     nb_episodes: 1000
     nb_epochs: 50
     batch_size: 128
 
 dqn_cnn:
   train:
-    max_moves: 200
+    max_moves: 500
     nb_episodes: 1000
     nb_epochs: 50
     batch_size: 128

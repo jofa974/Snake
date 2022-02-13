@@ -134,7 +134,6 @@ class DQN:
             next_action = self.update(
                 self.last_reward,
                 last_signal,
-                nb_steps=nb_moves,
                 epsilon=epsilon,
             )
 
@@ -149,13 +148,15 @@ class DQN:
                 self.snake.get_position(0), self.apple.get_position(), norm=2
             )
 
-            if new_dist < prev_dist:
-                # self.last_reward = (prev_dist - new_dist) / (
-                #     np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
-                # )
-                self.last_reward = 0.5
-            else:
-                self.last_reward = -0.7
+            # if new_dist < prev_dist:
+            #     # self.last_reward = (prev_dist - new_dist) / (
+            #     #     np.sqrt(ui.X_GRID ** 2 + ui.Y_GRID ** 2)
+            #     # )
+            #     self.last_reward = 0.5
+            # else:
+            #     self.last_reward = -0.7
+
+            self.last_reward = 0
 
             self.snake.detect_collisions()
             if self.snake.dead:
@@ -185,7 +186,7 @@ class DQN:
 
         return nb_apples
 
-    def update(self, reward, new_signal, nb_steps=-1, epsilon=-1.0):
+    def update(self, reward, new_signal, epsilon=-1.0):
         new_state = torch.Tensor(new_signal).unsqueeze(0)
 
         if self.learning:

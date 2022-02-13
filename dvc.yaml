@@ -11,7 +11,7 @@ stages:
         - train.py
         - brains/dqn.py
         - brains/${item.algorithm}_${item.network}.py
-        - neural_net/pytorch_ann.py
+        - neural_net/pytorch_${item.network}.py
       params:
         - ${item.algorithm}_${item.network}
       outs:
