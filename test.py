@@ -10,8 +10,8 @@ training_data = read_training_data()
 
 env = Environment()
 
-# agent = dqn_cnn.DQN_CNN(learning=False)
-agent = dqn_ann.DQN_ANN(learning=False)
+agent = dqn_cnn.DQN_CNN(learning=False)
+# agent = dqn_ann.DQN_ANN(learning=False)
 agent.load()
 score = agent.play(max_moves=1000000, env=env, init_training_data=training_data)
 pygame.quit()

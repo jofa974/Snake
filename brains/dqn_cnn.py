@@ -31,7 +31,7 @@ class DQN_CNN(DQN):
         self.model = ConvolutionalNeuralNetwork(self.input_size, nb_actions)
         self.model.to(self.device)
         self.memory = ReplayMemory(memory_size)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.loss = nn.MSELoss()
         self.batch_size = batch_size
         self.brain_file = self.output_path / "dqn_cnn/last_brain.pth"
@@ -46,9 +46,12 @@ class DQN_CNN(DQN):
         arr[0, :, -1] = -1.0
         # Apple
         apple_pos = self.apple.get_position()
-        arr[0, apple_pos[0], apple_pos[1]] = 1.0
+        arr[0, apple_pos[0], apple_pos[1]] = 1
         # Snake
         for idx in range(len(self.snake.body_list)):
             position = self.snake.get_position(idx)
-            arr[0, position[0], position[1]] = 0.5
+            if idx == 0:
+                arr[0, position[0], position[1]] = 0.5
+            else:
+                arr[0, position[0], position[1]] = 0.2
         return arr

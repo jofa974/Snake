@@ -1,8 +1,11 @@
 import random
+from re import I
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from matplotlib import image
+from numpy import imag
 from torch.autograd import Variable
 
 
@@ -10,12 +13,24 @@ class ConvolutionalNeuralNetwork(nn.Module):
     def __init__(self, image_dim, nb_actions=3):
         super(ConvolutionalNeuralNetwork, self).__init__()
         self.convolution1 = nn.Conv2d(
-            in_channels=1, out_channels=64, kernel_size=2, stride=2
+            in_channels=1, out_channels=64, kernel_size=4, stride=1
         )
         # self.convolution2 = nn.Conv2d(in_channels=64, out_channels=32, kernel_size=2)
-        self.fc1 = nn.Linear(self.count_neurons(image_dim), nb_actions)
-        # self.fc2 = nn.Linear(32, nb_actions)
+        self.fc1 = nn.Linear(self.count_neurons(image_dim), 32)
+        self.fc2 = nn.Linear(32, nb_actions)
         # self.fc3 = nn.Linear(32, nb_actions)
+
+        self.model = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=4, stride=1),
+            nn.AvgPool2d(2, 2),
+            nn.ReLU(),
+            nn.Flatten(),
+            nn.Linear(self.count_neurons(image_dim), 256),
+            nn.ReLU(),
+            nn.Linear(256, 64),
+            nn.ReLU(),
+            nn.Linear(64, nb_actions),
+        )
 
     def count_neurons(self, image_dim):
         x = Variable(torch.rand(1, *image_dim))
@@ -25,15 +40,15 @@ class ConvolutionalNeuralNetwork(nn.Module):
         return x.data.view(1, -1).size(1)
 
     def forward(self, state):
-        x = F.relu(F.avg_pool2d(self.convolution1(state), 2, 2))
-        # x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
-        # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
-        # Flattening
-        x = x.view(x.size(0), -1)
-        x = F.relu(self.fc1(x))
-        q_values = x
-        # q_values = self.fc2(x)
-        # q_values = self.fc3(x)
+        # x = F.relu(F.avg_pool2d(self.convolution1(state), 2, 2))
+        # # x = F.relu(F.max_pool2d(self.convolution2(x), 2, 2))
+        # # x = F.relu(F.max_pool2d(self.convolution3(x), 3, 2))
+        # # Flattening
+        # x = x.view(x.size(0), -1)
+        # x = F.relu(self.fc1(x))
+        # q_values = F.linear(self.fc2(x))
+        # # q_values = self.fc3(x)
+        q_values = self.model(state)
         return q_values
 
 

@@ -91,32 +91,32 @@ stages:
       md5: 03844e6e152a579cc1c57a108be4a362
       size: 7746
     - path: brains/dqn_cnn.py
-      md5: 780333d8f3a4934c4d7024c3db437fbf
-      size: 1631
+      md5: 72a11d1c40d4ae1c847ee5f4b04d3d01
+      size: 1730
     - path: neural_net/pytorch_cnn.py
-      md5: 8e2eb568ba86e67e764bf50a3a32302d
-      size: 2384
+      md5: 7590ceeeddde2b91696474fdd9c94b61
+      size: 2867
     - path: train.py
-      md5: cd40769f12428f5d846dea8f796dc9a4
-      size: 2642
+      md5: 0e4d4b0dfc77ea3dba58fb2b49db57e6
+      size: 2664
     params:
       params.yaml:
         dqn_cnn:
           train:
             max_moves: 500
-            nb_episodes: 1000
+            nb_episodes: 100000
             nb_epochs: 50
             batch_size: 128
     outs:
     - path: metrics/train/dqn_cnn/cum_rewards.csv
-      md5: 3d131c4f8227db8878e7a508134317b7
-      size: 7823
+      md5: ab127ffd17b780765aca6b75cd653ffe
+      size: 852513
     - path: metrics/train/dqn_cnn/loss.csv
-      md5: 44525ad0e269b1d91520c9a760f2cfff
-      size: 14980
+      md5: b0781e0cf17fbeb332b463420ed1fafb
+      size: 2665797
     - path: metrics/train/dqn_cnn/rewards.csv
-      md5: 14f8c9aba1931f9959855ec366b50f38
-      size: 10651
+      md5: ac0fff6b60135cf3f7e11047d4af45f7
+      size: 1192777
     - path: output/dqn_cnn/last_brain.pth
-      md5: 12c9dc2dbed2324887ed44894ce9bfd7
-      size: 44289
+      md5: e26c7dc55c0b79a3d93093367df5d04a
+      size: 7602379

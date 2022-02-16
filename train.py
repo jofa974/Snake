@@ -49,16 +49,16 @@ if __name__ == "__main__":
         memory_size=10000,
         learning=True,
     )
-    # epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
-    epsilon = 0.1
+    epsilon, eps_min, eps_decay = 1.0, 0.2, 0.99
+    # epsilon = 0.3
     losses, mean_rewards, cum_rewards = [], [], []
     for ep in range(params["nb_episodes"]):
         gen_xy()
         training_data = read_training_data()
 
         if ep % 20 == 0:
-            logging.info(f"episode: {ep}")
-        # epsilon = max(epsilon * eps_decay, eps_min)
+            epsilon = max(epsilon * eps_decay, eps_min)
+            logging.info(f"episode: {ep} ; epsilon: {epsilon}")
         agent.play(
             max_moves=params["max_moves"],
             init_training_data=training_data,
