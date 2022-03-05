@@ -15,7 +15,7 @@ class DQN_CNN(DQN):
         self,
         batch_size=128,
         gamma=0.90,
-        memory_size=200,
+        memory_size=5000,
         learning=True,
     ):
         super().__init__(

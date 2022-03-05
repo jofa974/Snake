@@ -49,7 +49,7 @@ if __name__ == "__main__":
         memory_size=10000,
         learning=True,
     )
-    epsilon, eps_min, eps_decay = 1.0, 0.2, 0.99
+    epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
     # epsilon = 0.3
     losses, mean_rewards, cum_rewards = [], [], []
     for ep in range(params["nb_episodes"]):
