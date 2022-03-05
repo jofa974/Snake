@@ -13,7 +13,7 @@ stages:
         - brains/${item.algorithm}_${item.network}.py
         - neural_net/pytorch_${item.network}.py
       params:
-        - ${item.algorithm}_${item.network}
+        - ${item.algorithm}_${item.network}.train
       outs:
         - output/${item.algorithm}_${item.network}/last_brain.pth
       plots:
@@ -38,3 +38,24 @@ stages:
             x: episode
             x_label: episode
             title: Cumulative Rewards
+  test:
+    foreach:
+      - algorithm: dqn
+        network: ann
+      - algorithm: dqn
+        network: cnn
+    do:
+      cmd: mkdir -p metrics/test/${item.algorithm}_${item.network} && python test.py -a ${item.algorithm} -n ${item.network}
+      deps:
+        - test.py
+        - output/${item.algorithm}_${item.network}/last_brain.pth
+      params:
+        - ${item.algorithm}_${item.network}.test
+      plots:
+        - metrics/test/${item.algorithm}_${item.network}/scores.csv:
+            cache: false
+            y: scores
+            y_label: scores
+            x: episode
+            x_label: episode
+            title: Scores

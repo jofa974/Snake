@@ -16,9 +16,11 @@ nnga:
 dqn_ann:
   train:
     max_moves: 500
-    nb_episodes: 2000
+    nb_episodes: 100
     nb_epochs: 50
     batch_size: 128
+  test:
+    nb_episodes: 100
 
 dqn_cnn:
   train:
@@ -26,3 +28,5 @@ dqn_cnn:
     nb_episodes: 100000
     nb_epochs: 50
     batch_size: 128
+  test:
+    nb_episodes: 100
