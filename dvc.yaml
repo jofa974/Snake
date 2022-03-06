@@ -1,40 +1,39 @@
 stages:
-  make_apple:
-    cmd: python gen_xy.py
-    deps:
-      - gen_xy.py
-      - ui/__init__.py
-    outs:
-      - apple_position.in
   train:
     foreach:
       - algorithm: dqn
         network: ann
-        
+      - algorithm: dqn
+        network: cnn
     do:
-      cmd: mkdir -p metrics/train/${item.algorithm}_${item.network} && python train.py -a ${item.algorithm} -n ${item.network}
+      cmd: python train.py -a ${item.algorithm} -n ${item.network}
       deps:
-        - apple_position.in
         - train.py
         - brains/dqn.py
-        - brains/dqn_ann.py
-        - neural_net/pytorch_ann.py
+        - brains/${item.algorithm}_${item.network}.py
+        - neural_net/pytorch_${item.network}.py
       params:
-        - ${item.algorithm}_${item.network}
+        - ${item.algorithm}_${item.network}.train
       outs:
         - output/${item.algorithm}_${item.network}/last_brain.pth
-      plots:
-        - metrics/train/${item.algorithm}_${item.network}/loss.csv:
-            cache: false
-            y: loss
-            y_label: loss
-            x: episode
-            x_label: episode
-            title: Loss
-        - metrics/train/${item.algorithm}_${item.network}/rewards.csv:
-            cache: false
-            y: rewards
-            y_label: rewards
-            x: episode
-            x_label: episode
-            title: Rewards
+      live:
+        metrics/train/${item.algorithm}_${item.network}:
+          summary: true
+          html: true
+  test:
+    foreach:
+      - algorithm: dqn
+        network: ann
+      - algorithm: dqn
+        network: cnn
+    do:
+      cmd: mkdir -p metrics/test/${item.algorithm}_${item.network} && python test.py -a ${item.algorithm} -n ${item.network}
+      deps:
+        - test.py
+        - output/${item.algorithm}_${item.network}/last_brain.pth
+      params:
+        - ${item.algorithm}_${item.network}.test
+      live:
+        metrics/test/${item.algorithm}_${item.network}:
+          summary: true
+          html: true
