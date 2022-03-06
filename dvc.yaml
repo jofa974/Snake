@@ -6,7 +6,7 @@ stages:
       - algorithm: dqn
         network: cnn
     do:
-      cmd: mkdir -p metrics/train/${item.algorithm}_${item.network} && python train.py -a ${item.algorithm} -n ${item.network}
+      cmd: python train.py -a ${item.algorithm} -n ${item.network}
       deps:
         - train.py
         - brains/dqn.py
@@ -16,28 +16,10 @@ stages:
         - ${item.algorithm}_${item.network}.train
       outs:
         - output/${item.algorithm}_${item.network}/last_brain.pth
-      plots:
-        - metrics/train/${item.algorithm}_${item.network}/loss.csv:
-            cache: false
-            y: loss
-            y_label: loss
-            x: episode
-            x_label: episode
-            title: Loss
-        - metrics/train/${item.algorithm}_${item.network}/rewards.csv:
-            cache: false
-            y: rewards
-            y_label: rewards
-            x: episode
-            x_label: episode
-            title: Rewards
-        - metrics/train/${item.algorithm}_${item.network}/cum_rewards.csv:
-            cache: false
-            y: cum_rewards
-            y_label: cumulative rewards
-            x: episode
-            x_label: episode
-            title: Cumulative Rewards
+      live:
+        metrics/train/${item.algorithm}_${item.network}:
+          summary: true
+          html: true
   test:
     foreach:
       - algorithm: dqn
@@ -51,11 +33,7 @@ stages:
         - output/${item.algorithm}_${item.network}/last_brain.pth
       params:
         - ${item.algorithm}_${item.network}.test
-      plots:
-        - metrics/test/${item.algorithm}_${item.network}/scores.csv:
-            cache: false
-            y: scores
-            y_label: scores
-            x: episode
-            x_label: episode
-            title: Scores
+      live:
+        metrics/test/${item.algorithm}_${item.network}:
+          summary: true
+          html: true

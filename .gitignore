@@ -24,3 +24,5 @@ cov.xml
 screenshot.png
 last_training.eps
 
+/testing_metrics_dqn_cnn
+/testing_metrics_dqn_ann

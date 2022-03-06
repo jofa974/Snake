@@ -4,13 +4,12 @@ import time
 
 import numpy as np
 import pandas as pd
-import pygame
 import yaml
+from dvclive import Live
 
 import brains.dqn_ann
 import brains.dqn_cnn
 from game import read_training_data
-from game.environment import Environment
 from gen_xy import gen_xy
 
 AGENT_CLASSES = {"ann": brains.dqn_ann.DQN_ANN, "cnn": brains.dqn_cnn.DQN_CNN}
@@ -50,24 +49,13 @@ if __name__ == "__main__":
     )
     agent.load()
 
-    scores = np.zeros(params["nb_episodes"])
+    live = Live()
     for ep in range(params["nb_episodes"]):
         gen_xy()
         training_data = read_training_data()
 
         score = agent.play(max_moves=100, init_training_data=training_data)
-        scores[ep] = score
-
-    # Results
-
-    df = pd.DataFrame(
-        {
-            "episode": np.arange(1, params["nb_episodes"] + 1),
-            "scores": scores,
-        }
-    )
-    df[["episode", "scores"]].to_csv(
-        f"metrics/test/{args.algorithm}_{args.network}/scores.csv", index=False
-    )
+        live.log("scores", score)
+        live.next_step()
 
     logging.info("--- %s seconds ---" % (time.time() - start_time))

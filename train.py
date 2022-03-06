@@ -2,9 +2,8 @@ import argparse
 import logging
 import time
 
-import numpy as np
-import pandas as pd
 import yaml
+from dvclive import Live
 
 import brains.dqn_ann
 import brains.dqn_cnn
@@ -51,7 +50,7 @@ if __name__ == "__main__":
     )
     epsilon, eps_min, eps_decay = 1.0, 0.2, 0.999
     # epsilon = 0.3
-    losses, mean_rewards, cum_rewards = [], [], []
+    live = Live()
     for ep in range(params["nb_episodes"]):
         gen_xy()
         training_data = read_training_data()
@@ -65,30 +64,12 @@ if __name__ == "__main__":
             epsilon=epsilon,
         )
 
-        losses.append(agent.learn(epochs=params["nb_epochs"]))
-        mean_rewards.append(agent.mean_reward())
-        cum_rewards.append(agent.cumulative_reward())
-        agent.list_of_rewards = []
+        loss = agent.learn(epochs=params["nb_epochs"])
+        live.log("epsilon", epsilon)
+        live.log("loss", loss)
+        live.log("mean_reward", agent.mean_reward())
         agent.save()
-
-    # Results
-
-    df = pd.DataFrame(
-        {
-            "episode": np.arange(1, params["nb_episodes"] + 1),
-            "loss": losses,
-            "rewards": mean_rewards,
-            "cum_rewards": cum_rewards,
-        }
-    )
-    df[["episode", "loss"]].to_csv(
-        f"metrics/train/{args.algorithm}_{args.network}/loss.csv", index=False
-    )
-    df[["episode", "rewards"]].to_csv(
-        f"metrics/train/{args.algorithm}_{args.network}/rewards.csv", index=False
-    )
-    df[["episode", "cum_rewards"]].to_csv(
-        f"metrics/train/{args.algorithm}_{args.network}/cum_rewards.csv", index=False
-    )
+        agent.list_of_rewards = []
+        live.next_step()
 
     logging.info("--- %s seconds ---" % (time.time() - start_time))
